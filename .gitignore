@@ -1,0 +1,6 @@
+# Fichiers système macOS
+.DS_Store
+
+# Journaux de débogage (voir CONTEXTE.md)
+debug.log
+erreurs.log

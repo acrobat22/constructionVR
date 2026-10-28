@@ -1,0 +1,102 @@
+/*
+ * Page d'accueil : grands caractères, fond sombre, contraste ≥ 7:1.
+ * Contrastes vérifiés :
+ *   - texte #ffffff sur #111418           → 18,5:1
+ *   - bouton #111418 sur #ffe98a          → 15,2:1
+ *   - message #ffe98a sur #111418         → 15,2:1
+ *   - désactivé #c8ccd4 sur #111418       → 11,5:1
+ */
+
+:root {
+  --couleur-fond: #111418;
+  --couleur-texte: #ffffff;
+  --couleur-accent: #ffe98a;
+  --couleur-desactive: #c8ccd4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--couleur-fond);
+  color: var(--couleur-texte);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 1.375rem;
+  line-height: 1.5;
+}
+
+/* L'aperçu 3D occupe tout l'écran, derrière le panneau. */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Panneau opaque : le texte ne dépend jamais du décor 3D pour être lisible. */
+.panneau {
+  position: relative;
+  z-index: 1;
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--couleur-fond);
+  border: 2px solid var(--couleur-accent);
+  border-radius: 1rem;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.bouton-vr {
+  display: block;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 1rem 1.5rem;
+  font: inherit;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--couleur-fond);
+  background: var(--couleur-accent);
+  border: 3px solid var(--couleur-accent);
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+/* Contour de focus bien visible pour la navigation au clavier. */
+.bouton-vr:focus-visible {
+  outline: 4px solid var(--couleur-texte);
+  outline-offset: 4px;
+}
+
+/* État désactivé : signalé par le style ET par le texte du bouton. */
+.bouton-vr:disabled {
+  color: var(--couleur-desactive);
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--couleur-desactive);
+  cursor: not-allowed;
+}
+
+.message-statut {
+  min-height: 1.5em;
+  color: var(--couleur-accent);
+  font-weight: 600;
+}
+
+/* Petits écrans : marges réduites. */
+@media (max-width: 40rem) {
+  .panneau {
+    margin: 1rem;
+    padding: 1.25rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
