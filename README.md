@@ -16,7 +16,7 @@ Le contexte complet et les décisions de conception se trouvent dans
 | Étape | Contenu | État |
 |---|---|---|
 | 1 | Socle : scène, entrée en VR, affichage des mains | ✅ |
-| 2 | Saisie par pincement | à faire |
+| 2 | Saisie par pincement | en test |
 | 3 | Accrochage, maquette fantôme, annulation | à faire |
 | 4 | Téléportation par pastilles | à faire |
 | 5 | Premier modèle : voilier | à faire |
@@ -33,11 +33,24 @@ src/
   config.js                Tous les réglages ajustables
   coeur/scene.js           Scène, caméra, lumières, sol, table, moteur de rendu
   coeur/sessionXR.js       Démarrage et fin de la session WebXR
-  entrees/mains.js         Suivi et affichage des mains
+  entrees/mains.js         Suivi et affichage des mains, signalement des pincements
+  entrees/detecteurPincement.js  Logique pure du pincement (deux seuils anti-tremblement)
+  construction/brique.js   Aspect d'une brique et halo de survol
+  construction/saisie.js   Saisie, déplacement et relâchement des objets
+tests/                     Tests des fonctions pures (node --test)
 ```
 
-Les modules suivants (pincement, briques, téléportation, interface, modèles
-JSON) seront ajoutés au fil des étapes.
+Les modules suivants (maquette fantôme, accrochage, annulation,
+téléportation, interface, modèles JSON) seront ajoutés au fil des étapes.
+
+## Tests
+
+Les fonctions pures se testent sans casque, avec le lanceur intégré à
+Node.js (aucune installation de paquet nécessaire) :
+
+```sh
+node --test
+```
 
 ## Lancer le projet en local
 
@@ -59,7 +72,9 @@ Ouvrir ensuite <http://localhost:8000>. WebXR exige une adresse sécurisée :
    le bouton de l'extension. La page se recharge.
 3. Dans l'émulateur, passer en mode **mains** (hand tracking).
 4. Cliquer sur « Entrer en réalité virtuelle » : les deux mains s'affichent en
-   sphères au-dessus de la table.
+   sphères au-dessus de la table, avec une brique rouge devant vous.
+5. Approcher une main de la brique : un halo doux l'éclaire. Pincer pour
+   l'attraper, déplacer la main, puis écarter les doigts pour la lâcher.
 
 ### Tester sur le Meta Quest 3 (câble USB)
 

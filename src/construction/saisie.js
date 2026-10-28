@@ -1,0 +1,134 @@
+/**
+ * @file Saisie, déplacement et relâchement des objets par pincement.
+ *
+ * Ce module ne connaît ni WebXR ni le détecteur de pincement : il reçoit
+ * simplement « telle main pince ici », « telle main relâche » et, à chaque
+ * image, la position des points de pincement.
+ */
+
+import { Box3, Vector3 } from 'three';
+
+/**
+ * @typedef {object} ObjetSaisissable
+ * @property {import('three').Object3D} objet3D - Objet déplacé dans la scène.
+ * @property {(estSurvole: boolean) => void} definirSurvol - Affiche ou masque le retour visuel de survol.
+ */
+
+/**
+ * @typedef {object} Prise
+ * @property {ObjetSaisissable} objet - Objet tenu.
+ * @property {Vector3} decalage - Écart entre le point de pincement et l'objet au moment de la saisie.
+ */
+
+/**
+ * Gère quels objets sont tenus par quelle main.
+ */
+export class GestionnaireSaisie {
+  /**
+   * @param {typeof import('../config.js').CONFIG.saisie} reglages - Rayon de saisie.
+   */
+  constructor(reglages) {
+    this.rayonSaisie = reglages.rayonSaisie;
+
+    /** @type {ObjetSaisissable[]} */
+    this.objets = [];
+
+    /**
+     * Objets actuellement tenus, par côté de main.
+     * @type {Map<XRHandedness, Prise>}
+     */
+    this.prises = new Map();
+
+    /** Boîte englobante réutilisée pour éviter des allocations à chaque image. */
+    this.boiteTemporaire = new Box3();
+  }
+
+  /**
+   * Rend un objet saisissable.
+   *
+   * @param {ObjetSaisissable} objet - Objet à ajouter.
+   */
+  ajouterObjet(objet) {
+    this.objets.push(objet);
+  }
+
+  /**
+   * Une main commence à pincer : elle saisit l'objet libre le plus proche,
+   * s'il est à portée.
+   *
+   * @param {XRHandedness} cote - Main qui pince.
+   * @param {Vector3} point - Point de pincement (coordonnées de la scène).
+   */
+  saisir(cote, point) {
+    const objet = this.#trouverObjetLibreLePlusProche(point);
+    if (!objet) {
+      return;
+    }
+    // Le décalage évite que l'objet « saute » pour se centrer sur les doigts.
+    const decalage = objet.objet3D.position.clone().sub(point);
+    this.prises.set(cote, { objet, decalage });
+  }
+
+  /**
+   * Une main relâche : l'objet reste là où il a été lâché.
+   *
+   * @param {XRHandedness} cote - Main qui relâche.
+   */
+  relacher(cote) {
+    this.prises.delete(cote);
+  }
+
+  /**
+   * Déplace les objets tenus et met à jour le halo de survol.
+   * À appeler une fois par image.
+   *
+   * @param {Map<XRHandedness, Vector3>} pointsDePincement - Points des mains suivies.
+   */
+  mettreAJour(pointsDePincement) {
+    for (const [cote, prise] of this.prises) {
+      const point = pointsDePincement.get(cote);
+      if (point) {
+        prise.objet.objet3D.position.copy(point).add(prise.decalage);
+      }
+    }
+
+    const objetsSurvoles = new Set([...this.prises.values()].map((prise) => prise.objet));
+    for (const [cote, point] of pointsDePincement) {
+      if (!this.prises.has(cote)) {
+        const objet = this.#trouverObjetLibreLePlusProche(point);
+        if (objet) {
+          objetsSurvoles.add(objet);
+        }
+      }
+    }
+    for (const objet of this.objets) {
+      objet.definirSurvol(objetsSurvoles.has(objet));
+    }
+  }
+
+  /**
+   * Cherche l'objet non tenu dont la surface est la plus proche du point,
+   * dans la limite du rayon de saisie.
+   *
+   * @param {Vector3} point - Point de pincement.
+   * @returns {ObjetSaisissable | null}
+   */
+  #trouverObjetLibreLePlusProche(point) {
+    const objetsTenus = new Set([...this.prises.values()].map((prise) => prise.objet));
+    let objetLePlusProche = null;
+    let distanceLaPlusCourte = this.rayonSaisie;
+
+    for (const objet of this.objets) {
+      if (objetsTenus.has(objet)) {
+        continue;
+      }
+      // Distance à la surface (0 si le point est à l'intérieur de l'objet).
+      const distance = this.boiteTemporaire.setFromObject(objet.objet3D).distanceToPoint(point);
+      if (distance <= distanceLaPlusCourte) {
+        distanceLaPlusCourte = distance;
+        objetLePlusProche = objet;
+      }
+    }
+    return objetLePlusProche;
+  }
+}

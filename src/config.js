@@ -15,7 +15,10 @@
  *   camera: { hauteurYeuxAssis: number, champDeVision: number },
  *   table: { hauteur: number, largeur: number, profondeur: number, epaisseur: number, distanceJoueur: number, couleur: number },
  *   session: { mode: string, typeReferentiel: string, fonctionnalitesRequises: string[], fonctionnalitesOptionnelles: string[] },
- *   mains: { profilAffichage: string }
+ *   mains: { profilAffichage: string, pincement: { seuilFermeture: number, seuilOuverture: number } },
+ *   saisie: { rayonSaisie: number },
+ *   brique: { largeur: number, hauteur: number, profondeur: number, intensiteHalo: number },
+ *   briqueDeTest: { couleur: number, decalageVersJoueur: number }
  * }>}
  */
 export const CONFIG = Object.freeze({
@@ -59,5 +62,37 @@ export const CONFIG = Object.freeze({
   mains: Object.freeze({
     /** « spheres » : aucun fichier 3D à télécharger depuis un serveur externe. */
     profilAffichage: 'spheres',
+    /**
+     * Seuils de pincement (distance pouce–index), plus tolérants que ceux de
+     * Three.js (1,5 cm / 2,5 cm). L'écart entre les deux absorbe les tremblements.
+     */
+    pincement: Object.freeze({
+      seuilFermeture: 0.025,
+      seuilOuverture: 0.04,
+    }),
+  }),
+
+  saisie: Object.freeze({
+    /**
+     * Distance maximale entre le point de pincement et la surface d'une brique
+     * pour pouvoir la saisir : zone volontairement généreuse.
+     */
+    rayonSaisie: 0.06,
+  }),
+
+  brique: Object.freeze({
+    /** Dimensions d'une brique de base, assez grosse pour être saisie facilement. */
+    largeur: 0.08,
+    hauteur: 0.05,
+    profondeur: 0.08,
+    /** Intensité du halo doux affiché au survol (lumière émise, sans clignotement). */
+    intensiteHalo: 0.35,
+  }),
+
+  /** Brique d'essai de l'étape 2, posée sur la table. */
+  briqueDeTest: Object.freeze({
+    couleur: 0xd93a2b,
+    /** Décalage depuis le centre de la table, vers le joueur. */
+    decalageVersJoueur: 0.15,
   }),
 });
