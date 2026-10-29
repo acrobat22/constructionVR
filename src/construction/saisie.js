@@ -49,7 +49,25 @@ export class GestionnaireSaisie {
    * @param {ObjetSaisissable} objet - Objet à ajouter.
    */
   ajouterObjet(objet) {
-    this.objets.push(objet);
+    if (!this.objets.includes(objet)) {
+      this.objets.push(objet);
+    }
+  }
+
+  /**
+   * Rend un objet non saisissable (par exemple une brique posée à sa place).
+   * S'il était tenu, il est relâché.
+   *
+   * @param {ObjetSaisissable} objet - Objet à retirer.
+   */
+  retirerObjet(objet) {
+    this.objets = this.objets.filter((objetConnu) => objetConnu !== objet);
+    for (const [cote, prise] of this.prises) {
+      if (prise.objet === objet) {
+        this.prises.delete(cote);
+      }
+    }
+    objet.definirSurvol(false);
   }
 
   /**
@@ -73,9 +91,12 @@ export class GestionnaireSaisie {
    * Une main relâche : l'objet reste là où il a été lâché.
    *
    * @param {XRHandedness} cote - Main qui relâche.
+   * @returns {ObjetSaisissable | null} L'objet lâché, ou `null` si la main ne tenait rien.
    */
   relacher(cote) {
+    const prise = this.prises.get(cote);
     this.prises.delete(cote);
+    return prise ? prise.objet : null;
   }
 
   /**

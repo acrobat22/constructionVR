@@ -16,8 +16,8 @@ Le contexte complet et les décisions de conception se trouvent dans
 | Étape | Contenu | État |
 |---|---|---|
 | 1 | Socle : scène, entrée en VR, affichage des mains | ✅ |
-| 2 | Saisie par pincement | en test |
-| 3 | Accrochage, maquette fantôme, annulation | à faire |
+| 2 | Saisie par pincement | ✅ |
+| 3 | Accrochage, maquette fantôme, annulation, rendu soigné | en test |
 | 4 | Téléportation par pastilles | à faire |
 | 5 | Premier modèle : voilier | à faire |
 | 6 | Déploiement GitHub Pages | à faire |
@@ -28,20 +28,50 @@ Le contexte complet et les décisions de conception se trouvent dans
 index.html                 Page d'accueil et bouton « Entrer en réalité virtuelle »
 styles/accueil.css         Styles de la page (contraste ≥ 7:1)
 vendor/three/              Three.js 0.186.1 (copie locale, licence MIT)
+vendor/webxr-input-profiles/  Modèles 3D des mains (licence MIT)
+modeles/essai.json         Modèle d'essai de 3 briques
 src/
   main.js                  Crée les modules et les relie (seul point d'assemblage)
   config.js                Tous les réglages ajustables
-  coeur/scene.js           Scène, caméra, lumières, sol, table, moteur de rendu
+  coeur/scene.js           Scène, caméra, lumière + ombres douces, sol, table, rendu
   coeur/sessionXR.js       Démarrage et fin de la session WebXR
   entrees/mains.js         Suivi et affichage des mains, signalement des pincements
   entrees/detecteurPincement.js  Logique pure du pincement (deux seuils anti-tremblement)
-  construction/brique.js   Aspect d'une brique et halo de survol
+  construction/brique.js   Briques à tenons, halo de survol, plaque de base
   construction/saisie.js   Saisie, déplacement et relâchement des objets
+  construction/maquetteFantome.js  Emplacement visé : volume translucide + contour net
+  construction/accrochage.js       Logique pure : accrochage magnétique et glissement doux
+  construction/historique.js       Pile d'actions pour « Annuler »
+  construction/partie.js   Déroulé du mode guidé (une brique à la fois)
+  interface/boutonAnnuler.js       Bouton 3D « Annuler », toujours visible
+  modeles/chargeurModele.js        Lecture, validation et conversion des modèles JSON
 tests/                     Tests des fonctions pures (node --test)
 ```
 
-Les modules suivants (maquette fantôme, accrochage, annulation,
-téléportation, interface, modèles JSON) seront ajoutés au fil des étapes.
+Les modules suivants (téléportation, texte d'aide, message de réussite)
+seront ajoutés au fil des étapes.
+
+## Ajouter un modèle
+
+Un modèle est un fichier JSON dans `modeles/`. Les positions et tailles sont
+en **tenons** (une brique 2 × 2 = 2 tenons de côté), la hauteur en **couches**.
+L'ordre des briques est l'ordre de construction.
+
+```json
+{
+  "nom": "Essai",
+  "briques": [
+    { "position": [0, 0, 0], "taille": [2, 2], "couleur": "#d93a2b" },
+    { "position": [1, 1, 0], "taille": [2, 2], "couleur": "#f2c230" }
+  ]
+}
+```
+
+- `position` : `[x, couche, z]`, coin de la brique (plus petits x et z), entiers.
+- `taille` : `[largeur, profondeur]` en tenons, entiers ≥ 1.
+- `couleur` : format `#rrggbb`.
+
+Un fichier mal écrit est refusé avec un message qui indique la brique fautive.
 
 ## Tests
 
@@ -71,10 +101,14 @@ Ouvrir ensuite <http://localhost:8000>. WebXR exige une adresse sécurisée :
 2. Ouvrir <http://localhost:8000>, puis activer l'émulateur pour ce site avec
    le bouton de l'extension. La page se recharge.
 3. Dans l'émulateur, passer en mode **mains** (hand tracking).
-4. Cliquer sur « Entrer en réalité virtuelle » : les deux mains s'affichent en
-   sphères au-dessus de la table, avec une brique rouge devant vous.
+4. Cliquer sur « Entrer en réalité virtuelle » : les mains réalistes, la
+   plaque verte, l'emplacement fantôme (contour blanc) et une brique dans la
+   réserve apparaissent.
 5. Approcher une main de la brique : un halo doux l'éclaire. Pincer pour
-   l'attraper, déplacer la main, puis écarter les doigts pour la lâcher.
+   l'attraper, l'amener sur l'emplacement fantôme et lâcher : elle glisse
+   doucement à sa place, et la brique suivante apparaît.
+6. Pincer sur le bouton « Annuler » (à gauche) : la dernière brique posée
+   revient dans la réserve.
 
 ### Tester sur le Meta Quest 3 (câble USB)
 
@@ -91,3 +125,5 @@ Le **suivi des mains** doit être activé dans les réglages du Quest.
 
 - Projet : [MIT](LICENSE).
 - Three.js : MIT, voir [vendor/three/LICENSE](vendor/three/LICENSE).
+- Modèles des mains (`@webxr-input-profiles/assets` 1.0.20) : MIT, voir
+  [vendor/webxr-input-profiles/LICENSE.md](vendor/webxr-input-profiles/LICENSE.md).

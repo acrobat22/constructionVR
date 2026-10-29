@@ -17,7 +17,8 @@ Un jeu de construction en briques en réalité virtuelle, destiné à des **pers
 | Posture | **Assis uniquement** |
 | Entrée | **Suivi des mains**, un seul geste : le **pincement** (pouce + index) pour attraper, déplacer, relâcher |
 | Déplacement | **Téléportation** par **pastilles au sol** (activation par pincement ou regard prolongé quelques secondes) |
-| Construction | **Mode guidé** : maquette « fantôme » translucide, accrochage magnétique des briques |
+| Construction | **Mode guidé, une brique à la fois** : maquette « fantôme » translucide à contour net, accrochage magnétique ; une brique lâchée loin de sa place reste là où elle est |
+| Mains | Modèles **réalistes** (`@webxr-input-profiles/assets`, copiés localement, MIT) |
 | Modèles | Décrits dans des **fichiers JSON** (liste de briques : position, taille, couleur) pour ajouter un modèle sans toucher au code |
 | Langue | **Français uniquement** |
 | Aide | **Texte en gros** dans la scène, **pas de voix off** |
@@ -29,7 +30,7 @@ Un jeu de construction en briques en réalité virtuelle, destiné à des **pers
 - **Tolérance** : zone de saisie généreuse, accrochage magnétique, bouton **« Annuler »** toujours visible.
 - **Pas de pression** : aucun chrono, aucun score négatif, aucun échec possible. Messages positifs.
 - **Texte** : très gros, à environ 1 m du joueur, police sans empattement épaisse.
-- **Contraste** : ratio visé **d'au moins 7:1** (fond sombre, texte blanc ou jaune pâle).
+- **Contraste** : ratio visé **d'au moins 7:1** (texte blanc ou jaune pâle sur panneau sombre opaque). Le décor 3D, lui, est clair (validé le 2026-10-28), sur le modèle de l'exemple Three.js `webgl_animation_multiple` : lumière du ciel + soleil, ombres douces, brouillard léger.
 - **Couleurs** : briques vives, mais l'information ne repose **jamais sur la couleur seule** (la maquette fantôme a aussi un contour net).
 - **Animations** : pas de clignotement, pas d'effets agressifs. Mouvements lents et courts (halo doux au survol, brique qui glisse vers son emplacement).
 - **Confort VR** : téléportation uniquement, pas de mouvement libre.
@@ -54,9 +55,9 @@ Ensuite : maison/église, vélo, puis autres modèles simples.
 
 ## 6. Points encore à confirmer
 
-- **Licence** : MIT proposée (non encore validée).
-- **Ordre des modèles** : voilier d'abord, puis maison/église, puis vélo (proposition, non validée).
-- **Lancement de l'étape 1** : en attente du « go » explicite.
+- **Licence** : MIT, validée (titulaire : « P »).
+- **Ordre des modèles** : voilier, puis maison/église, puis vélo (validé).
+- Étapes 1 et 2 terminées ; étape 3 en test (voir README).
 
 ## 7. Limites connues
 
@@ -100,4 +101,4 @@ Ensuite : maison/église, vélo, puis autres modèles simples.
 
 ## 10. Prochaine action
 
-Attendre le **« go »** de l'utilisateur, ainsi que ses réponses sur la licence et l'ordre des modèles, puis lancer l'**étape 1** (socle).
+Faire valider l'**étape 3** dans l'émulateur (accrochage, annulation, rendu), puis proposer le plan de l'**étape 4** (téléportation par pastilles).

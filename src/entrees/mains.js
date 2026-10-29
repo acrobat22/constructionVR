@@ -46,7 +46,7 @@ export class Mains {
   /**
    * @param {import('three').WebGLRenderer} renderer - Moteur de rendu (avec `xr.enabled`).
    * @param {import('three').Scene} scene - Scène où afficher les mains.
-   * @param {typeof import('../config.js').CONFIG.mains} reglages - Réglages d'affichage.
+   * @param {typeof import('../config.js').CONFIG.mains} reglages - Profil d'affichage et chemin des modèles.
    * @param {() => { mettreAJour(distance: number | null): string | null }} creerDetecteur
    *   Fabrique d'un détecteur de pincement (un par main).
    * @param {EcouteursPincement} ecouteurs - Fonctions appelées lors des pincements.
@@ -57,7 +57,8 @@ export class Mains {
     /** @type {EtatMain[]} */
     this.etatsMains = [];
 
-    const fabriqueDeModeles = new XRHandModelFactory();
+    // Les modèles de mains sont servis depuis le projet (aucun CDN externe).
+    const fabriqueDeModeles = new XRHandModelFactory().setPath(reglages.cheminModeles);
 
     for (let indice = 0; indice < NOMBRE_DE_MAINS; indice++) {
       const main = renderer.xr.getHand(indice);
