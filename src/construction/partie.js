@@ -90,6 +90,19 @@ export class Partie {
     return this.indiceEtape >= this.briques.length;
   }
 
+  /**
+   * Hauteur (repère de la scène) du centre de l'emplacement attendu, ou `null`
+   * s'il n'y en a pas (modèle terminé ou pièce en mouvement automatique).
+   *
+   * @returns {number | null}
+   */
+  get hauteurPlaceCourante() {
+    if (this.estTerminee || this.glissement) {
+      return null;
+    }
+    return this.#placeDansLaScene(this.indiceEtape).y;
+  }
+
   /** @returns {number} Nombre de briques déjà posées à leur place. */
   get nombreBriquesPosees() {
     return this.indiceEtape;

@@ -7,12 +7,14 @@
  *   - glisser = déplacer ;
  *   - relâcher = lâcher.
  *
- * Le point suit la surface visée sous le curseur (table, plaque, brique…).
- * Pendant une prise, il est légèrement surélevé pour que la brique tenue
- * survole la surface au lieu de la traverser.
+ * Avant la prise, le point suit la surface visée sous le curseur (table,
+ * planchette, pièce…). Pendant la prise, la pièce glisse sur un plan
+ * horizontal à la hauteur de son emplacement : viser le contour revient à
+ * viser la bonne place, même pour une pièce en hauteur et en surplomb (sinon,
+ * le rayon traverserait le contour et toucherait la planchette loin derrière).
  */
 
-import { Raycaster, Vector2, Vector3 } from 'three';
+import { Plane, Raycaster, Vector2, Vector3 } from 'three';
 
 /** Côté attribué à la souris (une seule « main »). */
 const COTE_SOURIS = 'right';
@@ -31,15 +33,20 @@ export class Souris {
    * @param {import('three').Scene} dependances.scene - Scène visée par le curseur.
    * @param {() => import('three').Object3D[]} dependances.objetsTenus - Objets à ignorer (tenus).
    * @param {import('./mains.js').EcouteursPincement} dependances.ecouteurs - Fonctions appelées lors des pincements.
-   * @param {{ hauteurLevee: number }} dependances.reglages - Surélévation pendant une prise.
+   * @param {() => number | null} dependances.hauteurCible - Hauteur du centre de l'emplacement attendu
+   *   (plan de glissement pendant une prise), ou `null` s'il n'y en a pas.
+   * @param {{ hauteurLevee: number }} dependances.reglages - Surélévation pendant une prise, sans emplacement attendu.
    */
-  constructor({ canevas, camera, scene, objetsTenus, ecouteurs, reglages }) {
+  constructor({ canevas, camera, scene, objetsTenus, ecouteurs, hauteurCible, reglages }) {
     this.canevas = canevas;
     this.camera = camera;
     this.scene = scene;
     this.objetsTenus = objetsTenus;
     this.ecouteurs = ecouteurs;
+    this.hauteurCible = hauteurCible;
     this.reglages = reglages;
+    /** Plan horizontal de glissement, réutilisé à chaque image. */
+    this.planGlissement = new Plane(new Vector3(0, 1, 0), 0);
 
     this.estActive = false;
     this.estEnfoncee = false;
@@ -108,6 +115,15 @@ export class Souris {
       return;
     }
     this.lanceurDeRayon.setFromCamera(this.positionCurseur, this.camera);
+
+    // Pendant une prise : glissement à la hauteur de l'emplacement attendu.
+    const hauteur = this.estEnfoncee ? this.hauteurCible() : null;
+    if (hauteur !== null) {
+      this.planGlissement.constant = -hauteur;
+      this.pointEstValide = this.lanceurDeRayon.ray.intersectPlane(this.planGlissement, this.point) !== null;
+      return;
+    }
+
     const ignores = new Set(this.objetsTenus());
     const impact = this.lanceurDeRayon
       .intersectObject(this.scene, true)
@@ -169,7 +185,8 @@ export class Souris {
     this.canevas.setPointerCapture(evenement.pointerId);
     this.estEnfoncee = true;
     this.canevas.style.cursor = 'grabbing';
-    this.ecouteurs.surDebutPincement(COTE_SOURIS, this.point);
+    // La pièce se centre sur le curseur : aucun décalage dû au point de prise.
+    this.ecouteurs.surDebutPincement(COTE_SOURIS, this.point, { centrer: true });
   }
 
   /**

@@ -93,5 +93,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - Nouvelle fonctionnalité X
 
 ### Corrigé
+- 2026-10-29 — Mode souris : une pièce placée en hauteur et en surplomb (tête
+  du dragon) tombait derrière sa place. Pendant une prise, la pièce glisse
+  désormais à la hauteur de son emplacement et se centre sur le curseur.
 - Bug Y résolu
 -->

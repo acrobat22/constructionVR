@@ -23,8 +23,9 @@ const ARTICULATION_INDEX = 'index-finger-tip';
 
 /**
  * @typedef {object} EcouteursPincement
- * @property {(cote: XRHandedness, point: Vector3) => void} surDebutPincement
+ * @property {(cote: XRHandedness, point: Vector3, options?: { centrer?: boolean }) => void} surDebutPincement
  *   Appelé quand une main commence à pincer, avec le point de pincement.
+ *   `centrer` (souris) : l'objet saisi se centre sur le point.
  * @property {(cote: XRHandedness) => void} surFinPincement
  *   Appelé quand une main relâche (ou n'est plus suivie).
  */

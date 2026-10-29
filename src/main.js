@@ -124,13 +124,13 @@ scene.add(carte.objet3D);
  * @type {import('./entrees/mains.js').EcouteursPincement}
  */
 const ecouteursPincement = {
-  surDebutPincement: (cote, point) => {
+  surDebutPincement: (cote, point, options) => {
     // Un pincement sur un bouton l'active ; ailleurs, il saisit une brique.
     const boutonVise = boutons.find((bouton) => bouton.estVise(point));
     if (boutonVise) {
       boutonVise.appuyer(tempsCourant);
       sons.jouerSaisie();
-    } else if (saisie.saisir(cote, point)) {
+    } else if (saisie.saisir(cote, point, options)) {
       sons.jouerSaisie();
     }
   },
@@ -156,6 +156,7 @@ const souris = new Souris({
   scene,
   objetsTenus: () => saisie.objetsTenus(),
   ecouteurs: ecouteursPincement,
+  hauteurCible: () => partie.hauteurPlaceCourante,
   reglages: CONFIG.souris,
 });
 
