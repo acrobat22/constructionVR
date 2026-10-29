@@ -1,121 +1,95 @@
 /**
- * @file Aspect visuel des briques (arêtes arrondies, tenons sur le dessus),
- * de leur halo de survol, et de la plaque de base.
+ * @file Aspect visuel des blocs de bois peints (arêtes adoucies, nervures
+ * visibles), de leur halo de survol, et de la planchette de base gravée.
  */
 
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
+import { creerMateriauBoisPeint } from './boisPeint.js';
 import { creerOmbreContact } from './ombreContact.js';
 
-/** Finesse des cylindres des tenons (nombre de facettes). */
-const FACETTES_TENON = 20;
+/** Finesse de l'arrondi des arêtes (nombre de segments). */
+const SEGMENTS_ARRONDI = 3;
+
+/** Pixels par case dans la texture du quadrillage gravé. */
+const PIXELS_PAR_CASE = 32;
 
 /**
- * Géométries déjà construites, partagées entre briques de même taille.
+ * Géométries déjà construites, partagées entre blocs de même taille.
  * @type {Map<string, THREE.BufferGeometry>}
  */
 const cacheGeometries = new Map();
 
 /**
- * Construit (ou réutilise) la géométrie d'un pavé à tenons : corps arrondi
- * centré sur l'origine, tenons sur la face du dessus.
+ * Construit (ou réutilise) la géométrie d'un bloc : pavé aux arêtes adoucies,
+ * centré sur l'origine.
  *
  * @param {typeof import('../config.js').CONFIG.grille} grille - Dimensions de la grille.
- * @param {number} largeurTenons - Nombre de tenons en largeur (axe x).
- * @param {number} profondeurTenons - Nombre de tenons en profondeur (axe z).
- * @param {number} hauteur - Hauteur du corps, sans les tenons.
+ * @param {number} largeurCases - Nombre de cases en largeur (axe x).
+ * @param {number} profondeurCases - Nombre de cases en profondeur (axe z).
+ * @param {number} hauteur - Hauteur du bloc.
  * @returns {THREE.BufferGeometry}
  */
-export function obtenirGeometrieAvecTenons(grille, largeurTenons, profondeurTenons, hauteur) {
-  const cle = `${largeurTenons}x${profondeurTenons}x${hauteur}`;
-  const geometrieConnue = cacheGeometries.get(cle);
-  if (geometrieConnue) {
-    return geometrieConnue;
+export function obtenirGeometrieBloc(grille, largeurCases, profondeurCases, hauteur) {
+  const cle = `${largeurCases}x${profondeurCases}x${hauteur}`;
+  if (!cacheGeometries.has(cle)) {
+    cacheGeometries.set(cle, new RoundedBoxGeometry(
+      largeurCases * grille.pas - grille.jeu,
+      hauteur,
+      profondeurCases * grille.pas - grille.jeu,
+      SEGMENTS_ARRONDI,
+      grille.rayonArrondi,
+    ));
   }
-
-  const largeur = largeurTenons * grille.pas - grille.jeu;
-  const profondeur = profondeurTenons * grille.pas - grille.jeu;
-  const morceaux = [new RoundedBoxGeometry(largeur, hauteur, profondeur, 2, grille.rayonArrondi)];
-
-  for (let colonne = 0; colonne < largeurTenons; colonne++) {
-    for (let rangee = 0; rangee < profondeurTenons; rangee++) {
-      const tenon = new THREE.CylinderGeometry(
-        grille.rayonTenon,
-        grille.rayonTenon,
-        grille.hauteurTenon,
-        FACETTES_TENON,
-      );
-      tenon.translate(
-        (colonne + 0.5) * grille.pas - (largeurTenons * grille.pas) / 2,
-        hauteur / 2 + grille.hauteurTenon / 2,
-        (rangee + 0.5) * grille.pas - (profondeurTenons * grille.pas) / 2,
-      );
-      // `RoundedBoxGeometry` n'est pas indexée : la fusion exige le même format.
-      morceaux.push(tenon.toNonIndexed());
-      tenon.dispose();
-    }
-  }
-
-  // Une seule géométrie = un seul appel de dessin par brique (meilleures performances).
-  const geometrie = mergeGeometries(morceaux);
-  morceaux.forEach((morceau) => morceau.dispose());
-  cacheGeometries.set(cle, geometrie);
-  return geometrie;
+  return cacheGeometries.get(cle);
 }
 
 /**
- * Une brique saisissable : un pavé à tenons coloré, avec un halo doux au survol.
+ * Un bloc de bois peint saisissable, avec un halo doux au survol.
  */
 export class Brique {
   /**
    * @param {typeof import('../config.js').CONFIG.grille} grille - Dimensions de la grille.
-   * @param {typeof import('../config.js').CONFIG.brique} reglages - Aspect et halo.
+   * @param {typeof import('../config.js').CONFIG.brique} reglages - Halo de survol.
    * @param {import('../modeles/chargeurModele.js').DescriptionBrique} description - Taille et couleur.
-   * @param {typeof import('../config.js').CONFIG.ombreContact} reglagesOmbre - Ombre au pied de la brique.
+   * @param {typeof import('../config.js').CONFIG.ombreContact} reglagesOmbre - Ombre au pied du bloc.
+   * @param {import('./boisPeint.js').TexturesBois | null} texturesBois - Grain du bois (ou `null` : couleur unie).
+   * @param {typeof import('../config.js').CONFIG.boisPeint} reglagesBois - Motif, relief et rugosité du bois.
    */
-  constructor(grille, reglages, description, reglagesOmbre) {
+  constructor(grille, reglages, description, reglagesOmbre, texturesBois, reglagesBois) {
     this.reglages = reglages;
     this.description = description;
 
-    this.materiau = new THREE.MeshStandardMaterial({
-      color: description.couleur,
-      roughness: reglages.rugosite,
-      metalness: 0,
-      // Le halo est une lumière émise de la même couleur que la brique.
-      emissive: description.couleur,
-      emissiveIntensity: 0,
-    });
-
-    const geometrie = obtenirGeometrieAvecTenons(
-      grille,
-      description.largeur,
-      description.profondeur,
-      grille.hauteurCouche,
+    const largeur = description.largeur * grille.pas;
+    const profondeur = description.profondeur * grille.pas;
+    this.materiau = creerMateriauBoisPeint(
+      texturesBois,
+      description.couleur,
+      reglagesBois,
+      Math.max(largeur, profondeur, grille.hauteurCouche),
     );
 
     /** Objet Three.js à ajouter à la scène et à déplacer. */
-    this.objet3D = new THREE.Mesh(geometrie, this.materiau);
+    this.objet3D = new THREE.Mesh(
+      obtenirGeometrieBloc(grille, description.largeur, description.profondeur, grille.hauteurCouche),
+      this.materiau,
+    );
     this.objet3D.castShadow = true;
     this.objet3D.receiveShadow = true;
     this.objet3D.name = 'brique';
 
-    // Ombre de contact sous la brique, visible seulement quand elle est posée.
-    this.ombreContact = creerOmbreContact(
-      description.largeur * grille.pas,
-      description.profondeur * grille.pas,
-      reglagesOmbre,
-    );
+    // Ombre de contact sous le bloc, visible seulement quand il est posé.
+    this.ombreContact = creerOmbreContact(largeur, profondeur, reglagesOmbre);
     this.ombreContact.position.y = -grille.hauteurCouche / 2 + 0.0005;
     this.objet3D.add(this.ombreContact);
   }
 
   /**
-   * Affiche l'ombre de contact seulement quand la brique repose sur une surface
-   * (pas quand elle est tenue ou en mouvement).
+   * Affiche l'ombre de contact seulement quand le bloc repose sur une surface
+   * (pas quand il est tenu ou en mouvement).
    *
-   * @param {boolean} estAuRepos - `true` si la brique est posée.
+   * @param {boolean} estAuRepos - `true` si le bloc est posé.
    */
   definirAuRepos(estAuRepos) {
     this.ombreContact.visible = estAuRepos;
@@ -124,7 +98,7 @@ export class Brique {
   /**
    * Allume ou éteint le halo doux (changement immédiat, sans clignotement).
    *
-   * @param {boolean} estSurvolee - `true` si une main est assez proche pour la saisir.
+   * @param {boolean} estSurvolee - `true` si une main est assez proche pour le saisir.
    */
   definirSurvol(estSurvolee) {
     this.materiau.emissiveIntensity = estSurvolee ? this.reglages.intensiteHalo : 0;
@@ -132,31 +106,86 @@ export class Brique {
 }
 
 /**
- * Crée la plaque de base à tenons sur laquelle on construit le modèle.
- * Son origine est au centre ; le dessus du corps (sans tenons) est à y = 0.
+ * Crée la texture du quadrillage gravé : traits fins entre les cases,
+ * fond transparent.
+ *
+ * @param {number} largeurCases - Nombre de cases en largeur.
+ * @param {number} profondeurCases - Nombre de cases en profondeur.
+ * @param {string} couleurTraits - Couleur CSS des traits (avec transparence).
+ * @returns {THREE.CanvasTexture}
+ */
+function creerTextureQuadrillage(largeurCases, profondeurCases, couleurTraits) {
+  const canevas = document.createElement('canvas');
+  canevas.width = largeurCases * PIXELS_PAR_CASE;
+  canevas.height = profondeurCases * PIXELS_PAR_CASE;
+  const contexte = canevas.getContext('2d');
+  contexte.strokeStyle = couleurTraits;
+  contexte.lineWidth = 2;
+  contexte.beginPath();
+  // Traits intérieurs seulement : le bord de la planchette fait déjà cadre.
+  for (let colonne = 1; colonne < largeurCases; colonne++) {
+    contexte.moveTo(colonne * PIXELS_PAR_CASE, 0);
+    contexte.lineTo(colonne * PIXELS_PAR_CASE, canevas.height);
+  }
+  for (let rangee = 1; rangee < profondeurCases; rangee++) {
+    contexte.moveTo(0, rangee * PIXELS_PAR_CASE);
+    contexte.lineTo(canevas.width, rangee * PIXELS_PAR_CASE);
+  }
+  contexte.stroke();
+
+  const texture = new THREE.CanvasTexture(canevas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 8;
+  return texture;
+}
+
+/**
+ * Crée la planchette de base en bois naturel, au quadrillage gravé, sur
+ * laquelle on construit le modèle. Son origine est au centre ; son dessus
+ * est à y = 0.
  *
  * @param {typeof import('../config.js').CONFIG.grille} grille - Dimensions de la grille.
- * @param {typeof import('../config.js').CONFIG.plaqueDeBase} reglages - Couleur, épaisseur, marge.
- * @param {number} largeurTenons - Largeur du modèle, en tenons (marge non comprise).
- * @param {number} profondeurTenons - Profondeur du modèle, en tenons (marge non comprise).
- * @param {typeof import('../config.js').CONFIG.ombreContact} reglagesOmbre - Ombre au pied de la plaque.
+ * @param {typeof import('../config.js').CONFIG.plaqueDeBase} reglages - Couleur, épaisseur, marge, gravure.
+ * @param {number} largeurCases - Largeur du modèle, en cases (marge non comprise).
+ * @param {number} profondeurCases - Profondeur du modèle, en cases (marge non comprise).
+ * @param {typeof import('../config.js').CONFIG.ombreContact} reglagesOmbre - Ombre au pied de la planchette.
+ * @param {import('./boisPeint.js').TexturesBois | null} texturesBois - Grain du bois (ou `null`).
+ * @param {typeof import('../config.js').CONFIG.boisPeint} reglagesBois - Motif, relief et rugosité du bois.
  * @returns {THREE.Mesh}
  */
-export function creerPlaqueDeBase(grille, reglages, largeurTenons, profondeurTenons, reglagesOmbre) {
-  const largeurTotale = largeurTenons + 2 * reglages.marge;
-  const profondeurTotale = profondeurTenons + 2 * reglages.marge;
-  const geometrie = obtenirGeometrieAvecTenons(grille, largeurTotale, profondeurTotale, reglages.epaisseur);
+export function creerPlaqueDeBase(grille, reglages, largeurCases, profondeurCases, reglagesOmbre, texturesBois, reglagesBois) {
+  const largeurTotale = largeurCases + 2 * reglages.marge;
+  const profondeurTotale = profondeurCases + 2 * reglages.marge;
+  const largeur = largeurTotale * grille.pas;
+  const profondeur = profondeurTotale * grille.pas;
+
   const plaque = new THREE.Mesh(
-    geometrie,
-    new THREE.MeshStandardMaterial({ color: reglages.couleur, roughness: 0.45 }),
+    obtenirGeometrieBloc(grille, largeurTotale, profondeurTotale, reglages.epaisseur),
+    creerMateriauBoisPeint(texturesBois, reglages.couleur, reglagesBois, Math.max(largeur, profondeur)),
   );
-  // Abaissée pour que le dessus du corps soit à y = 0 (les briques s'y posent).
+  // Abaissée pour que son dessus soit à y = 0 (les blocs s'y posent).
   plaque.position.y = -reglages.epaisseur / 2;
   plaque.receiveShadow = true;
   plaque.castShadow = true;
   plaque.name = 'plaque-de-base';
 
-  const ombre = creerOmbreContact(largeurTotale * grille.pas, profondeurTotale * grille.pas, reglagesOmbre);
+  // Quadrillage gravé, juste au-dessus du plateau : repère des cases.
+  const quadrillage = new THREE.Mesh(
+    new THREE.PlaneGeometry(largeur - grille.jeu, profondeur - grille.jeu),
+    new THREE.MeshBasicMaterial({
+      map: creerTextureQuadrillage(largeurTotale, profondeurTotale, reglages.couleurGravure),
+      transparent: true,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -1,
+    }),
+  );
+  quadrillage.rotation.x = -Math.PI / 2;
+  quadrillage.position.y = reglages.epaisseur / 2 + 0.0003;
+  quadrillage.name = 'quadrillage';
+  plaque.add(quadrillage);
+
+  const ombre = creerOmbreContact(largeur, profondeur, reglagesOmbre);
   ombre.position.y = -reglages.epaisseur / 2 + 0.0005;
   plaque.add(ombre);
   return plaque;

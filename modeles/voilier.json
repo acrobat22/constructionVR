@@ -1,25 +1,25 @@
 {
   "nom": "Le voilier",
-  "description": "Une coque bleue, un mât, une voile blanche et un fanion jaune.",
+  "description": "Une coque bleue, un mât, une voile ivoire et un fanion jaune.",
   "briques": [
-    { "position": [2, 0, 0], "taille": [4, 2], "couleur": "#1f4e8c" },
-    { "position": [6, 0, 0], "taille": [2, 2], "couleur": "#1f4e8c" },
+    { "position": [2, 0, 0], "taille": [4, 2], "couleur": "#7fa6d8" },
+    { "position": [6, 0, 0], "taille": [2, 2], "couleur": "#7fa6d8" },
 
-    { "position": [1, 1, 0], "taille": [4, 2], "couleur": "#2b6cd9" },
-    { "position": [5, 1, 0], "taille": [4, 2], "couleur": "#2b6cd9" },
+    { "position": [1, 1, 0], "taille": [4, 2], "couleur": "#a9d3f2" },
+    { "position": [5, 1, 0], "taille": [4, 2], "couleur": "#a9d3f2" },
 
-    { "position": [0, 2, 0], "taille": [2, 2], "couleur": "#d93a2b" },
-    { "position": [2, 2, 0], "taille": [4, 2], "couleur": "#d93a2b" },
-    { "position": [6, 2, 0], "taille": [4, 2], "couleur": "#d93a2b" },
+    { "position": [0, 2, 0], "taille": [2, 2], "couleur": "#f2a08f" },
+    { "position": [2, 2, 0], "taille": [4, 2], "couleur": "#f2a08f" },
+    { "position": [6, 2, 0], "taille": [4, 2], "couleur": "#f2a08f" },
 
-    { "position": [4, 3, 0], "taille": [1, 2], "couleur": "#6e4b2a" },
-    { "position": [4, 4, 0], "taille": [1, 2], "couleur": "#6e4b2a" },
-    { "position": [4, 5, 0], "taille": [1, 2], "couleur": "#6e4b2a" },
+    { "position": [4, 3, 0], "taille": [1, 2], "couleur": "#c9a07a" },
+    { "position": [4, 4, 0], "taille": [1, 2], "couleur": "#c9a07a" },
+    { "position": [4, 5, 0], "taille": [1, 2], "couleur": "#c9a07a" },
 
-    { "position": [5, 3, 1], "taille": [3, 1], "couleur": "#f5f5f0" },
-    { "position": [5, 4, 1], "taille": [2, 1], "couleur": "#f5f5f0" },
-    { "position": [5, 5, 1], "taille": [1, 1], "couleur": "#f5f5f0" },
+    { "position": [5, 3, 1], "taille": [3, 1], "couleur": "#fff8e8" },
+    { "position": [5, 4, 1], "taille": [2, 1], "couleur": "#fff8e8" },
+    { "position": [5, 5, 1], "taille": [1, 1], "couleur": "#fff8e8" },
 
-    { "position": [4, 6, 0], "taille": [1, 2], "couleur": "#f2c230" }
+    { "position": [4, 6, 0], "taille": [1, 2], "couleur": "#f6d56f" }
   ]
 }

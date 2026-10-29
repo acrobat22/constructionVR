@@ -135,7 +135,7 @@ test('les positions sont centrées sur l’emprise, posées sur y = 0', () => {
     y: Number(point.y.toFixed(6)),
     z: Number(point.z.toFixed(6)),
   });
-  // Emprise 4 × 2 tenons : centre en (2, 1). Brique 1 centrée en (1, 1) → x = -1 pas.
+  // Emprise 4 × 2 cases : centre en (2, 1). Brique 1 centrée en (1, 1) → x = -1 pas.
   assert.deepEqual(arrondir(positions[0]), { x: -0.04, y: 0.025, z: 0 });
   assert.deepEqual(arrondir(positions[1]), { x: 0.04, y: 0.025, z: 0 });
   assert.deepEqual(arrondir(positions[2]), { x: 0, y: 0.075, z: 0 });

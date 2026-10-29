@@ -10,7 +10,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
-import { obtenirGeometrieAvecTenons } from './brique.js';
+import { obtenirGeometrieBloc } from './brique.js';
 
 /**
  * Construit un contour fait de 12 fines baguettes le long des arêtes d'un pavé.
@@ -84,7 +84,7 @@ export class MaquetteFantome {
    * @param {{ x: number, y: number, z: number }} position - Centre de l'emplacement (repère du parent).
    */
   afficher(description, position) {
-    this.volume.geometry = obtenirGeometrieAvecTenons(
+    this.volume.geometry = obtenirGeometrieBloc(
       this.grille,
       description.largeur,
       description.profondeur,
@@ -104,8 +104,8 @@ export class MaquetteFantome {
   /**
    * Construit (ou réutilise) le contour d'une brique de taille donnée.
    *
-   * @param {number} largeurTenons - Largeur en tenons.
-   * @param {number} profondeurTenons - Profondeur en tenons.
+   * @param {number} largeurTenons - Largeur en cases.
+   * @param {number} profondeurTenons - Profondeur en cases.
    * @returns {THREE.BufferGeometry}
    */
   #obtenirContour(largeurTenons, profondeurTenons) {

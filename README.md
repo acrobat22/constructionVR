@@ -34,6 +34,7 @@ vendor/three/              Three.js 0.186.1 (copie locale, licence MIT)
 vendor/webxr-input-profiles/  Modèles 3D des mains (licence MIT)
 ressources/environnements/ Pièce photographiée « Lebombo » (photo + HDR, Poly Haven, CC0)
 ressources/textures/chene/ Bois du plateau (Poly Haven, CC0)
+ressources/textures/pin/   Bois des blocs et de la planchette (Poly Haven, CC0)
 modeles/voilier.json       Le voilier (14 briques), modèle chargé au démarrage
 modeles/essai.json         Modèle d'essai de 3 briques
 src/
@@ -47,7 +48,9 @@ src/
   entrees/mains.js         Suivi et affichage des mains, signalement des pincements
   entrees/detecteurPincement.js  Logique pure du pincement (deux seuils anti-tremblement)
   entrees/souris.js        Souris à la place des mains (mode « Essayer sans casque »)
-  construction/brique.js   Briques à tenons, halo de survol, plaque de base
+  construction/brique.js   Blocs de bois peints, halo de survol, planchette gravée
+  construction/boisPeint.js        Matériau « bois peint » (pastel + nervures visibles)
+  construction/niveauxGrain.js     Logique pure : contraste du grain de bois
   construction/saisie.js   Saisie, déplacement et relâchement des objets
   construction/maquetteFantome.js  Emplacement visé : volume translucide + contour net
   construction/accrochage.js       Logique pure : accrochage magnétique et glissement doux
@@ -71,7 +74,7 @@ des étapes.
 ## Ajouter un modèle
 
 Un modèle est un fichier JSON dans `modeles/`. Les positions et tailles sont
-en **tenons** (une brique 2 × 2 = 2 tenons de côté), la hauteur en **couches**.
+en **cases** de 4 cm (un bloc 2 × 2 = 8 cm de côté), la hauteur en **couches**.
 L'ordre des briques est l'ordre de construction.
 
 ```json
@@ -85,7 +88,7 @@ L'ordre des briques est l'ordre de construction.
 ```
 
 - `position` : `[x, couche, z]`, coin de la brique (plus petits x et z), entiers.
-- `taille` : `[largeur, profondeur]` en tenons, entiers ≥ 1.
+- `taille` : `[largeur, profondeur]` en cases, entiers ≥ 1.
 - `couleur` : format `#rrggbb`.
 
 Le modèle doit être **constructible dans l'ordre donné** : chaque brique
@@ -175,7 +178,7 @@ Le **suivi des mains** doit être activé dans les réglages du Quest.
 - Three.js : MIT, voir [vendor/three/LICENSE](vendor/three/LICENSE).
 - Modèles des mains (`@webxr-input-profiles/assets` 1.0.20) : MIT, voir
   [vendor/webxr-input-profiles/LICENSE.md](vendor/webxr-input-profiles/LICENSE.md).
-- Pièce « Lebombo » (Greg Zaal) et texture « Oak Veneer 01 » :
+- Pièce « Lebombo » (Greg Zaal), textures « Oak Veneer 01 » et « Kitchen Wood » :
   [Poly Haven](https://polyhaven.com/license), CC0 (domaine public). La photo
   a été réduite en 4096 × 2048 pour la mémoire du casque.
 - Ambiance inspirée d'un puzzle CodePen (MIT, Cliff Pyles) : idées reprises,

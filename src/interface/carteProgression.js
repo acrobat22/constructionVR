@@ -17,7 +17,7 @@ const COULEURS = Object.freeze({
 });
 
 /** Aide affichée pendant la construction (le geste, en une phrase). */
-const TEXTE_AIDE = 'Pincez la brique et posez-la dans le cadre blanc.';
+const TEXTE_AIDE = 'Pincez le bloc et posez-le dans le cadre.';
 
 /** Message affiché une fois le modèle terminé (positif, sans pression). */
 const TEXTE_FELICITATIONS = 'Votre modèle est complet. Admirez-le !';
@@ -92,7 +92,7 @@ export class CarteProgression {
 
     // Aide permanente : le geste à faire, ou la suite une fois terminé.
     contexte.fillStyle = COULEURS.titre;
-    contexte.font = `52px ${police}`;
+    contexte.font = `50px ${police}`;
     contexte.fillText(estTermine ? TEXTE_FELICITATIONS : TEXTE_AIDE, gauche, hauteur * 0.6, largeur - 2 * gauche);
 
     this.#dessinerPastilles(contexte, gauche, hauteur * 0.8, largeur - 2 * gauche, briquesPosees, totalBriques);

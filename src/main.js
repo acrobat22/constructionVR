@@ -22,6 +22,7 @@ import { Historique } from './construction/historique.js';
 import { MaquetteFantome } from './construction/maquetteFantome.js';
 import { Partie } from './construction/partie.js';
 import { creerMiniature } from './construction/miniature.js';
+import { chargerBoisPeint } from './construction/boisPeint.js';
 import { Bouton3D } from './interface/bouton3D.js';
 import { dessinerFlecheRetour, dessinerOeil } from './interface/icones.js';
 import { CarteProgression } from './interface/carteProgression.js';
@@ -202,7 +203,14 @@ const partie = new Partie({
 });
 
 try {
-  const modele = await chargerModele(CONFIG.modele.url);
+  // Le bois se charge en même temps que le modèle ; sans lui, les blocs restent unis.
+  const [modele, texturesBois] = await Promise.all([
+    chargerModele(CONFIG.modele.url),
+    chargerBoisPeint(CONFIG.boisPeint).catch((erreur) => {
+      console.error('[main] Textures du bois non chargées, blocs unis :', erreur);
+      return null;
+    }),
+  ]);
   nomModele = modele.nom;
   const emprise = calculerEmprise(modele);
   const places = calculerPositionsEnMetres(modele, CONFIG.grille);
@@ -213,6 +221,8 @@ try {
     emprise.maxX - emprise.minX,
     emprise.maxZ - emprise.minZ,
     CONFIG.ombreContact,
+    texturesBois,
+    CONFIG.boisPeint,
   );
   conteneurModele.add(plaque);
   conteneurModele.updateMatrixWorld(true);
@@ -225,12 +235,14 @@ try {
     dessus: conteneurModele.position.y,
   };
 
-  miniature = creerMiniature({ modele, places, emprise, config: CONFIG });
+  miniature = creerMiniature({ modele, places, emprise, config: CONFIG, texturesBois });
   miniature.position.copy(surLaTable(CONFIG.disposition.miniature, 0));
   scene.add(miniature);
 
   partie.demarrer(
-    modele.briques.map((description) => new Brique(CONFIG.grille, CONFIG.brique, description, CONFIG.ombreContact)),
+    modele.briques.map((description) => new Brique(
+      CONFIG.grille, CONFIG.brique, description, CONFIG.ombreContact, texturesBois, CONFIG.boisPeint,
+    )),
     places,
     [{ ...zoneTable, dessus: CONFIG.table.hauteur }, supportPlaque],
   );

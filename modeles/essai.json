@@ -1,9 +1,9 @@
 {
   "nom": "Essai",
-  "description": "Trois briques pour apprendre le geste.",
+  "description": "Trois blocs pour apprendre le geste.",
   "briques": [
-    { "position": [0, 0, 0], "taille": [2, 2], "couleur": "#d93a2b" },
-    { "position": [2, 0, 0], "taille": [2, 2], "couleur": "#2b6cd9" },
-    { "position": [1, 1, 0], "taille": [2, 2], "couleur": "#f2c230" }
+    { "position": [0, 0, 0], "taille": [2, 2], "couleur": "#f4a3b5" },
+    { "position": [2, 0, 0], "taille": [2, 2], "couleur": "#8ec5e8" },
+    { "position": [1, 1, 0], "taille": [2, 2], "couleur": "#f6d56f" }
   ]
 }

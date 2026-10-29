@@ -132,23 +132,37 @@ export const CONFIG = Object.freeze({
 
   /** Grille de construction : une brique 2 × 2 mesure 8 × 4,8 × 8 cm. */
   grille: Object.freeze({
-    /** Écart entre deux tenons. */
+    /** Côté d'une case de la grille. */
     pas: 0.04,
-    /** Hauteur d'une couche de briques (sans les tenons). */
+    /** Hauteur d'une couche de blocs. */
     hauteurCouche: 0.048,
-    rayonTenon: 0.012,
-    hauteurTenon: 0.0085,
-    /** Arrondi des arêtes. */
-    rayonArrondi: 0.003,
+    /** Arrondi des arêtes (bois poncé, doux à l'œil). */
+    rayonArrondi: 0.005,
     /** Petit jeu entre briques voisines pour qu'on distingue leurs contours. */
     jeu: 0.001,
   }),
 
   brique: Object.freeze({
-    /** Aspect plastique satiné (0 = miroir, 1 = mat). */
-    rugosite: 0.32,
     /** Intensité du halo doux affiché au survol (lumière émise, sans clignotement). */
-    intensiteHalo: 0.35,
+    intensiteHalo: 0.3,
+  }),
+
+  /**
+   * Bois peint des blocs et de la planchette : pin (Poly Haven, CC0) aux
+   * nervures accentuées, sous une peinture pastel satinée.
+   */
+  boisPeint: Object.freeze({
+    textureGrain: './ressources/textures/pin/kitchen_wood_diff_1k.jpg',
+    textureRelief: './ressources/textures/pin/kitchen_wood_nor_gl_1k.jpg',
+    textureRugosite: './ressources/textures/pin/kitchen_wood_rough_1k.jpg',
+    /** Luminosité des veines les plus sombres (plus bas = nervures plus marquées). */
+    plancherNervures: 0.55,
+    /** Taille réelle couverte par une répétition du motif (plus petit = veines plus serrées). */
+    tailleMotif: 0.25,
+    /** Intensité du relief des veines. */
+    intensiteRelief: 0.8,
+    /** Peinture satinée (0 = brillant, 1 = mat). */
+    rugosite: 0.6,
   }),
 
   /** Ombre douce au pied des objets posés (imite l'occultation ambiante). */
@@ -158,19 +172,25 @@ export const CONFIG = Object.freeze({
     opacite: 0.7,
   }),
 
+  /** Planchette de base : bois naturel clair, quadrillage gravé. */
   plaqueDeBase: Object.freeze({
-    couleur: 0x3c8d4e,
-    /** Épaisseur de la plaque (sans les tenons). */
+    /** Teinte du bois naturel (bouleau), multipliée par le grain. */
+    couleur: 0xe8d2a8,
     epaisseur: 0.016,
-    /** Tenons de marge autour du modèle. */
+    /** Cases de marge autour du modèle. */
     marge: 2,
+    /** Traits gravés entre les cases (couleur CSS avec transparence). */
+    couleurGravure: 'rgba(90, 60, 30, 0.45)',
   }),
 
   fantome: Object.freeze({
     /** Transparence de l'emplacement visé (0 = invisible, 1 = opaque). */
     opacite: 0.35,
-    /** Contour net : l'information ne repose jamais sur la seule couleur. */
-    couleurContour: 0xffffff,
+    /**
+     * Contour net et foncé : bien visible sur les pastels et le bois clair ;
+     * l'information ne repose jamais sur la seule couleur.
+     */
+    couleurContour: 0x243040,
     epaisseurContour: 0.0035,
   }),
 

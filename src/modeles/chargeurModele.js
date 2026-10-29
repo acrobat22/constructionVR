@@ -1,7 +1,7 @@
 /**
  * @file Chargement et validation des modèles décrits en JSON.
  *
- * Format attendu (positions et tailles en tenons, couches en hauteur) :
+ * Format attendu (positions et tailles en cases de la grille, couches en hauteur) :
  *
  * ```json
  * {
@@ -32,8 +32,8 @@ export class ErreurModele extends Error {
 /**
  * @typedef {object} DescriptionBrique
  * @property {{ x: number, couche: number, z: number }} position - Position sur la grille.
- * @property {number} largeur - Largeur en tenons (axe x).
- * @property {number} profondeur - Profondeur en tenons (axe z).
+ * @property {number} largeur - Largeur en cases (axe x).
+ * @property {number} profondeur - Profondeur en cases (axe z).
  * @property {number} couleur - Couleur au format hexadécimal Three.js.
  */
 
@@ -157,7 +157,7 @@ function listerProblemesConstruction(briques) {
 }
 
 /**
- * Calcule l'emprise au sol du modèle, en tenons.
+ * Calcule l'emprise au sol du modèle, en cases.
  *
  * @param {Modele} modele - Modèle validé.
  * @returns {{ minX: number, maxX: number, minZ: number, maxZ: number }}

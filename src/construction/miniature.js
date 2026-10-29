@@ -16,11 +16,12 @@ import { Brique, creerPlaqueDeBase } from './brique.js';
  * @param {object} parametres
  * @param {import('../modeles/chargeurModele.js').Modele} parametres.modele - Modèle validé.
  * @param {{ x: number, y: number, z: number }[]} parametres.places - Centres des briques (repère du modèle).
- * @param {{ minX: number, maxX: number, minZ: number, maxZ: number }} parametres.emprise - Emprise en tenons.
+ * @param {{ minX: number, maxX: number, minZ: number, maxZ: number }} parametres.emprise - Emprise en cases.
  * @param {typeof import('../config.js').CONFIG} parametres.config - Configuration globale.
+ * @param {import('./boisPeint.js').TexturesBois | null} parametres.texturesBois - Grain du bois (ou `null`).
  * @returns {Group} Groupe à poser sur la table (origine = dessous de la plaque).
  */
-export function creerMiniature({ modele, places, emprise, config }) {
+export function creerMiniature({ modele, places, emprise, config, texturesBois }) {
   const miniature = new Group();
   miniature.name = 'miniature';
   miniature.scale.setScalar(config.miniature.echelle);
@@ -38,9 +39,11 @@ export function creerMiniature({ modele, places, emprise, config }) {
     emprise.maxX - emprise.minX,
     emprise.maxZ - emprise.minZ,
     config.ombreContact,
+    texturesBois,
+    config.boisPeint,
   ));
   modele.briques.forEach((description, indice) => {
-    const brique = new Brique(config.grille, config.brique, description, config.ombreContact);
+    const brique = new Brique(config.grille, config.brique, description, config.ombreContact, texturesBois, config.boisPeint);
     brique.objet3D.position.set(places[indice].x, places[indice].y, places[indice].z);
     contenu.add(brique.objet3D);
   });

@@ -8,6 +8,10 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-10-29 — Blocs de bois peints : pin (Poly Haven, CC0) aux nervures
+  accentuées sous une peinture pastel (luminosité compensée), arêtes adoucies,
+  décalage de grain aléatoire par bloc. Planchette de base en bois clair au
+  quadrillage gravé. 4 nouveaux tests (contraste du grain).
 - 2026-10-29 — Sons doux (Web Audio, sans fichier) : « toc » à la saisie et à
   l'appui d'un bouton, « clic » à l'accrochage, mélodie montante à la fin.
   Fréquences ≤ 1 000 Hz, volume modéré, case « Sons doux » sur l'accueil.
@@ -62,8 +66,13 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - 2026-10-29 — Le décor « ciel + brouillard » est remplacé par une pièce réelle ;
   le bouton « Annuler » devient un bouton 3D générique (`interface/bouton3D.js`).
 - Une brique lâchée hors de sa place ne flotte plus : elle descend se poser.
+- 2026-10-29 — Couleurs des modèles passées en pastels ; contour de la maquette
+  fantôme foncé (meilleur contraste sur pastel et bois clair) ; aide :
+  « Pincez le bloc et posez-le dans le cadre. »
 
 ### Supprimé
+- 2026-10-29 — Briques à tenons et plaque verte, remplacées par les blocs de
+  bois peints (réglages `rayonTenon` et `hauteurTenon` retirés).
 - `src/interface/boutonAnnuler.js`, remplacé par `bouton3D.js` + `icones.js`.
 
 ---
