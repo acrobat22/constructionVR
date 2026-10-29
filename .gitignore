@@ -7,3 +7,6 @@ erreurs.log
 
 # Archives d’inspiration (non versionnées)
 *.zip
+
+# Images d’inspiration (droits d’auteur de tiers : ne jamais publier)
+imagesExemples/
