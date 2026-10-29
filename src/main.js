@@ -22,11 +22,13 @@ import { Historique } from './construction/historique.js';
 import { MaquetteFantome } from './construction/maquetteFantome.js';
 import { Partie } from './construction/partie.js';
 import { Atelier } from './construction/atelier.js';
+import { AideEmplacement } from './construction/aideEmplacement.js';
 import { creerMiniature } from './construction/miniature.js';
 import { chargerBoisPeint } from './construction/boisPeint.js';
 import { Bouton3D } from './interface/bouton3D.js';
 import { dessinerFlecheRetour, dessinerLecture, dessinerOeil } from './interface/icones.js';
 import { CarteProgression } from './interface/carteProgression.js';
+import { LampeAide } from './interface/lampeAide.js';
 import { MenuModeles } from './interface/menuModeles.js';
 import { genererVignettes } from './interface/vignettes.js';
 import { ModeSansCasque } from './interface/modeSansCasque.js';
@@ -130,7 +132,16 @@ boutonCommencer.objet3D.position.copy(surLaTable(CONFIG.disposition.boutonCommen
 boutonCommencer.objet3D.visible = false;
 scene.add(boutonCommencer.objet3D);
 
-const boutons = [boutonAnnuler, boutonModele, boutonCommencer];
+// Aide à l'emplacement : éteinte par défaut, la lampe l'allume ou l'éteint.
+const aide = new AideEmplacement(CONFIG.aide);
+const lampeAide = new LampeAide({
+  surAppui: () => aide.basculer(tempsCourant),
+  margeVisee: CONFIG.bouton.margeVisee,
+});
+lampeAide.objet3D.position.copy(surLaTable(CONFIG.disposition.lampeAide, 0));
+scene.add(lampeAide.objet3D);
+
+const boutons = [boutonAnnuler, boutonModele, boutonCommencer, lampeAide];
 
 const carte = new CarteProgression(CONFIG.carte);
 scene.add(carte.objet3D);
@@ -190,12 +201,25 @@ const zoneTable = {
   maxZ: -CONFIG.table.distanceJoueur + CONFIG.table.profondeur / 2,
 };
 
+/** Affiche la carte selon l'état de la partie et de l'aide. */
+function rafraichirCarte() {
+  const nom = atelier.modele?.nom ?? '';
+  if (partie.estEnPresentation) {
+    carte.afficherPresentation(nom);
+  } else {
+    carte.afficher(nom, partie.nombreBriquesPosees, partie.nombreBriques, {
+      aideVisible: aide.estVisible(tempsCourant),
+    });
+  }
+}
+
+const maquette = new MaquetteFantome(CONFIG.grille, CONFIG.fantome);
 const partie = new Partie({
   conteneurModele,
   scene,
   saisie,
   historique: new Historique(),
-  maquette: new MaquetteFantome(CONFIG.grille, CONFIG.fantome),
+  maquette,
   positionReserve: surLaTable(CONFIG.disposition.reserve, 0),
   zoneTable,
   grille: CONFIG.grille,
@@ -206,12 +230,7 @@ const partie = new Partie({
   surChangement: () => {
     boutonAnnuler.definirActif(partie.peutAnnuler);
     boutonCommencer.objet3D.visible = partie.estEnPresentation;
-    const nom = atelier.modele?.nom ?? '';
-    if (partie.estEnPresentation) {
-      carte.afficherPresentation(nom);
-    } else {
-      carte.afficher(nom, partie.nombreBriquesPosees, partie.nombreBriques);
-    }
+    rafraichirCarte();
   },
 });
 
@@ -314,6 +333,36 @@ renderer.xr.addEventListener('sessionstart', () => {
 // Retour à l'accueil après la VR : la prochaine partie repart de zéro.
 renderer.xr.addEventListener('sessionend', () => preparerModeleChoisi(menu.urlChoisie));
 
+/** Étape suivie par l'aide (nombre de pièces posées), ou `null` hors étape. */
+let etapeSuivie = null;
+/** Dernier état affiché de l'aide (pour ne redessiner la carte qu'au changement). */
+let aideEtaitVisible = false;
+
+/**
+ * Fait suivre l'aide aux étapes de la partie, règle le fondu du cadre et
+ * l'état de la lampe. À appeler une fois par image.
+ *
+ * @param {number} temps - Instant courant, en ms.
+ */
+function mettreAJourAide(temps) {
+  const etape = partie.estEnPresentation || partie.estTerminee ? null : partie.nombreBriquesPosees;
+  if (etape !== etapeSuivie) {
+    etapeSuivie = etape;
+    if (etape === null) {
+      aide.terminerEtape();
+    } else {
+      aide.nouvelleEtape(temps);
+    }
+  }
+  const estVisible = aide.estVisible(temps);
+  maquette.definirOpacite(aide.opacite(temps));
+  lampeAide.definirAllumee(estVisible);
+  if (estVisible !== aideEtaitVisible) {
+    aideEtaitVisible = estVisible;
+    rafraichirCarte();
+  }
+}
+
 // Boucle de rendu : `setAnimationLoop` est obligatoire en WebXR
 // (elle suit la fréquence d'affichage du casque).
 renderer.setAnimationLoop((temps) => {
@@ -329,8 +378,10 @@ renderer.setAnimationLoop((temps) => {
   const pointsDePincement = new Map([...mains.pointsDePincement, ...souris.pointsDePincement]);
   saisie.mettreAJour(pointsDePincement);
   partie.mettreAJour(temps);
+  mettreAJourAide(temps);
   for (const bouton of boutons) {
     bouton.mettreAJour(pointsDePincement, temps);
   }
   renderer.render(scene, camera);
 });
+

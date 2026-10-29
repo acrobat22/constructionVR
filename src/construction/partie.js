@@ -83,6 +83,7 @@ export class Partie {
     this.estEnPresentation = false;
 
     this.conteneurModele.add(this.maquette.objet3D);
+    this.conteneurModele.add(this.maquette.marqueDepart);
   }
 
   /** @returns {boolean} `true` si une annulation est possible maintenant. */
@@ -170,6 +171,7 @@ export class Partie {
     this.estEnPresentation = false;
     this.historique.vider();
     this.maquette.masquer();
+    this.maquette.masquerMarqueDepart();
   }
 
   /**
@@ -279,6 +281,10 @@ export class Partie {
         brique.objet3D.position.copy(depart);
         this.indiceEtape = indice;
         this.maquette.afficher(brique.description, this.places[indice]);
+        // Retour à la première pièce : ses cases redeviennent colorées.
+        if (indice === 0) {
+          this.maquette.afficherMarqueDepart(brique.description, this.places[0]);
+        }
         this.#lancerGlissement(brique, this.#positionReserve(brique), this.reglages.dureeGlissement, () => {
           this.saisie.ajouterObjet(brique);
         });
@@ -299,6 +305,12 @@ export class Partie {
 
   /** Met en place l'étape courante : brique dans la réserve et emplacement visible. */
   #preparerEtape() {
+    // Cases colorées pour la première pièce seulement.
+    if (this.indiceEtape === 0 && this.briques.length > 0) {
+      this.maquette.afficherMarqueDepart(this.briques[0].description, this.places[0]);
+    } else {
+      this.maquette.masquerMarqueDepart();
+    }
     if (this.estTerminee) {
       this.maquette.masquer();
       this.surChangement();

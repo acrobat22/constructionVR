@@ -16,8 +16,15 @@ const COULEURS = Object.freeze({
   texte: '#ffe98a',
 });
 
-/** Aide affichée pendant la construction (le geste, en une phrase). */
-const TEXTE_AIDE = 'Pincez le bloc et posez-le dans le cadre.';
+/** Aides affichées pendant la construction (une phrase, selon la situation). */
+const TEXTES_AIDE = Object.freeze({
+  /** Première pièce : ses cases sont colorées sur la planchette. */
+  depart: 'Posez le bloc sur les cases colorées.',
+  /** Le cadre fantôme est visible. */
+  cadre: 'Pincez le bloc et posez-le dans le cadre.',
+  /** Pas de cadre : on cherche la place sur le modèle (la lampe peut aider). */
+  sansCadre: 'Regardez le modèle, ou allumez la lampe.',
+});
 
 /** Message affiché une fois le modèle terminé (positif, sans pression). */
 const TEXTE_FELICITATIONS = 'Merci d’avoir joué.';
@@ -25,7 +32,7 @@ const TEXTE_FELICITATIONS = 'Merci d’avoir joué.';
 /** Explication affichée pendant la présentation du modèle (une phrase par ligne). */
 const LIGNES_PRESENTATION = Object.freeze([
   'Prenez une pièce en pinçant le pouce et l’index,',
-  'puis posez-la dans le cadre. Prenez tout votre temps.',
+  'puis posez-la à sa place. Prenez tout votre temps.',
   'Quand vous le souhaitez, appuyez sur « Commencer ».',
 ]);
 
@@ -65,8 +72,9 @@ export class CarteProgression {
    * @param {string} nomModele - Nom du modèle construit.
    * @param {number} briquesPosees - Nombre de briques déjà posées.
    * @param {number} totalBriques - Nombre total de briques.
+   * @param {{ aideVisible?: boolean }} [etat] - `aideVisible` : le cadre fantôme est montré.
    */
-  afficher(nomModele, briquesPosees, totalBriques) {
+  afficher(nomModele, briquesPosees, totalBriques, { aideVisible = false } = {}) {
     const contexte = this.#dessinerFond();
     const { width: largeur, height: hauteur } = this.canevas;
     const police = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
@@ -87,7 +95,13 @@ export class CarteProgression {
     // Aide permanente : le geste à faire, ou la suite une fois terminé.
     contexte.fillStyle = COULEURS.titre;
     contexte.font = `50px ${police}`;
-    contexte.fillText(estTermine ? TEXTE_FELICITATIONS : TEXTE_AIDE, gauche, hauteur * 0.6, largeur - 2 * gauche);
+    let texteAide = TEXTES_AIDE.sansCadre;
+    if (aideVisible) {
+      texteAide = TEXTES_AIDE.cadre;
+    } else if (briquesPosees === 0) {
+      texteAide = TEXTES_AIDE.depart;
+    }
+    contexte.fillText(estTermine ? TEXTE_FELICITATIONS : texteAide, gauche, hauteur * 0.6, largeur - 2 * gauche);
 
     this.#dessinerPastilles(contexte, gauche, hauteur * 0.8, largeur - 2 * gauche, briquesPosees, totalBriques);
     this.texture.needsUpdate = true;

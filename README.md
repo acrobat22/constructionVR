@@ -5,7 +5,10 @@ Jeu de construction en blocs de bois peints en réalité virtuelle, pensé pour 
 **Meta Quest 3**, sans installation.
 
 - On joue **assis**, avec un seul geste : le **pincement** (pouce + index).
-- On suit un **mode guidé** : une maquette fantôme montre où poser chaque brique.
+- On suit un **mode guidé** : les cases de la première pièce sont colorées ;
+  ensuite, on cherche la place en regardant le modèle. Une **lampe** sur la
+  table allume un cadre qui montre l'emplacement ; il s'allume aussi de
+  lui-même si une pièce n'est pas posée au bout de 30 secondes.
 - Il n'y a ni chrono ni échec possible, et le texte est affiché en grand.
 - Des sons doux et courts accompagnent les gestes (aucune voix) ; on peut les
   couper avec la case « Sons doux » de la page d'accueil.
@@ -64,6 +67,7 @@ src/
   construction/partie.js   Déroulé du mode guidé : présentation, puis une pièce à la fois
   construction/atelier.js  Installe le modèle choisi sur la table (et en change)
   construction/supports.js         Logique pure : où se pose une brique lâchée (chute douce)
+  construction/aideEmplacement.js  Logique pure : quand montrer le cadre (lampe, coup de pouce)
   construction/ombreContact.js     Ombre douce au pied des objets posés
   construction/miniature.js        Modèle terminé en miniature (bouton « œil »)
   interface/bouton3D.js    Bouton 3D générique (« Annuler », « Voir le modèle »)
@@ -71,6 +75,7 @@ src/
   interface/carteProgression.js    Nom du modèle et avancement, sans chrono
   interface/modeSansCasque.js      Bascule accueil ↔ mode souris (Échap pour revenir)
   interface/menuModeles.js         Choix du modèle sur l'accueil (cartes à boutons radio)
+  interface/lampeAide.js           Lampe de bureau : interrupteur de l'aide à l'emplacement
   interface/vignettes.js           Vignettes des modèles, générées par le jeu
   interface/sons.js        Sons doux (Web Audio, sans fichier) : saisie, accrochage, réussite
   modeles/chargeurModele.js        Lecture, validation et conversion des modèles JSON

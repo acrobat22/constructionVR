@@ -4,7 +4,11 @@
  * Deux indices visuels, pour ne jamais reposer sur la seule couleur :
  *   - un volume translucide de la couleur de la brique ;
  *   - un contour net et clair autour de ce volume.
- * Aucun clignotement : l'affichage est fixe.
+ * Aucun clignotement : l'affichage est fixe (il apparaît seulement en fondu).
+ *
+ * Le cadre est une aide qui peut être éteinte (voir `aideEmplacement.js`).
+ * Indépendamment de lui, les cases de la première pièce sont colorées sur la
+ * planchette, pour aider à bien démarrer.
  */
 
 import * as THREE from 'three';
@@ -44,6 +48,34 @@ function creerGeometrieContour(largeur, hauteur, profondeur, epaisseur) {
 }
 
 /**
+ * Dessine le marquage des cases de départ : la couleur de la pièce, avec un
+ * liseré clair (l'information ne repose pas sur la couleur seule).
+ *
+ * @param {number} couleur - Couleur de la pièce (hexadécimal Three.js).
+ * @param {number} couleurLisere - Couleur du liseré (hexadécimal Three.js).
+ * @param {number} proportions - Largeur / profondeur des cases.
+ * @returns {THREE.CanvasTexture}
+ */
+function creerTextureMarque(couleur, couleurLisere, proportions) {
+  const canevas = document.createElement('canvas');
+  canevas.width = 256;
+  canevas.height = Math.max(32, Math.round(256 / proportions));
+  const contexte = canevas.getContext('2d');
+  const enCss = (valeur) => `#${valeur.toString(16).padStart(6, '0')}`;
+  const epaisseur = 14;
+  contexte.fillStyle = enCss(couleur);
+  contexte.globalAlpha = 0.85;
+  contexte.fillRect(0, 0, canevas.width, canevas.height);
+  contexte.globalAlpha = 1;
+  contexte.strokeStyle = enCss(couleurLisere);
+  contexte.lineWidth = epaisseur;
+  contexte.strokeRect(epaisseur / 2, epaisseur / 2, canevas.width - epaisseur, canevas.height - epaisseur);
+  const texture = new THREE.CanvasTexture(canevas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+/**
  * Affiche l'emplacement visé par la brique en cours.
  */
 export class MaquetteFantome {
@@ -62,12 +94,35 @@ export class MaquetteFantome {
       depthWrite: false,
     });
     // Contour non éclairé : il garde sa couleur franche quel que soit l'éclairage.
-    this.materiauContour = new THREE.MeshBasicMaterial({ color: reglages.couleurContour, toneMapped: false });
+    this.materiauContour = new THREE.MeshBasicMaterial({
+      color: reglages.couleurContour,
+      toneMapped: false,
+      transparent: true,
+    });
 
     /** Groupe à ajouter à la scène (ou à la plaque du modèle). */
     this.objet3D = new THREE.Group();
     this.objet3D.name = 'maquette-fantome';
     this.objet3D.visible = false;
+    /** `true` quand une pièce attend sa place (sinon rien à montrer). */
+    this.aUneCible = false;
+    /** Opacité relative imposée par l'aide (0 = éteinte, 1 = pleinement visible). */
+    this.facteurOpacite = 0;
+
+    /** Cases colorées de la première pièce, à ajouter au même parent que le cadre. */
+    this.marqueDepart = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({
+        transparent: true,
+        depthWrite: false,
+        toneMapped: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -3,
+      }),
+    );
+    this.marqueDepart.rotation.x = -Math.PI / 2;
+    this.marqueDepart.visible = false;
+    this.marqueDepart.name = 'marque-depart';
 
     this.volume = new THREE.Mesh(undefined, this.materiauVolume);
     this.contour = new THREE.Mesh(undefined, this.materiauContour);
@@ -88,12 +143,57 @@ export class MaquetteFantome {
     this.contour.geometry = this.#obtenirContour(description);
     this.materiauVolume.color.setHex(description.couleur);
     this.objet3D.position.set(position.x, position.y, position.z);
-    this.objet3D.visible = true;
+    this.aUneCible = true;
+    this.#appliquerOpacite();
   }
 
   /** Cache l'emplacement (par exemple quand le modèle est terminé). */
   masquer() {
-    this.objet3D.visible = false;
+    this.aUneCible = false;
+    this.#appliquerOpacite();
+  }
+
+  /**
+   * Règle la visibilité du cadre selon l'aide (fondu d'apparition).
+   *
+   * @param {number} facteur - 0 = éteint, 1 = pleinement visible.
+   */
+  definirOpacite(facteur) {
+    if (facteur !== this.facteurOpacite) {
+      this.facteurOpacite = facteur;
+      this.#appliquerOpacite();
+    }
+  }
+
+  /**
+   * Colore, sur la planchette, les cases où va la première pièce.
+   *
+   * @param {import('../modeles/chargeurModele.js').DescriptionBrique} description - Taille et couleur.
+   * @param {{ x: number, y: number, z: number }} position - Centre de la pièce (repère du parent).
+   */
+  afficherMarqueDepart(description, position) {
+    const largeur = description.largeur * this.grille.pas;
+    const profondeur = description.profondeur * this.grille.pas;
+    this.marqueDepart.scale.set(largeur, profondeur, 1);
+    this.marqueDepart.material.map?.dispose();
+    this.marqueDepart.material.map = creerTextureMarque(description.couleur, this.reglages.couleurContour, largeur / profondeur);
+    this.marqueDepart.material.needsUpdate = true;
+    // Posée sur le dessus de la planchette (y = 0 dans le repère du modèle).
+    this.marqueDepart.position.set(position.x, 0.0008, position.z);
+    this.marqueDepart.visible = true;
+  }
+
+  /** Retire le marquage des cases de départ. */
+  masquerMarqueDepart() {
+    this.marqueDepart.visible = false;
+  }
+
+  /** Applique l'opacité (cadre visible seulement s'il a une cible et que l'aide l'autorise). */
+  #appliquerOpacite() {
+    const facteur = this.aUneCible ? this.facteurOpacite : 0;
+    this.objet3D.visible = facteur > 0;
+    this.materiauVolume.opacity = this.reglages.opacite * facteur;
+    this.materiauContour.opacity = facteur;
   }
 
   /**

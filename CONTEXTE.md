@@ -17,7 +17,7 @@ Un jeu de construction en blocs de bois (appelé « briques » dans le code et l
 | Posture | **Assis uniquement** |
 | Entrée | **Suivi des mains**, un seul geste : le **pincement** (pouce + index) pour attraper, déplacer, relâcher |
 | Déplacement | **Téléportation** par **pastilles au sol** (activation par pincement ou regard prolongé quelques secondes) |
-| Construction | **Mode guidé, une brique à la fois** : maquette « fantôme » translucide à contour net, accrochage magnétique ; une brique lâchée loin de sa place reste là où elle est |
+| Construction | **Mode guidé, une pièce à la fois** : cases de la première pièce colorées ; cadre « fantôme » éteint par défaut, allumé par une lampe ou par un coup de pouce après 30 s (validé le 2026-10-29) ; accrochage magnétique ; chute douce |
 | Mains | Modèles **réalistes** (`@webxr-input-profiles/assets`, copiés localement, MIT) |
 | Modèles | Décrits dans des **fichiers JSON** (liste de briques : position, taille, couleur) pour ajouter un modèle sans toucher au code |
 | Langue | **Français uniquement** |

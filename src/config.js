@@ -226,6 +226,16 @@ export const CONFIG = Object.freeze({
     dureeGlissement: 350,
   }),
 
+  /**
+   * Aide à l'emplacement (cadre fantôme) : éteinte par défaut, allumée par la
+   * lampe, ou d'elle-même si la pièce n'est pas posée au bout du délai.
+   */
+  aide: Object.freeze({
+    delaiCoupDePouce: 30000,
+    /** Durée du fondu d'apparition du cadre. */
+    dureeApparition: 1200,
+  }),
+
   /** Brique lâchée hors de sa place : elle descend doucement se poser. */
   chute: Object.freeze({
     dureeMinimale: 250,
@@ -244,6 +254,8 @@ export const CONFIG = Object.freeze({
     reserve: Object.freeze({ x: 0.12, z: 0.2 }),
     boutonAnnuler: Object.freeze({ x: -0.38, z: 0.18 }),
     boutonModele: Object.freeze({ x: 0.4, z: 0.18 }),
+    /** Lampe de l'aide à l'emplacement, au fond à gauche de la table. */
+    lampeAide: Object.freeze({ x: -0.43, z: -0.2 }),
     /** Bouton « Commencer », à la place de la réserve (vide pendant la présentation). */
     boutonCommencer: Object.freeze({ x: 0.06, z: 0.2 }),
     miniature: Object.freeze({ x: 0.4, z: -0.2 }),

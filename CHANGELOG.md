@@ -8,6 +8,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-10-29 — Aide à l'emplacement : le cadre fantôme est éteint par défaut ;
+  une lampe de bureau sur la table l'allume ou l'éteint (plaque « Aide :
+  allumée / éteinte »), et un coup de pouce l'allume en fondu si la pièce n'est
+  pas posée au bout de 30 s. Cases de la première pièce colorées sur la
+  planchette. Textes d'aide adaptés. 8 nouveaux tests (78 au total).
 - 2026-10-29 — Choix du modèle sur la page d'accueil : grandes cartes (vignette
   générée par le jeu, nom, nombre de pièces), boutons radio accessibles, coche
   et bordure épaisse pour la sélection. Catalogue `modeles/catalogue.json`.
