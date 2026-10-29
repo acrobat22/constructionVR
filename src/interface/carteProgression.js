@@ -20,7 +20,7 @@ const COULEURS = Object.freeze({
 const TEXTE_AIDE = 'Pincez le bloc et posez-le dans le cadre.';
 
 /** Message affiché une fois le modèle terminé (positif, sans pression). */
-const TEXTE_FELICITATIONS = 'Quel beau travail ! Merci d’avoir joué.';
+const TEXTE_FELICITATIONS = 'Merci d’avoir joué.';
 
 /** Explication affichée pendant la présentation du modèle (une phrase par ligne). */
 const LIGNES_PRESENTATION = Object.freeze([
