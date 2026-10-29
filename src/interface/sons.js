@@ -63,7 +63,7 @@ export class Sons {
 
   /** « Toc » léger : une brique est saisie (ou un bouton est pressé). */
   jouerSaisie() {
-    this.#jouerNote({ frequence: 330, type: 'triangle', duree: 0.12, volume: 0.5 });
+    this.#jouerNote({ frequence: 330, type: 'triangle', duree: 0.18, volume: 0.5 });
   }
 
   /** « Clic » plastique puis note ronde : une brique s'accroche à sa place. */

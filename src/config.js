@@ -109,8 +109,11 @@ export const CONFIG = Object.freeze({
 
   /** Sons doux (Web Audio, sans fichier) : saisie, accrochage, réussite. */
   sons: Object.freeze({
-    /** Volume général, volontairement modéré (0 à 1). */
-    volume: 0.3,
+    /**
+     * Volume général (0 à 1). Crête mesurée vers -7 dB : audible sur les
+     * haut-parleurs d'un portable comme dans le casque, sans saturer.
+     */
+    volume: 0.85,
   }),
 
   /** Mode « Essayer sans casque » : la souris remplace la main. */
