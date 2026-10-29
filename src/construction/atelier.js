@@ -22,8 +22,10 @@ export class Atelier {
    * @param {import('three').Vector3} dependances.positionMiniature - Où poser la miniature (repère de la scène).
    * @param {import('./supports.js').Support} dependances.supportTable - Plateau de la table, pour la chute douce.
    * @param {import('./boisPeint.js').TexturesBois | null} dependances.texturesBois - Grain du bois (ou `null`).
+   * @param {number} dependances.bordAvantPlanchette - Position z (repère de la scène) du bord avant
+   *   de la planchette : chaque planchette est placée juste derrière la réserve, selon sa profondeur.
    */
-  constructor({ scene, conteneurModele, partie, config, positionMiniature, supportTable, texturesBois }) {
+  constructor({ scene, conteneurModele, partie, config, positionMiniature, supportTable, texturesBois, bordAvantPlanchette }) {
     this.scene = scene;
     this.conteneurModele = conteneurModele;
     this.partie = partie;
@@ -31,6 +33,7 @@ export class Atelier {
     this.positionMiniature = positionMiniature;
     this.supportTable = supportTable;
     this.texturesBois = texturesBois;
+    this.bordAvantPlanchette = bordAvantPlanchette;
 
     /** @type {import('../modeles/chargeurModele.js').Modele | null} Modèle installé. */
     this.modele = null;
@@ -84,6 +87,9 @@ export class Atelier {
       this.texturesBois,
       config.boisPeint,
     );
+    // Une planchette peu profonde se rapproche du joueur (bord avant fixe).
+    const profondeurPlanchette = (emprise.maxZ - emprise.minZ + 2 * config.plaqueDeBase.marge) * config.grille.pas;
+    this.conteneurModele.position.z = this.bordAvantPlanchette - profondeurPlanchette / 2;
     this.conteneurModele.add(this.plaque);
     this.conteneurModele.updateMatrixWorld(true);
     const boitePlaque = new Box3().setFromObject(this.plaque);

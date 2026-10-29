@@ -26,8 +26,9 @@ export function creerEnvironnement(config) {
     100,
   );
   // Position utilisée pour l'aperçu hors VR ; en VR, le casque la remplace.
-  camera.position.set(0, config.camera.hauteurYeuxAssis, 0);
-  camera.lookAt(0, config.table.hauteur, -config.table.distanceJoueur);
+  const { position, visee } = config.camera;
+  camera.position.set(position.x, position.y, position.z);
+  camera.lookAt(visee.x, visee.y, visee.z);
 
   scene.add(creerTable(config.table));
 

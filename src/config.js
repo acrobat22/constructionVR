@@ -56,13 +56,20 @@ export const CONFIG = Object.freeze({
     couleurAbatJour: 0x2f4a3c,
   }),
 
+  /**
+   * Caméra de l'aperçu et du mode sans casque (en VR, c'est le casque qui
+   * fournit la position et le regard).
+   */
   camera: Object.freeze({
     /**
-     * Hauteur des yeux d'une personne assise, utilisée uniquement pour
-     * l'aperçu hors VR (en VR, c'est le casque qui fournit la position).
+     * Un peu en retrait et au-dessus des yeux d'une personne assise : la
+     * table, les modèles hauts et la carte d'explication tiennent à l'écran.
      */
-    hauteurYeuxAssis: 1.2,
-    champDeVision: 70,
+    position: Object.freeze({ x: 0, y: 1.42, z: 0.2 }),
+    /** Point visé : entre la planchette et la carte d'explication. */
+    visee: Object.freeze({ x: 0, y: 0.84, z: -0.66 }),
+    /** Champ de vision vertical, en degrés (sans effet en VR). */
+    champDeVision: 62,
   }),
 
   table: Object.freeze({
@@ -211,6 +218,11 @@ export const CONFIG = Object.freeze({
   /** Emplacements sur la table, relatifs au centre du plateau (x à droite, z vers le joueur). */
   disposition: Object.freeze({
     modele: Object.freeze({ x: 0, z: -0.05 }),
+    /**
+     * Bord avant de la planchette (côté joueur), quelle que soit sa taille :
+     * une petite planchette se rapproche, juste derrière la réserve.
+     */
+    bordAvantPlanchette: 0.13,
     reserve: Object.freeze({ x: 0.12, z: 0.2 }),
     boutonAnnuler: Object.freeze({ x: -0.38, z: 0.18 }),
     boutonModele: Object.freeze({ x: 0.4, z: 0.18 }),

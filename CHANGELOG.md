@@ -101,6 +101,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - Nouvelle fonctionnalité X
 
 ### Corrigé
+- 2026-10-29 — Mode sans casque : la carte d'explication sortait du haut de
+  l'écran et la tête de la girafe était tout en haut. Nouvelle vue (caméra en
+  retrait, visée entre planchette et carte, réglable dans `config.js`), et
+  chaque planchette est placée avec son bord avant juste derrière la réserve :
+  les petites planchettes se rapprochent du joueur (6 cm pour la girafe).
 - 2026-10-29 — Mode souris : une pièce placée en hauteur et en surplomb (tête
   du dragon) tombait derrière sa place. Pendant une prise, la pièce glisse
   désormais à la hauteur de son emplacement et se centre sur le curseur.

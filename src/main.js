@@ -224,6 +224,7 @@ const atelier = new Atelier({
   positionMiniature: surLaTable(CONFIG.disposition.miniature, 0),
   supportTable: { ...zoneTable, dessus: CONFIG.table.hauteur },
   texturesBois,
+  bordAvantPlanchette: -CONFIG.table.distanceJoueur + CONFIG.disposition.bordAvantPlanchette,
 });
 
 /**
