@@ -1,0 +1,16 @@
+{
+  "nom": "Le dragon",
+  "description": "Un gentil dragon vert aux piquants pêche et aux écailles peintes.",
+  "briques": [
+    {"position": [1, 0, 0], "taille": [1, 2], "couleur": "#9fd8b4"},
+    {"position": [4, 0, 0], "taille": [1, 2], "couleur": "#9fd8b4"},
+    {"position": [-2, 0, 0], "taille": [2, 2], "couleur": "#9fd8b4", "forme": "pente", "sens": "x-"},
+    {"position": [0, 1, 0], "taille": [6, 2], "couleur": "#9fd8b4", "decor": {"face": "z+", "motif": "ecailles"}},
+    {"position": [1, 2, 0], "taille": [1, 2], "couleur": "#f7b98b", "forme": "pointe"},
+    {"position": [3, 2, 0], "taille": [1, 2], "couleur": "#f7b98b", "forme": "pointe"},
+    {"position": [5, 2, 0], "taille": [1, 2], "couleur": "#9fd8b4"},
+    {"position": [5, 3, 0], "taille": [3, 2], "couleur": "#9fd8b4", "decor": {"face": "z+", "motif": "profil"}},
+    {"position": [5, 4, 0], "taille": [1, 1], "couleur": "#fff3dc", "hauteur": 0.7, "forme": "pointe"},
+    {"position": [5, 4, 1], "taille": [1, 1], "couleur": "#fff3dc", "hauteur": 0.7, "forme": "pointe"}
+  ]
+}

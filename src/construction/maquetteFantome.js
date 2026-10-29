@@ -10,7 +10,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
-import { obtenirGeometrieBloc } from './brique.js';
+import { dimensionsPiece, obtenirGeometrie } from './formes.js';
 
 /**
  * Construit un contour fait de 12 fines baguettes le long des arêtes d'un pavé.
@@ -84,13 +84,8 @@ export class MaquetteFantome {
    * @param {{ x: number, y: number, z: number }} position - Centre de l'emplacement (repère du parent).
    */
   afficher(description, position) {
-    this.volume.geometry = obtenirGeometrieBloc(
-      this.grille,
-      description.largeur,
-      description.profondeur,
-      this.grille.hauteurCouche,
-    );
-    this.contour.geometry = this.#obtenirContour(description.largeur, description.profondeur);
+    this.volume.geometry = obtenirGeometrie(this.grille, description);
+    this.contour.geometry = this.#obtenirContour(description);
     this.materiauVolume.color.setHex(description.couleur);
     this.objet3D.position.set(position.x, position.y, position.z);
     this.objet3D.visible = true;
@@ -102,19 +97,20 @@ export class MaquetteFantome {
   }
 
   /**
-   * Construit (ou réutilise) le contour d'une brique de taille donnée.
+   * Construit (ou réutilise) le contour d'une pièce : le cadre de la boîte
+   * qui la contient (pour une forme arrondie, il montre son encombrement).
    *
-   * @param {number} largeurTenons - Largeur en cases.
-   * @param {number} profondeurTenons - Profondeur en cases.
+   * @param {import('../modeles/chargeurModele.js').DescriptionBrique} description - Pièce visée.
    * @returns {THREE.BufferGeometry}
    */
-  #obtenirContour(largeurTenons, profondeurTenons) {
-    const cle = `${largeurTenons}x${profondeurTenons}`;
+  #obtenirContour(description) {
+    const { largeur, hauteur, profondeur } = dimensionsPiece(this.grille, description);
+    const cle = `${largeur}x${hauteur}x${profondeur}`;
     if (!this.cacheContours.has(cle)) {
       this.cacheContours.set(cle, creerGeometrieContour(
-        largeurTenons * this.grille.pas,
-        this.grille.hauteurCouche,
-        profondeurTenons * this.grille.pas,
+        largeur + this.grille.jeu,
+        hauteur,
+        profondeur + this.grille.jeu,
         this.reglages.epaisseurContour,
       ));
     }

@@ -35,7 +35,8 @@ vendor/webxr-input-profiles/  Modèles 3D des mains (licence MIT)
 ressources/environnements/ Pièce photographiée « Lebombo » (photo + HDR, Poly Haven, CC0)
 ressources/textures/chene/ Bois du plateau (Poly Haven, CC0)
 ressources/textures/pin/   Bois des blocs et de la planchette (Poly Haven, CC0)
-modeles/voilier.json       Le voilier (14 briques), modèle chargé au démarrage
+modeles/voilier.json       Le voilier (14 pièces), modèle chargé au démarrage
+modeles/baleine.json, girafe.json, lion.json, dragon.json   Animaux en formes arrondies (7 à 10 pièces)
 modeles/essai.json         Modèle d'essai de 3 briques
 src/
   main.js                  Crée les modules et les relie (seul point d'assemblage)
@@ -48,7 +49,9 @@ src/
   entrees/mains.js         Suivi et affichage des mains, signalement des pincements
   entrees/detecteurPincement.js  Logique pure du pincement (deux seuils anti-tremblement)
   entrees/souris.js        Souris à la place des mains (mode « Essayer sans casque »)
-  construction/brique.js   Blocs de bois peints, halo de survol, planchette gravée
+  construction/brique.js   Pièces de bois peint, halo de survol, planchette gravée
+  construction/formes.js   Géométrie des formes (pavé, pente, quart de rond, cylindre, pointe)
+  construction/decors.js   Décors peints (yeux, visage, taches, écailles)
   construction/boisPeint.js        Matériau « bois peint » (pastel + nervures visibles)
   construction/niveauxGrain.js     Logique pure : contraste du grain de bois
   construction/saisie.js   Saisie, déplacement et relâchement des objets
@@ -91,9 +94,24 @@ L'ordre des briques est l'ordre de construction.
 - `taille` : `[largeur, profondeur]` en cases, entiers ≥ 1.
 - `couleur` : format `#rrggbb`.
 
-Le modèle doit être **constructible dans l'ordre donné** : chaque brique
-au-dessus de la plaque doit reposer sur une brique listée avant elle, et deux
-briques d'une même couche ne doivent pas se chevaucher.
+Champs facultatifs :
+
+| Champ | Valeurs | Par défaut |
+|---|---|---|
+| `forme` | `pave`, `pente`, `quartRond`, `cylindre`, `pointe` | `pave` |
+| `sens` | `x+`, `x-`, `z+`, `z-` : direction vers laquelle une pente ou un quart de rond **descend** (obligatoire pour ces deux formes) | — |
+| `axe` | `x` ou `z` : cylindre couché (debout sinon) | — |
+| `hauteur` | hauteur en couches, par exemple `0.5`, `2`, `3` | `1` |
+| `decor` | `{ "face": "z+", "motif": "visage" }` ; faces `x+`, `x-`, `z+`, `z-`, `y+` (dessus) ; motifs `oeil-sourire`, `oeil-rond`, `profil`, `visage`, `taches`, `ecailles` | — |
+
+La face `z+` est celle tournée vers le joueur. Les motifs d'œil sont dessinés
+pour un animal tourné vers la droite (`x+`).
+
+Le modèle doit être **constructible dans l'ordre donné** : chaque pièce
+au-dessus de la planchette doit reposer sur le **dessus plat** d'une pièce
+listée avant elle (un pavé ou un cylindre debout : rien ne tient sur une pente,
+un quart de rond, une pointe ou un cylindre couché), et deux pièces ne doivent
+jamais occuper le même espace.
 
 Un fichier mal écrit est refusé avec un message qui indique la brique fautive.
 Le modèle chargé au démarrage se choisit dans `src/config.js` (`modele.url`).

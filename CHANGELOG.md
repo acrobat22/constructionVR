@@ -8,6 +8,13 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-10-29 — Formes arrondies : pente, quart de rond, cylindre (debout ou
+  couché), pointe, hauteurs de pièce variables, et décors peints (œil souriant,
+  œil rond, profil, visage, taches, écailles) dessinés par le jeu.
+- Quatre animaux originaux en grosses pièces : baleine (9), girafe (9), lion (7)
+  et dragon (10).
+- Validation étendue : pièces posées seulement sur un dessus plat, aucun
+  chevauchement en hauteur (10 nouveaux tests, 65 au total).
 - 2026-10-29 — Blocs de bois peints : pin (Poly Haven, CC0) aux nervures
   accentuées sous une peinture pastel (luminosité compensée), arêtes adoucies,
   décalage de grain aléatoire par bloc. Planchette de base en bois clair au

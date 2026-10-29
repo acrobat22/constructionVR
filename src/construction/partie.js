@@ -38,7 +38,8 @@ export class Partie {
    * @param {import('./saisie.js').GestionnaireSaisie} dependances.saisie - Saisie par pincement.
    * @param {import('./historique.js').Historique} dependances.historique - Pile d'annulation.
    * @param {import('./maquetteFantome.js').MaquetteFantome} dependances.maquette - Emplacement visé.
-   * @param {Vector3} dependances.positionReserve - Où attend la brique suivante (repère de la scène).
+   * @param {Vector3} dependances.positionReserve - Point de la table où attend la pièce suivante
+   *   (dessus du plateau, repère de la scène) ; la pièce y est posée selon sa hauteur.
    * @param {import('./supports.js').Emprise} dependances.zoneTable - Plateau de la table (repère de la scène).
    * @param {typeof import('../config.js').CONFIG.grille} dependances.grille - Dimensions de la grille.
    * @param {typeof import('../config.js').CONFIG.accrochage} dependances.reglages - Distance et durée.
@@ -141,11 +142,11 @@ export class Partie {
     const repos = calculerRepos(this.#emprise(brique, brique.objet3D.position), this.#supports(), this.zoneTable);
     const redevenirSaisissable = () => this.saisie.ajouterObjet(brique);
     if (repos.resultat === RESULTAT_REPOS.RESERVE) {
-      this.#lancerGlissement(brique, this.positionReserve.clone(), this.reglages.dureeGlissement, redevenirSaisissable);
+      this.#lancerGlissement(brique, this.#positionReserve(brique), this.reglages.dureeGlissement, redevenirSaisissable);
       return;
     }
     const arrivee = brique.objet3D.position.clone();
-    arrivee.y = repos.hauteur + this.grille.hauteurCouche / 2;
+    arrivee.y = repos.hauteur + brique.hauteur / 2;
     const hauteurDeChute = Math.max(0, brique.objet3D.position.y - arrivee.y);
     const duree = this.reglagesChute.dureeMinimale + hauteurDeChute * this.reglagesChute.dureeParMetre;
     this.#lancerGlissement(brique, arrivee, duree, redevenirSaisissable);
@@ -222,7 +223,7 @@ export class Partie {
         brique.objet3D.position.copy(depart);
         this.indiceEtape = indice;
         this.maquette.afficher(brique.description, this.places[indice]);
-        this.#lancerGlissement(brique, this.positionReserve.clone(), this.reglages.dureeGlissement, () => {
+        this.#lancerGlissement(brique, this.#positionReserve(brique), this.reglages.dureeGlissement, () => {
           this.saisie.ajouterObjet(brique);
         });
       },
@@ -238,7 +239,7 @@ export class Partie {
     }
     const brique = this.briques[this.indiceEtape];
     this.scene.add(brique.objet3D);
-    brique.objet3D.position.copy(this.positionReserve);
+    brique.objet3D.position.copy(this.#positionReserve(brique));
     this.saisie.ajouterObjet(brique);
     this.maquette.afficher(brique.description, this.places[this.indiceEtape]);
     this.surChangement();
@@ -271,11 +272,23 @@ export class Partie {
    * @returns {import('./supports.js').Support[]}
    */
   #supports() {
+    // Toutes les pièces posées arrêtent la chute, même courbes : une pièce
+    // lâchée ne doit jamais en traverser une autre.
     const supportsBriques = this.briques.slice(0, this.indiceEtape).map((brique, indice) => {
       const centre = this.#placeDansLaScene(indice);
-      return { ...this.#emprise(brique, centre), dessus: centre.y + this.grille.hauteurCouche / 2 };
+      return { ...this.#emprise(brique, centre), dessus: centre.y + brique.hauteur / 2 };
     });
     return [...this.supportsFixes, ...supportsBriques];
+  }
+
+  /**
+   * Position d'une pièce posée dans la réserve (centre, selon sa hauteur).
+   *
+   * @param {import('./brique.js').Brique} brique - Pièce à placer.
+   * @returns {Vector3}
+   */
+  #positionReserve(brique) {
+    return this.positionReserve.clone().setY(this.positionReserve.y + brique.hauteur / 2);
   }
 
   /**

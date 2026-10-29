@@ -1,52 +1,21 @@
 /**
- * @file Aspect visuel des blocs de bois peints (arêtes adoucies, nervures
- * visibles), de leur halo de survol, et de la planchette de base gravée.
+ * @file Aspect visuel des pièces en bois peint (pavés, pentes, quarts de rond,
+ * cylindres, pointes, avec ou sans décor), de leur halo de survol, et de la
+ * planchette de base gravée.
  */
 
 import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 import { creerMateriauBoisPeint } from './boisPeint.js';
+import { creerDecor } from './decors.js';
+import { dimensionsPiece, obtenirGeometrie, obtenirGeometrieBloc } from './formes.js';
 import { creerOmbreContact } from './ombreContact.js';
-
-/** Finesse de l'arrondi des arêtes (nombre de segments). */
-const SEGMENTS_ARRONDI = 3;
 
 /** Pixels par case dans la texture du quadrillage gravé. */
 const PIXELS_PAR_CASE = 32;
 
 /**
- * Géométries déjà construites, partagées entre blocs de même taille.
- * @type {Map<string, THREE.BufferGeometry>}
- */
-const cacheGeometries = new Map();
-
-/**
- * Construit (ou réutilise) la géométrie d'un bloc : pavé aux arêtes adoucies,
- * centré sur l'origine.
- *
- * @param {typeof import('../config.js').CONFIG.grille} grille - Dimensions de la grille.
- * @param {number} largeurCases - Nombre de cases en largeur (axe x).
- * @param {number} profondeurCases - Nombre de cases en profondeur (axe z).
- * @param {number} hauteur - Hauteur du bloc.
- * @returns {THREE.BufferGeometry}
- */
-export function obtenirGeometrieBloc(grille, largeurCases, profondeurCases, hauteur) {
-  const cle = `${largeurCases}x${profondeurCases}x${hauteur}`;
-  if (!cacheGeometries.has(cle)) {
-    cacheGeometries.set(cle, new RoundedBoxGeometry(
-      largeurCases * grille.pas - grille.jeu,
-      hauteur,
-      profondeurCases * grille.pas - grille.jeu,
-      SEGMENTS_ARRONDI,
-      grille.rayonArrondi,
-    ));
-  }
-  return cacheGeometries.get(cle);
-}
-
-/**
- * Un bloc de bois peint saisissable, avec un halo doux au survol.
+ * Une pièce de bois peint saisissable, avec un halo doux au survol.
  */
 export class Brique {
   /**
@@ -61,27 +30,29 @@ export class Brique {
     this.reglages = reglages;
     this.description = description;
 
-    const largeur = description.largeur * grille.pas;
-    const profondeur = description.profondeur * grille.pas;
+    const dimensions = dimensionsPiece(grille, description);
+    /** Hauteur réelle de la pièce, en mètres. */
+    this.hauteur = dimensions.hauteur;
     this.materiau = creerMateriauBoisPeint(
       texturesBois,
       description.couleur,
       reglagesBois,
-      Math.max(largeur, profondeur, grille.hauteurCouche),
+      Math.max(dimensions.largeur, dimensions.profondeur, dimensions.hauteur),
     );
 
     /** Objet Three.js à ajouter à la scène et à déplacer. */
-    this.objet3D = new THREE.Mesh(
-      obtenirGeometrieBloc(grille, description.largeur, description.profondeur, grille.hauteurCouche),
-      this.materiau,
-    );
+    this.objet3D = new THREE.Mesh(obtenirGeometrie(grille, description), this.materiau);
     this.objet3D.castShadow = true;
     this.objet3D.receiveShadow = true;
     this.objet3D.name = 'brique';
 
-    // Ombre de contact sous le bloc, visible seulement quand il est posé.
-    this.ombreContact = creerOmbreContact(largeur, profondeur, reglagesOmbre);
-    this.ombreContact.position.y = -grille.hauteurCouche / 2 + 0.0005;
+    if (description.decor) {
+      this.objet3D.add(creerDecor(description.decor, dimensions));
+    }
+
+    // Ombre de contact sous la pièce, visible seulement quand elle est posée.
+    this.ombreContact = creerOmbreContact(dimensions.largeur, dimensions.profondeur, reglagesOmbre);
+    this.ombreContact.position.y = -dimensions.hauteur / 2 + 0.0005;
     this.objet3D.add(this.ombreContact);
   }
 

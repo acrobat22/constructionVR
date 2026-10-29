@@ -1,0 +1,15 @@
+{
+  "nom": "La girafe",
+  "description": "Une girafe jaune tachetée, au long cou et aux petites cornes.",
+  "briques": [
+    {"position": [0, 0, 0], "taille": [1, 2], "couleur": "#f6d56f", "hauteur": 2},
+    {"position": [3, 0, 0], "taille": [1, 2], "couleur": "#f6d56f", "hauteur": 2},
+    {"position": [0, 2, 0], "taille": [4, 2], "couleur": "#f6d56f", "decor": {"face": "z+", "motif": "taches"}},
+    {"position": [0, 3, 0], "taille": [1, 1], "couleur": "#b98d66", "forme": "pointe", "hauteur": 0.6},
+    {"position": [3, 3, 0], "taille": [1, 2], "couleur": "#f6d56f", "hauteur": 2, "decor": {"face": "z+", "motif": "taches"}},
+    {"position": [3, 5, 0], "taille": [1, 2], "couleur": "#f6d56f"},
+    {"position": [3, 6, 0], "taille": [2, 2], "couleur": "#f6d56f", "decor": {"face": "z+", "motif": "oeil-rond"}},
+    {"position": [3, 7, 0], "taille": [1, 1], "couleur": "#b98d66", "hauteur": 0.7, "forme": "pointe"},
+    {"position": [3, 7, 1], "taille": [1, 1], "couleur": "#b98d66", "hauteur": 0.7, "forme": "pointe"}
+  ]
+}

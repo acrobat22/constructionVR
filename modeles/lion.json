@@ -1,0 +1,13 @@
+{
+  "nom": "Le lion",
+  "description": "Un lion au visage rond et à la grande crinière corail.",
+  "briques": [
+    {"position": [0, 0, 0], "taille": [3, 1], "couleur": "#f6d56f"},
+    {"position": [0, 0, 4], "taille": [3, 1], "couleur": "#f6d56f"},
+    {"position": [0, 1, 0], "taille": [3, 5], "couleur": "#f6d56f"},
+    {"position": [1, 2, 0], "taille": [1, 1], "couleur": "#f6d56f", "forme": "cylindre"},
+    {"position": [1, 3, 0], "taille": [1, 1], "couleur": "#f2a08f", "hauteur": 0.7, "forme": "pointe"},
+    {"position": [-1, 2, 3], "taille": [5, 1], "couleur": "#f2a08f", "hauteur": 4, "forme": "cylindre", "axe": "z"},
+    {"position": [0, 2, 4], "taille": [3, 1], "couleur": "#f6d56f", "hauteur": 3, "forme": "cylindre", "axe": "z", "decor": {"face": "z+", "motif": "visage"}}
+  ]
+}

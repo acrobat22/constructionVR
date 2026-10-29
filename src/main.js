@@ -189,7 +189,7 @@ const partie = new Partie({
   saisie,
   historique: new Historique(),
   maquette: new MaquetteFantome(CONFIG.grille, CONFIG.fantome),
-  positionReserve: surLaTable(CONFIG.disposition.reserve, CONFIG.grille.hauteurCouche / 2),
+  positionReserve: surLaTable(CONFIG.disposition.reserve, 0),
   zoneTable,
   grille: CONFIG.grille,
   reglages: CONFIG.accrochage,

@@ -1,0 +1,15 @@
+{
+  "nom": "La baleine",
+  "description": "Une baleine bleue au ventre ivoire, au dos arrondi et à l'œil souriant.",
+  "briques": [
+    {"position": [-1, 0, 0], "taille": [2, 2], "couleur": "#7fb7e6"},
+    {"position": [1, 0, 0], "taille": [4, 2], "couleur": "#fff3dc"},
+    {"position": [5, 0, 0], "taille": [2, 2], "couleur": "#fff3dc", "forme": "cylindre", "axe": "z"},
+    {"position": [-1, 1, 0], "taille": [1, 2], "couleur": "#7fb7e6"},
+    {"position": [0, 1, 0], "taille": [4, 2], "couleur": "#7fb7e6"},
+    {"position": [4, 1, 0], "taille": [3, 2], "couleur": "#7fb7e6", "decor": {"face": "z+", "motif": "oeil-sourire"}},
+    {"position": [-2, 2, 0], "taille": [2, 2], "couleur": "#cfe9f7", "hauteur": 0.5},
+    {"position": [0, 2, 0], "taille": [4, 2], "couleur": "#7fb7e6", "forme": "quartRond", "sens": "x-"},
+    {"position": [4, 2, 0], "taille": [3, 2], "couleur": "#7fb7e6", "forme": "quartRond", "sens": "x+"}
+  ]
+}
