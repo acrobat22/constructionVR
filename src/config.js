@@ -107,6 +107,12 @@ export const CONFIG = Object.freeze({
     }),
   }),
 
+  /** Sons doux (Web Audio, sans fichier) : saisie, accrochage, réussite. */
+  sons: Object.freeze({
+    /** Volume général, volontairement modéré (0 à 1). */
+    volume: 0.3,
+  }),
+
   /** Mode « Essayer sans casque » : la souris remplace la main. */
   souris: Object.freeze({
     /** Surélévation du point pendant une prise : la brique survole la surface visée. */

@@ -7,6 +7,8 @@ Jeu de construction en briques en réalité virtuelle, pensé pour les
 - On joue **assis**, avec un seul geste : le **pincement** (pouce + index).
 - On suit un **mode guidé** : une maquette fantôme montre où poser chaque brique.
 - Il n'y a ni chrono ni échec possible, et le texte est affiché en grand.
+- Des sons doux et courts accompagnent les gestes (aucune voix) ; on peut les
+  couper avec la case « Sons doux » de la page d'accueil.
 
 Le contexte complet et les décisions de conception se trouvent dans
 [CONTEXTE.md](CONTEXTE.md).
@@ -58,6 +60,7 @@ src/
   interface/icones.js      Icônes dessinées (flèche retour, œil)
   interface/carteProgression.js    Nom du modèle et avancement, sans chrono
   interface/modeSansCasque.js      Bascule accueil ↔ mode souris (Échap pour revenir)
+  interface/sons.js        Sons doux (Web Audio, sans fichier) : saisie, accrochage, réussite
   modeles/chargeurModele.js        Lecture, validation et conversion des modèles JSON
 tests/                     Tests des fonctions pures (node --test)
 ```

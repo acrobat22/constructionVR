@@ -108,6 +108,26 @@ h1 {
   outline-offset: 4px;
 }
 
+/* Case à cocher agrandie, facile à viser. */
+.option {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+  font-weight: 700;
+}
+
+.option input {
+  width: 1.75rem;
+  height: 1.75rem;
+  accent-color: var(--couleur-accent);
+}
+
+.option input:focus-visible {
+  outline: 4px solid var(--couleur-accent);
+  outline-offset: 4px;
+}
+
 .note {
   margin-top: 0.5rem;
   font-size: 1.125rem;

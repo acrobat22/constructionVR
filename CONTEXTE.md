@@ -6,7 +6,7 @@
 
 Un jeu de construction en briques en réalité virtuelle, destiné à des **personnes âgées**, qui tourne dans le navigateur du **Meta Quest 3** (WebXR). Le joueur reconstruit des objets simples (voilier, maison/église, vélo…) en plaçant des briques sur une maquette guidée.
 
-- **Projet à partager** : accessible par un simple lien ou QR code, sans installation.
+- **Projet à partager** : accessible par un simple lien, sans installation. Le QR code a été écarté (2026-10-29) : le Quest 3 ne sait pas lire un QR code pour ouvrir un site ; on enregistre plutôt le lien en favori dans le navigateur du casque.
 - **Hébergement initial** : GitHub Pages (HTTPS, obligatoire pour WebXR).
 
 ## 2. Décisions validées
@@ -22,6 +22,7 @@ Un jeu de construction en briques en réalité virtuelle, destiné à des **pers
 | Modèles | Décrits dans des **fichiers JSON** (liste de briques : position, taille, couleur) pour ajouter un modèle sans toucher au code |
 | Langue | **Français uniquement** |
 | Aide | **Texte en gros** dans la scène, **pas de voix off** |
+| Sons | **Sons doux** courts (saisie, accrochage, réussite), créés par le navigateur, graves à médiums, jamais de son d'erreur ; désactivables (validé le 2026-10-29) |
 | Hébergement | GitHub Pages |
 
 ## 3. Principes d'accessibilité et de confort (public âgé)

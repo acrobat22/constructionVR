@@ -44,11 +44,16 @@ export class Partie {
    * @param {typeof import('../config.js').CONFIG.accrochage} dependances.reglages - Distance et durée.
    * @param {typeof import('../config.js').CONFIG.chute} dependances.reglagesChute - Durée de la chute douce.
    * @param {() => void} dependances.surChangement - Appelé quand l'état change (bouton, carte…).
+   * @param {() => void} [dependances.surBriquePosee] - Appelé quand une brique se fixe à sa place.
+   * @param {() => void} [dependances.surModeleTermine] - Appelé quand la dernière brique est posée.
    */
   constructor({
     conteneurModele, scene, saisie, historique, maquette,
     positionReserve, zoneTable, grille, reglages, reglagesChute, surChangement,
+    surBriquePosee = () => {}, surModeleTermine = () => {},
   }) {
+    this.surBriquePosee = surBriquePosee;
+    this.surModeleTermine = surModeleTermine;
     this.conteneurModele = conteneurModele;
     this.scene = scene;
     this.saisie = saisie;
@@ -198,6 +203,10 @@ export class Partie {
         brique.objet3D.position.copy(this.places[indice]);
         this.indiceEtape = indice + 1;
         this.#preparerEtape();
+        this.surBriquePosee();
+        if (this.estTerminee) {
+          this.surModeleTermine();
+        }
       },
       annuler: () => {
         // La brique suivante, qui attendait dans la réserve, est rangée.

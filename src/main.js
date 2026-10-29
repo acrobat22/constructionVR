@@ -26,6 +26,7 @@ import { Bouton3D } from './interface/bouton3D.js';
 import { dessinerFlecheRetour, dessinerOeil } from './interface/icones.js';
 import { CarteProgression } from './interface/carteProgression.js';
 import { ModeSansCasque } from './interface/modeSansCasque.js';
+import { Sons } from './interface/sons.js';
 import { chargerModele, calculerEmprise, calculerPositionsEnMetres } from './modeles/chargeurModele.js';
 
 const zoneMessage = document.getElementById('message-statut');
@@ -33,6 +34,17 @@ const zoneMessage = document.getElementById('message-statut');
 const { scene, camera } = creerEnvironnement(CONFIG);
 const renderer = creerRendu(document.getElementById('scene'), camera);
 ajouterSolOmbres(scene, CONFIG.ambiance);
+
+// Sons doux : le contexte audio est réveillé au premier clic sur la page
+// (exigence des navigateurs), et la case « Sons doux » les active ou les coupe.
+const sons = new Sons(CONFIG.sons);
+const caseSons = document.getElementById('case-sons');
+sons.definirActifs(caseSons.checked);
+caseSons.addEventListener('change', () => {
+  sons.definirActifs(caseSons.checked);
+  sons.reveiller();
+});
+document.addEventListener('click', () => sons.reveiller());
 
 /**
  * Convertit une position relative au centre du plateau en coordonnées de la scène.
@@ -107,8 +119,9 @@ const ecouteursPincement = {
     const boutonVise = boutons.find((bouton) => bouton.estVise(point));
     if (boutonVise) {
       boutonVise.appuyer(tempsCourant);
-    } else {
-      saisie.saisir(cote, point);
+      sons.jouerSaisie();
+    } else if (saisie.saisir(cote, point)) {
+      sons.jouerSaisie();
     }
   },
   surFinPincement: (cote) => {
@@ -171,6 +184,8 @@ const partie = new Partie({
   grille: CONFIG.grille,
   reglages: CONFIG.accrochage,
   reglagesChute: CONFIG.chute,
+  surBriquePosee: () => sons.jouerAccrochage(),
+  surModeleTermine: () => sons.jouerReussite(),
   surChangement: () => {
     boutonAnnuler.definirActif(partie.peutAnnuler);
     carte.afficher(nomModele, partie.nombreBriquesPosees, partie.nombreBriques);

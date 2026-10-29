@@ -76,15 +76,17 @@ export class GestionnaireSaisie {
    *
    * @param {XRHandedness} cote - Main qui pince.
    * @param {Vector3} point - Point de pincement (coordonnées de la scène).
+   * @returns {boolean} `true` si un objet a été saisi.
    */
   saisir(cote, point) {
     const objet = this.#trouverObjetLibreLePlusProche(point);
     if (!objet) {
-      return;
+      return false;
     }
     // Le décalage évite que l'objet « saute » pour se centrer sur les doigts.
     const decalage = objet.objet3D.position.clone().sub(point);
     this.prises.set(cote, { objet, decalage });
+    return true;
   }
 
   /**
