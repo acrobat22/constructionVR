@@ -1,10 +1,10 @@
-# CONTEXTE.md — Jeu de construction en briques pour Meta Quest 3 (WebXR)
+# CONTEXTE.md — Construction en blocs : jeu de construction pour Meta Quest 3 (WebXR)
 
 > Document de reprise de projet, issu d'une discussion préalable. À donner à l'assistant au début de chaque session dans VS Code.
 
 ## 1. Objectif du projet
 
-Un jeu de construction en briques en réalité virtuelle, destiné à des **personnes âgées**, qui tourne dans le navigateur du **Meta Quest 3** (WebXR). Le joueur reconstruit des objets simples (voilier, maison/église, vélo…) en plaçant des briques sur une maquette guidée.
+Un jeu de construction en blocs de bois (appelé « briques » dans le code et le format JSON) en réalité virtuelle, destiné à des **personnes âgées**, qui tourne dans le navigateur du **Meta Quest 3** (WebXR). Le joueur reconstruit des objets simples (voilier, maison/église, vélo…) en plaçant des briques sur une maquette guidée.
 
 - **Projet à partager** : accessible par un simple lien, sans installation. Le QR code a été écarté (2026-10-29) : le Quest 3 ne sait pas lire un QR code pour ouvrir un site ; on enregistre plutôt le lien en favori dans le navigateur du casque.
 - **Hébergement initial** : GitHub Pages (HTTPS, obligatoire pour WebXR).

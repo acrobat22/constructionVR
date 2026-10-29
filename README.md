@@ -1,6 +1,6 @@
-# Construction en briques (WebXR)
+# Construction en blocs (WebXR)
 
-Jeu de construction en briques en réalité virtuelle, pensé pour les
+Jeu de construction en blocs de bois peints en réalité virtuelle, pensé pour les
 **personnes âgées**, qui fonctionne directement dans le navigateur du
 **Meta Quest 3**, sans installation.
 

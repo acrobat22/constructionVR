@@ -66,6 +66,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - 2026-10-29 — Le décor « ciel + brouillard » est remplacé par une pièce réelle ;
   le bouton « Annuler » devient un bouton 3D générique (`interface/bouton3D.js`).
 - Une brique lâchée hors de sa place ne flotte plus : elle descend se poser.
+- 2026-10-29 — Le jeu s'appelle désormais « Construction en blocs » (titre,
+  accueil, carte « Bloc 3 sur 14 ») ; le code et la clé JSON `briques` sont inchangés.
 - 2026-10-29 — Couleurs des modèles passées en pastels ; contour de la maquette
   fantôme foncé (meilleur contraste sur pastel et bois clair) ; aide :
   « Pincez le bloc et posez-le dans le cadre. »

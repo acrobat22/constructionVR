@@ -85,7 +85,7 @@ export class CarteProgression {
     const estTermine = briquesPosees >= totalBriques;
     const texte = estTermine
       ? 'Bravo, c’est terminé !'
-      : `Brique ${briquesPosees + 1} sur ${totalBriques}`;
+      : `Bloc ${briquesPosees + 1} sur ${totalBriques}`;
     contexte.fillStyle = COULEURS.texte;
     contexte.font = `bold 64px ${police}`;
     contexte.fillText(texte, gauche, hauteur * 0.4);

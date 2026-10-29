@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Construction en briques</title>
-  <meta name="description" content="Jeu de construction en briques en réalité virtuelle, pour le casque Meta Quest.">
+  <title>Construction en blocs</title>
+  <meta name="description" content="Jeu de construction en blocs de bois en réalité virtuelle, pour le casque Meta Quest.">
   <link rel="stylesheet" href="./styles/accueil.css">
 
   <!-- Three.js est copié dans le projet (vendor/) : aucune compilation, aucun CDN. -->
@@ -23,10 +23,10 @@
   <div id="scene" class="scene"></div>
 
   <main class="panneau" aria-labelledby="titre">
-    <h1 id="titre">Construction en briques</h1>
+    <h1 id="titre">Construction en blocs</h1>
     <p id="description">
       Assis confortablement, reconstruisez des objets simples en plaçant des
-      briques avec vos mains. Prenez tout votre temps : il n’y a ni chrono ni erreur possible.
+      blocs de bois avec vos mains. Prenez tout votre temps : il n’y a ni chrono ni erreur possible.
     </p>
 
     <button id="bouton-vr" class="bouton-vr" type="button"
@@ -44,7 +44,7 @@
       </button>
     </div>
     <p id="description-sons" class="note">
-      Un léger son accompagne la prise et la pose des briques. Aucune voix.
+      Un léger son accompagne la prise et la pose des blocs. Aucune voix.
       « Écouter » permet de régler le volume avant de mettre le casque.
     </p>
 
@@ -52,7 +52,7 @@
       Essayer sans casque
     </button>
     <p id="description-souris" class="note">
-      Sur ordinateur, la souris remplace la main : cliquez et glissez pour déplacer une brique.
+      Sur ordinateur, la souris remplace la main : cliquez et glissez pour déplacer un bloc.
     </p>
 
     <noscript>
@@ -63,7 +63,7 @@
   <!-- Barre d'aide du mode souris (affichée à la place de l'accueil). -->
   <section id="barre-aide" class="barre-aide" aria-label="Aide du mode souris" hidden>
     <p>
-      Cliquez sur une brique et glissez-la jusqu’à l’emplacement indiqué, puis relâchez.
+      Cliquez sur un bloc et glissez-le jusqu’à l’emplacement indiqué, puis relâchez.
       Cliquez sur les boutons de la table pour les utiliser.
     </p>
     <button id="bouton-retour" class="bouton-secondaire" type="button">
