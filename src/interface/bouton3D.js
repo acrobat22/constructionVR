@@ -1,10 +1,11 @@
 /**
- * @file Bouton « Annuler » en 3D, posé sur la table et toujours visible.
+ * @file Bouton 3D posé sur la table, toujours visible (« Annuler »,
+ * « Voir le modèle »…).
  *
  * On l'active en pinçant à proximité. Retours visuels :
  *   - survol : bordure épaisse jaune pâle (en plus d'un changement de couleur) ;
  *   - appui : le bouton s'enfonce brièvement ;
- *   - inactif (rien à annuler) : texte gris et bordure pointillée, mais toujours affiché.
+ *   - inactif : texte gris et bordure pointillée, mais toujours affiché.
  *
  * Le libellé est dessiné sur un canevas : aucune police ni image externe.
  */
@@ -25,19 +26,32 @@ const COULEURS = Object.freeze({
 const LARGEUR_CANEVAS = 512;
 const HAUTEUR_CANEVAS = 256;
 
+/** Taille maximale du texte ; réduite automatiquement si le libellé est long. */
+const TAILLE_TEXTE_MAXIMALE = 78;
+
 /**
- * Bouton 3D « Annuler ».
+ * @typedef {(contexte: CanvasRenderingContext2D, centreX: number, centreY: number, couleur: string) => void} DessinIcone
  */
-export class BoutonAnnuler {
+
+/**
+ * Bouton 3D générique.
+ */
+export class Bouton3D {
   /**
-   * @param {typeof import('../config.js').CONFIG.boutonAnnuler} reglages - Dimensions et réglages.
-   * @param {() => void} surAppui - Action déclenchée par un appui sur le bouton actif.
+   * @param {typeof import('../config.js').CONFIG.bouton} reglages - Dimensions et réglages.
+   * @param {object} options
+   * @param {string} options.libelle - Texte affiché.
+   * @param {DessinIcone} options.dessinerIcone - Dessine l'icône à gauche du texte.
+   * @param {() => void} options.surAppui - Action déclenchée par un appui sur le bouton actif.
+   * @param {boolean} [options.estActif=true] - État initial.
    */
-  constructor(reglages, surAppui) {
+  constructor(reglages, { libelle, dessinerIcone, surAppui, estActif = true }) {
     this.reglages = reglages;
+    this.libelle = libelle;
+    this.dessinerIcone = dessinerIcone;
     this.surAppui = surAppui;
 
-    this.estActif = false;
+    this.estActif = estActif;
     this.estSurvole = false;
     /** Instant du dernier appui (pour l'animation d'enfoncement), ou `null`. */
     this.debutAppui = null;
@@ -51,7 +65,7 @@ export class BoutonAnnuler {
 
     /** Groupe incliné vers le joueur, à placer sur la table. */
     this.objet3D = new THREE.Group();
-    this.objet3D.name = 'bouton-annuler';
+    this.objet3D.name = 'bouton';
     this.objet3D.rotation.x = reglages.inclinaison;
 
     /** Partie mobile (socle + libellé), enfoncée lors de l'appui. */
@@ -66,13 +80,13 @@ export class BoutonAnnuler {
     this.partieMobile.add(socle);
 
     // Libellé non éclairé : ses couleurs restent exactes (contraste garanti).
-    const libelle = new THREE.Mesh(
+    const libelleMaillage = new THREE.Mesh(
       new THREE.PlaneGeometry(reglages.largeur * 0.94, reglages.profondeur * 0.9),
       new THREE.MeshBasicMaterial({ map: this.texture, toneMapped: false }),
     );
-    libelle.rotation.x = -Math.PI / 2;
-    libelle.position.y = reglages.hauteur / 2 + 0.0005;
-    this.partieMobile.add(libelle);
+    libelleMaillage.rotation.x = -Math.PI / 2;
+    libelleMaillage.position.y = reglages.hauteur / 2 + 0.0005;
+    this.partieMobile.add(libelleMaillage);
 
     /** Boîte de visée réutilisée à chaque test. */
     this.zoneVisee = new THREE.Box3();
@@ -83,11 +97,23 @@ export class BoutonAnnuler {
   /**
    * Active ou désactive le bouton (il reste toujours visible).
    *
-   * @param {boolean} estActif - `true` s'il y a quelque chose à annuler.
+   * @param {boolean} estActif - `true` si le bouton peut être utilisé.
    */
   definirActif(estActif) {
     if (estActif !== this.estActif) {
       this.estActif = estActif;
+      this.#dessinerLibelle();
+    }
+  }
+
+  /**
+   * Change le texte affiché (par exemple « Voir » / « Cacher »).
+   *
+   * @param {string} libelle - Nouveau texte.
+   */
+  definirLibelle(libelle) {
+    if (libelle !== this.libelle) {
+      this.libelle = libelle;
       this.#dessinerLibelle();
     }
   }
@@ -168,46 +194,32 @@ export class BoutonAnnuler {
     contexte.setLineDash([]);
 
     const couleurTexte = this.estActif ? COULEURS.texteActif : COULEURS.texteInactif;
-    this.#dessinerFlecheRetour(contexte, 110, HAUTEUR_CANEVAS / 2, couleurTexte);
+    this.dessinerIcone(contexte, 110, HAUTEUR_CANEVAS / 2, couleurTexte);
 
+    // Le texte rétrécit si nécessaire pour tenir dans le bouton.
+    const debutTexte = 172;
+    const largeurDisponible = LARGEUR_CANEVAS - debutTexte - 64;
+    let taille = TAILLE_TEXTE_MAXIMALE;
+    contexte.font = this.#police(taille);
+    while (contexte.measureText(this.libelle).width > largeurDisponible && taille > 40) {
+      taille -= 2;
+      contexte.font = this.#police(taille);
+    }
     contexte.fillStyle = couleurTexte;
-    contexte.font = 'bold 78px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
     contexte.textBaseline = 'middle';
     contexte.textAlign = 'left';
-    contexte.fillText('Annuler', 172, HAUTEUR_CANEVAS / 2 + 4);
+    contexte.fillText(this.libelle, debutTexte, HAUTEUR_CANEVAS / 2 + 4);
 
     this.texture.needsUpdate = true;
   }
 
   /**
-   * Dessine une flèche courbe « retour en arrière » (icône d'annulation).
+   * Police du libellé : sans empattement, épaisse.
    *
-   * @param {CanvasRenderingContext2D} contexte - Contexte de dessin.
-   * @param {number} centreX - Centre horizontal de l'icône.
-   * @param {number} centreY - Centre vertical de l'icône.
-   * @param {string} couleur - Couleur du trait.
+   * @param {number} taille - Taille en pixels.
+   * @returns {string}
    */
-  #dessinerFlecheRetour(contexte, centreX, centreY, couleur) {
-    const rayon = 42;
-    contexte.strokeStyle = couleur;
-    contexte.fillStyle = couleur;
-    contexte.lineWidth = 16;
-    contexte.lineCap = 'round';
-
-    // Arc ouvert vers la gauche, du haut vers le bas en passant par la droite.
-    contexte.beginPath();
-    contexte.arc(centreX, centreY, rayon, -Math.PI * 0.75, Math.PI * 0.6);
-    contexte.stroke();
-
-    // Pointe de flèche au départ de l'arc (en haut à gauche).
-    const angle = -Math.PI * 0.75;
-    const pointeX = centreX + rayon * Math.cos(angle);
-    const pointeY = centreY + rayon * Math.sin(angle);
-    contexte.beginPath();
-    contexte.moveTo(pointeX - 30, pointeY - 2);
-    contexte.lineTo(pointeX + 10, pointeY - 26);
-    contexte.lineTo(pointeX + 6, pointeY + 22);
-    contexte.closePath();
-    contexte.fill();
+  #police(taille) {
+    return `bold ${taille}px system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif`;
   }
 }

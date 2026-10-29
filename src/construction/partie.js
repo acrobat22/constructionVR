@@ -5,19 +5,23 @@
  *   1. la brique suivante attend dans la réserve, sur la table ;
  *   2. la maquette fantôme montre sa place sur la plaque de base ;
  *   3. lâchée près de sa place, la brique y glisse doucement et s'y fixe ;
- *      lâchée ailleurs, elle reste simplement là où elle est.
+ *      lâchée ailleurs, elle descend doucement se poser là où elle est
+ *      (sur la table, la plaque ou une autre brique) ; lâchée hors de la
+ *      table, elle revient doucement dans la réserve (jamais par terre).
  * « Annuler » ramène doucement la dernière brique posée dans la réserve.
  */
 
 import { Vector3 } from 'three';
 
 import { estAPortee, adoucir, interpoler } from './accrochage.js';
+import { calculerRepos, RESULTAT_REPOS } from './supports.js';
 
 /**
  * @typedef {object} Glissement
  * @property {import('./brique.js').Brique} brique - Brique en mouvement.
  * @property {Vector3} depart - Position de départ (repère de la scène).
  * @property {Vector3} arrivee - Position d'arrivée (repère de la scène).
+ * @property {number} duree - Durée du mouvement, en millisecondes.
  * @property {number | null} debut - Instant de départ (fixé à la première image).
  * @property {() => void} aLaFin - Action à exécuter une fois arrivée.
  */
@@ -35,23 +39,34 @@ export class Partie {
    * @param {import('./historique.js').Historique} dependances.historique - Pile d'annulation.
    * @param {import('./maquetteFantome.js').MaquetteFantome} dependances.maquette - Emplacement visé.
    * @param {Vector3} dependances.positionReserve - Où attend la brique suivante (repère de la scène).
+   * @param {import('./supports.js').Emprise} dependances.zoneTable - Plateau de la table (repère de la scène).
+   * @param {typeof import('../config.js').CONFIG.grille} dependances.grille - Dimensions de la grille.
    * @param {typeof import('../config.js').CONFIG.accrochage} dependances.reglages - Distance et durée.
-   * @param {() => void} dependances.surChangement - Appelé quand l'état change (ex. : bouton Annuler).
+   * @param {typeof import('../config.js').CONFIG.chute} dependances.reglagesChute - Durée de la chute douce.
+   * @param {() => void} dependances.surChangement - Appelé quand l'état change (bouton, carte…).
    */
-  constructor({ conteneurModele, scene, saisie, historique, maquette, positionReserve, reglages, surChangement }) {
+  constructor({
+    conteneurModele, scene, saisie, historique, maquette,
+    positionReserve, zoneTable, grille, reglages, reglagesChute, surChangement,
+  }) {
     this.conteneurModele = conteneurModele;
     this.scene = scene;
     this.saisie = saisie;
     this.historique = historique;
     this.maquette = maquette;
     this.positionReserve = positionReserve;
+    this.zoneTable = zoneTable;
+    this.grille = grille;
     this.reglages = reglages;
+    this.reglagesChute = reglagesChute;
     this.surChangement = surChangement;
 
     /** @type {import('./brique.js').Brique[]} */
     this.briques = [];
     /** @type {Vector3[]} Places des briques, dans le repère du conteneur du modèle. */
     this.places = [];
+    /** @type {import('./supports.js').Support[]} Surfaces fixes (table, plaque). */
+    this.supportsFixes = [];
     this.indiceEtape = 0;
     /** @type {Glissement | null} */
     this.glissement = null;
@@ -69,15 +84,27 @@ export class Partie {
     return this.indiceEtape >= this.briques.length;
   }
 
+  /** @returns {number} Nombre de briques déjà posées à leur place. */
+  get nombreBriquesPosees() {
+    return this.indiceEtape;
+  }
+
+  /** @returns {number} Nombre total de briques du modèle. */
+  get nombreBriques() {
+    return this.briques.length;
+  }
+
   /**
    * Commence la construction d'un modèle.
    *
    * @param {import('./brique.js').Brique[]} briques - Briques dans l'ordre de construction.
    * @param {{ x: number, y: number, z: number }[]} places - Centre de chaque brique, repère du conteneur.
+   * @param {import('./supports.js').Support[]} supportsFixes - Surfaces fixes (table, plaque), repère de la scène.
    */
-  demarrer(briques, places) {
+  demarrer(briques, places, supportsFixes) {
     this.briques = briques;
     this.places = places.map((place) => new Vector3(place.x, place.y, place.z));
+    this.supportsFixes = supportsFixes;
     this.indiceEtape = 0;
     this.historique.vider();
     this.#preparerEtape();
@@ -85,7 +112,7 @@ export class Partie {
 
   /**
    * Appelé quand le joueur lâche un objet : accroche la brique si elle est
-   * près de sa place, sinon la laisse où elle est.
+   * près de sa place, sinon la pose doucement (ou la ramène à la réserve).
    *
    * @param {object} objet - Objet lâché (renvoyé par la saisie).
    */
@@ -94,16 +121,29 @@ export class Partie {
     if (objet !== brique || this.glissement) {
       return;
     }
-    const place = this.#placeDansLaScene(this.indiceEtape);
-    if (!estAPortee(brique.objet3D.position, place, this.reglages.distance)) {
+    const indice = this.indiceEtape;
+    const place = this.#placeDansLaScene(indice);
+    // Pendant tout mouvement automatique, la brique ne peut pas être saisie.
+    this.saisie.retirerObjet(brique);
+
+    if (estAPortee(brique.objet3D.position, place, this.reglages.distance)) {
+      this.#lancerGlissement(brique, place, this.reglages.dureeGlissement, () => {
+        this.historique.executer(this.#creerActionPoser(indice));
+      });
       return;
     }
 
-    const indice = this.indiceEtape;
-    this.saisie.retirerObjet(brique);
-    this.#lancerGlissement(brique, place, () => {
-      this.historique.executer(this.#creerActionPoser(indice));
-    });
+    const repos = calculerRepos(this.#emprise(brique, brique.objet3D.position), this.#supports(), this.zoneTable);
+    const redevenirSaisissable = () => this.saisie.ajouterObjet(brique);
+    if (repos.resultat === RESULTAT_REPOS.RESERVE) {
+      this.#lancerGlissement(brique, this.positionReserve.clone(), this.reglages.dureeGlissement, redevenirSaisissable);
+      return;
+    }
+    const arrivee = brique.objet3D.position.clone();
+    arrivee.y = repos.hauteur + this.grille.hauteurCouche / 2;
+    const hauteurDeChute = Math.max(0, brique.objet3D.position.y - arrivee.y);
+    const duree = this.reglagesChute.dureeMinimale + hauteurDeChute * this.reglagesChute.dureeParMetre;
+    this.#lancerGlissement(brique, arrivee, duree, redevenirSaisissable);
   }
 
   /** Annule la dernière brique posée (si aucun mouvement n'est en cours). */
@@ -114,26 +154,32 @@ export class Partie {
   }
 
   /**
-   * Fait avancer le glissement en cours. À appeler une fois par image.
+   * Fait avancer le mouvement en cours et met à jour les ombres de contact.
+   * À appeler une fois par image.
    *
    * @param {number} temps - Instant courant, en millisecondes.
    */
   mettreAJour(temps) {
-    if (!this.glissement) {
-      return;
-    }
-    const glissement = this.glissement;
-    if (glissement.debut === null) {
-      glissement.debut = temps;
-    }
-    const progression = adoucir((temps - glissement.debut) / this.reglages.dureeGlissement);
-    const position = interpoler(glissement.depart, glissement.arrivee, progression);
-    glissement.brique.objet3D.position.set(position.x, position.y, position.z);
+    if (this.glissement) {
+      const glissement = this.glissement;
+      if (glissement.debut === null) {
+        glissement.debut = temps;
+      }
+      const progression = adoucir((temps - glissement.debut) / glissement.duree);
+      const position = interpoler(glissement.depart, glissement.arrivee, progression);
+      glissement.brique.objet3D.position.set(position.x, position.y, position.z);
 
-    if (progression >= 1) {
-      this.glissement = null;
-      glissement.aLaFin();
-      this.surChangement();
+      if (progression >= 1) {
+        this.glissement = null;
+        glissement.aLaFin();
+        this.surChangement();
+      }
+    }
+
+    // L'ombre de contact n'apparaît que sous une brique posée.
+    for (const brique of this.briques) {
+      const estEnMouvement = this.glissement?.brique === brique || this.saisie.estTenu(brique);
+      brique.definirAuRepos(!estEnMouvement);
     }
   }
 
@@ -167,7 +213,7 @@ export class Partie {
         brique.objet3D.position.copy(depart);
         this.indiceEtape = indice;
         this.maquette.afficher(brique.description, this.places[indice]);
-        this.#lancerGlissement(brique, this.positionReserve.clone(), () => {
+        this.#lancerGlissement(brique, this.positionReserve.clone(), this.reglages.dureeGlissement, () => {
           this.saisie.ajouterObjet(brique);
         });
       },
@@ -190,21 +236,55 @@ export class Partie {
   }
 
   /**
-   * Démarre un glissement doux.
+   * Démarre un mouvement doux.
    *
    * @param {import('./brique.js').Brique} brique - Brique à déplacer.
    * @param {Vector3} arrivee - Destination (repère de la scène).
+   * @param {number} duree - Durée, en millisecondes.
    * @param {() => void} aLaFin - Action une fois arrivée.
    */
-  #lancerGlissement(brique, arrivee, aLaFin) {
+  #lancerGlissement(brique, arrivee, duree, aLaFin) {
     this.glissement = {
       brique,
       depart: brique.objet3D.position.clone(),
       arrivee,
+      duree,
       debut: null,
       aLaFin,
     };
     this.surChangement();
+  }
+
+  /**
+   * Surfaces sur lesquelles une brique lâchée peut se poser : surfaces fixes
+   * et dessus des briques déjà posées.
+   *
+   * @returns {import('./supports.js').Support[]}
+   */
+  #supports() {
+    const supportsBriques = this.briques.slice(0, this.indiceEtape).map((brique, indice) => {
+      const centre = this.#placeDansLaScene(indice);
+      return { ...this.#emprise(brique, centre), dessus: centre.y + this.grille.hauteurCouche / 2 };
+    });
+    return [...this.supportsFixes, ...supportsBriques];
+  }
+
+  /**
+   * Emprise horizontale d'une brique centrée en un point (repère de la scène).
+   *
+   * @param {import('./brique.js').Brique} brique - Brique concernée.
+   * @param {Vector3} centre - Centre de la brique.
+   * @returns {import('./supports.js').Emprise}
+   */
+  #emprise(brique, centre) {
+    const demiLargeur = (brique.description.largeur * this.grille.pas) / 2;
+    const demiProfondeur = (brique.description.profondeur * this.grille.pas) / 2;
+    return {
+      minX: centre.x - demiLargeur,
+      maxX: centre.x + demiLargeur,
+      minZ: centre.z - demiProfondeur,
+      maxZ: centre.z + demiProfondeur,
+    };
   }
 
   /**

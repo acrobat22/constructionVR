@@ -7,6 +7,8 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
+import { creerOmbreContact } from './ombreContact.js';
+
 /** Finesse des cylindres des tenons (nombre de facettes). */
 const FACETTES_TENON = 20;
 
@@ -71,8 +73,9 @@ export class Brique {
    * @param {typeof import('../config.js').CONFIG.grille} grille - Dimensions de la grille.
    * @param {typeof import('../config.js').CONFIG.brique} reglages - Aspect et halo.
    * @param {import('../modeles/chargeurModele.js').DescriptionBrique} description - Taille et couleur.
+   * @param {typeof import('../config.js').CONFIG.ombreContact} reglagesOmbre - Ombre au pied de la brique.
    */
-  constructor(grille, reglages, description) {
+  constructor(grille, reglages, description, reglagesOmbre) {
     this.reglages = reglages;
     this.description = description;
 
@@ -97,6 +100,25 @@ export class Brique {
     this.objet3D.castShadow = true;
     this.objet3D.receiveShadow = true;
     this.objet3D.name = 'brique';
+
+    // Ombre de contact sous la brique, visible seulement quand elle est posée.
+    this.ombreContact = creerOmbreContact(
+      description.largeur * grille.pas,
+      description.profondeur * grille.pas,
+      reglagesOmbre,
+    );
+    this.ombreContact.position.y = -grille.hauteurCouche / 2 + 0.0005;
+    this.objet3D.add(this.ombreContact);
+  }
+
+  /**
+   * Affiche l'ombre de contact seulement quand la brique repose sur une surface
+   * (pas quand elle est tenue ou en mouvement).
+   *
+   * @param {boolean} estAuRepos - `true` si la brique est posée.
+   */
+  definirAuRepos(estAuRepos) {
+    this.ombreContact.visible = estAuRepos;
   }
 
   /**
@@ -117,15 +139,13 @@ export class Brique {
  * @param {typeof import('../config.js').CONFIG.plaqueDeBase} reglages - Couleur, épaisseur, marge.
  * @param {number} largeurTenons - Largeur du modèle, en tenons (marge non comprise).
  * @param {number} profondeurTenons - Profondeur du modèle, en tenons (marge non comprise).
+ * @param {typeof import('../config.js').CONFIG.ombreContact} reglagesOmbre - Ombre au pied de la plaque.
  * @returns {THREE.Mesh}
  */
-export function creerPlaqueDeBase(grille, reglages, largeurTenons, profondeurTenons) {
-  const geometrie = obtenirGeometrieAvecTenons(
-    grille,
-    largeurTenons + 2 * reglages.marge,
-    profondeurTenons + 2 * reglages.marge,
-    reglages.epaisseur,
-  );
+export function creerPlaqueDeBase(grille, reglages, largeurTenons, profondeurTenons, reglagesOmbre) {
+  const largeurTotale = largeurTenons + 2 * reglages.marge;
+  const profondeurTotale = profondeurTenons + 2 * reglages.marge;
+  const geometrie = obtenirGeometrieAvecTenons(grille, largeurTotale, profondeurTotale, reglages.epaisseur);
   const plaque = new THREE.Mesh(
     geometrie,
     new THREE.MeshStandardMaterial({ color: reglages.couleur, roughness: 0.45 }),
@@ -135,5 +155,9 @@ export function creerPlaqueDeBase(grille, reglages, largeurTenons, profondeurTen
   plaque.receiveShadow = true;
   plaque.castShadow = true;
   plaque.name = 'plaque-de-base';
+
+  const ombre = creerOmbreContact(largeurTotale * grille.pas, profondeurTotale * grille.pas, reglagesOmbre);
+  ombre.position.y = -reglages.epaisseur / 2 + 0.0005;
+  plaque.add(ombre);
   return plaque;
 }

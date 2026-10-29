@@ -8,6 +8,19 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-10-29 — Rendu réaliste inspiré d'un puzzle 3D : pièce photographiée
+  autour du joueur (`GroundedSkybox` + éclairage HDR « Lebombo », Poly Haven
+  CC0), lampe chaude suspendue avec ombres douces, plateau en chêne texturé
+  (couleur, relief, rugosité), rendu « appareil photo » (`NeutralToneMapping`),
+  ombres de contact sous les objets posés.
+- Carte de progression (nom du modèle, « Brique 2 sur 3 », pastilles), sans chrono.
+- Bouton « œil » : miniature du modèle terminé, affichée ou cachée.
+- Chute douce : une brique lâchée descend se poser ; hors de la table, elle
+  revient dans la réserve.
+- Qualité adaptative : ombres réduites puis coupées si l'affichage ralentit.
+- 12 nouveaux tests (supports, qualité adaptative).
+- `serveur.py` : serveur local sans cache navigateur (modifications visibles au
+  simple rechargement, y compris sur le Quest).
 - 2026-10-28 — Étape 3 (accrochage, maquette fantôme, annulation) :
   mode guidé une brique à la fois, emplacement fantôme translucide avec
   contour net, accrochage à 5 cm avec glissement doux, bouton 3D « Annuler »
@@ -32,6 +45,12 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - 2026-10-28 — Décor clair (au lieu d'un fond sombre) ; le texte reste posé
   sur des panneaux sombres opaques (contraste ≥ 7:1).
 - La brique d'essai unique de l'étape 2 est remplacée par le modèle d'essai.
+- 2026-10-29 — Le décor « ciel + brouillard » est remplacé par une pièce réelle ;
+  le bouton « Annuler » devient un bouton 3D générique (`interface/bouton3D.js`).
+- Une brique lâchée hors de sa place ne flotte plus : elle descend se poser.
+
+### Supprimé
+- `src/interface/boutonAnnuler.js`, remplacé par `bouton3D.js` + `icones.js`.
 
 ---
 

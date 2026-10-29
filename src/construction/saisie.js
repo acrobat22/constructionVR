@@ -88,6 +88,16 @@ export class GestionnaireSaisie {
   }
 
   /**
+   * Indique si un objet est actuellement tenu par une main.
+   *
+   * @param {ObjetSaisissable} objet - Objet à tester.
+   * @returns {boolean}
+   */
+  estTenu(objet) {
+    return [...this.prises.values()].some((prise) => prise.objet === objet);
+  }
+
+  /**
    * Une main relâche : l'objet reste là où il a été lâché.
    *
    * @param {XRHandedness} cote - Main qui relâche.

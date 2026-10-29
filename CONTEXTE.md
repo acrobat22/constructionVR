@@ -30,7 +30,7 @@ Un jeu de construction en briques en réalité virtuelle, destiné à des **pers
 - **Tolérance** : zone de saisie généreuse, accrochage magnétique, bouton **« Annuler »** toujours visible.
 - **Pas de pression** : aucun chrono, aucun score négatif, aucun échec possible. Messages positifs.
 - **Texte** : très gros, à environ 1 m du joueur, police sans empattement épaisse.
-- **Contraste** : ratio visé **d'au moins 7:1** (texte blanc ou jaune pâle sur panneau sombre opaque). Le décor 3D, lui, est clair (validé le 2026-10-28), sur le modèle de l'exemple Three.js `webgl_animation_multiple` : lumière du ciel + soleil, ombres douces, brouillard léger.
+- **Contraste** : ratio visé **d'au moins 7:1** (texte blanc ou jaune pâle sur panneau sombre opaque). Le décor 3D, lui, est une **pièce réelle et lumineuse** (photo panoramique Poly Haven, validée le 2026-10-29), avec une lampe chaude au-dessus d'une table en chêne clair, sur le modèle d'un puzzle 3D fourni en inspiration.
 - **Couleurs** : briques vives, mais l'information ne repose **jamais sur la couleur seule** (la maquette fantôme a aussi un contour net).
 - **Animations** : pas de clignotement, pas d'effets agressifs. Mouvements lents et courts (halo doux au survol, brique qui glisse vers son emplacement).
 - **Confort VR** : téléportation uniquement, pas de mouvement libre.
@@ -101,4 +101,4 @@ Ensuite : maison/église, vélo, puis autres modèles simples.
 
 ## 10. Prochaine action
 
-Faire valider l'**étape 3** dans l'émulateur (accrochage, annulation, rendu), puis proposer le plan de l'**étape 4** (téléportation par pastilles).
+Faire valider le **rendu réaliste** et les ajouts (carte de progression, bouton « œil », chute douce) dans l'émulateur et en casque, décider des **sons doux** (en attente), puis proposer le plan de l'**étape 4** (téléportation par pastilles).
