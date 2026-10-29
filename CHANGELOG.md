@@ -8,6 +8,9 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-10-29 — Mode « Essayer sans casque » : la souris remplace la main
+  (cliquer-glisser-relâcher, clic sur les boutons 3D), barre d'aide, `Échap`
+  pour revenir à l'accueil. Désactivé automatiquement à l'entrée en VR.
 - 2026-10-29 — Rendu réaliste inspiré d'un puzzle 3D : pièce photographiée
   autour du joueur (`GroundedSkybox` + éclairage HDR « Lebombo », Poly Haven
   CC0), lampe chaude suspendue avec ombres douces, plateau en chêne texturé

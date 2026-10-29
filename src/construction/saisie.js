@@ -98,6 +98,15 @@ export class GestionnaireSaisie {
   }
 
   /**
+   * Objets 3D actuellement tenus (par exemple pour que le curseur les traverse).
+   *
+   * @returns {import('three').Object3D[]}
+   */
+  objetsTenus() {
+    return [...this.prises.values()].map((prise) => prise.objet.objet3D);
+  }
+
+  /**
    * Une main relâche : l'objet reste là où il a été lâché.
    *
    * @param {XRHandedness} cote - Main qui relâche.

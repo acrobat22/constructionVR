@@ -107,6 +107,12 @@ export const CONFIG = Object.freeze({
     }),
   }),
 
+  /** Mode « Essayer sans casque » : la souris remplace la main. */
+  souris: Object.freeze({
+    /** Surélévation du point pendant une prise : la brique survole la surface visée. */
+    hauteurLevee: 0.05,
+  }),
+
   saisie: Object.freeze({
     /**
      * Distance maximale entre le point de pincement et la surface d'une brique

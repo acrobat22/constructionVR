@@ -43,6 +43,7 @@ src/
   coeur/sessionXR.js       Démarrage et fin de la session WebXR
   entrees/mains.js         Suivi et affichage des mains, signalement des pincements
   entrees/detecteurPincement.js  Logique pure du pincement (deux seuils anti-tremblement)
+  entrees/souris.js        Souris à la place des mains (mode « Essayer sans casque »)
   construction/brique.js   Briques à tenons, halo de survol, plaque de base
   construction/saisie.js   Saisie, déplacement et relâchement des objets
   construction/maquetteFantome.js  Emplacement visé : volume translucide + contour net
@@ -55,6 +56,7 @@ src/
   interface/bouton3D.js    Bouton 3D générique (« Annuler », « Voir le modèle »)
   interface/icones.js      Icônes dessinées (flèche retour, œil)
   interface/carteProgression.js    Nom du modèle et avancement, sans chrono
+  interface/modeSansCasque.js      Bascule accueil ↔ mode souris (Échap pour revenir)
   modeles/chargeurModele.js        Lecture, validation et conversion des modèles JSON
 tests/                     Tests des fonctions pures (node --test)
 ```
@@ -111,7 +113,22 @@ garder d'anciens fichiers en cache). Il n'écoute que sur `localhost`.
 Ouvrir ensuite <http://localhost:8000>. WebXR exige une adresse sécurisée :
 `localhost` est accepté, mais une adresse IP en `http://` ne l'est pas.
 
-### Tester sur ordinateur (sans casque)
+### Tester sur ordinateur, à la souris (le plus simple)
+
+1. Ouvrir <http://localhost:8000> et cliquer sur **« Essayer sans casque »**.
+2. La souris remplace la main : cliquer sur la brique, la glisser jusqu'à
+   l'emplacement fantôme, relâcher. Cliquer sur « Annuler » ou « Voir le
+   modèle » pour les utiliser.
+3. `Échap` ou « Revenir à l'accueil » pour revenir.
+
+Ce mode teste tout le déroulé du jeu, mais pas la détection du pincement des
+vrais doigts (couverte par les tests `node --test`, puis à valider en casque).
+
+### Tester sur ordinateur avec l'émulateur WebXR
+
+L'émulateur de Meta ne permet pas (encore) de déplacer facilement les mains
+émulées : sa documentation indique que l'émulation des mains est « en cours de
+développement ». Il reste utile pour vérifier l'entrée en VR.
 
 1. Installer l'extension **Immersive Web Emulator** (Meta) dans Chrome ou Edge :
    [Chrome Web Store](https://chromewebstore.google.com/detail/immersive-web-emulator/cgffilbpcibhmcfbgggfhfolhkfbhmik).

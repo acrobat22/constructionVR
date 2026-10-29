@@ -15,6 +15,7 @@ import { SurveillantFluidite } from './coeur/qualiteAdaptative.js';
 import { SessionXR } from './coeur/sessionXR.js';
 import { Mains } from './entrees/mains.js';
 import { DetecteurPincement } from './entrees/detecteurPincement.js';
+import { Souris } from './entrees/souris.js';
 import { Brique, creerPlaqueDeBase } from './construction/brique.js';
 import { GestionnaireSaisie } from './construction/saisie.js';
 import { Historique } from './construction/historique.js';
@@ -24,6 +25,7 @@ import { creerMiniature } from './construction/miniature.js';
 import { Bouton3D } from './interface/bouton3D.js';
 import { dessinerFlecheRetour, dessinerOeil } from './interface/icones.js';
 import { CarteProgression } from './interface/carteProgression.js';
+import { ModeSansCasque } from './interface/modeSansCasque.js';
 import { chargerModele, calculerEmprise, calculerPositionsEnMetres } from './modeles/chargeurModele.js';
 
 const zoneMessage = document.getElementById('message-statut');
@@ -95,29 +97,51 @@ const boutons = [boutonAnnuler, boutonModele];
 const carte = new CarteProgression(CONFIG.carte);
 scene.add(carte.objet3D);
 
+/**
+ * Réactions aux pincements, partagées par les mains (VR) et la souris (sans casque).
+ * @type {import('./entrees/mains.js').EcouteursPincement}
+ */
+const ecouteursPincement = {
+  surDebutPincement: (cote, point) => {
+    // Un pincement sur un bouton l'active ; ailleurs, il saisit une brique.
+    const boutonVise = boutons.find((bouton) => bouton.estVise(point));
+    if (boutonVise) {
+      boutonVise.appuyer(tempsCourant);
+    } else {
+      saisie.saisir(cote, point);
+    }
+  },
+  surFinPincement: (cote) => {
+    const objetLache = saisie.relacher(cote);
+    if (objetLache) {
+      partie.surObjetRelache(objetLache);
+    }
+  },
+};
+
 const mains = new Mains(
   renderer,
   scene,
   CONFIG.mains,
   () => new DetecteurPincement(CONFIG.mains.pincement),
-  {
-    surDebutPincement: (cote, point) => {
-      // Un pincement sur un bouton l'active ; ailleurs, il saisit une brique.
-      const boutonVise = boutons.find((bouton) => bouton.estVise(point));
-      if (boutonVise) {
-        boutonVise.appuyer(tempsCourant);
-      } else {
-        saisie.saisir(cote, point);
-      }
-    },
-    surFinPincement: (cote) => {
-      const objetLache = saisie.relacher(cote);
-      if (objetLache) {
-        partie.surObjetRelache(objetLache);
-      }
-    },
-  },
+  ecouteursPincement,
 );
+
+const souris = new Souris({
+  canevas: renderer.domElement,
+  camera,
+  scene,
+  objetsTenus: () => saisie.objetsTenus(),
+  ecouteurs: ecouteursPincement,
+  reglages: CONFIG.souris,
+});
+
+const modeSansCasque = new ModeSansCasque({
+  panneauAccueil: document.querySelector('.panneau'),
+  barreAide: document.getElementById('barre-aide'),
+  boutonEssayer: document.getElementById('bouton-souris'),
+  boutonRetour: document.getElementById('bouton-retour'),
+}, souris);
 
 // Conteneur du modèle : origine au centre de la plaque, dessus de la plaque à y = 0.
 const conteneurModele = new Group();
@@ -205,7 +229,11 @@ const baissesDeQualite = [
   () => lampe.definirResolutionOmbre(CONFIG.lampe.resolutionOmbreReduite),
   () => lampe.desactiverOmbres(),
 ];
-renderer.xr.addEventListener('sessionstart', () => surveillant.reinitialiser());
+renderer.xr.addEventListener('sessionstart', () => {
+  surveillant.reinitialiser();
+  // En VR, ce sont les mains qui comptent : la souris est mise de côté.
+  modeSansCasque.desactiver();
+});
 
 // Boucle de rendu : `setAnimationLoop` est obligatoire en WebXR
 // (elle suit la fréquence d'affichage du casque).
@@ -218,7 +246,8 @@ renderer.setAnimationLoop((temps) => {
   }
 
   mains.mettreAJour();
-  const pointsDePincement = mains.pointsDePincement;
+  souris.mettreAJour();
+  const pointsDePincement = new Map([...mains.pointsDePincement, ...souris.pointsDePincement]);
   saisie.mettreAJour(pointsDePincement);
   partie.mettreAJour(temps);
   for (const bouton of boutons) {
