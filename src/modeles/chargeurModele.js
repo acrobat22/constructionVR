@@ -74,6 +74,7 @@ const HAUTEUR_MAXIMALE = 8;
 /**
  * @typedef {object} Modele
  * @property {string} nom - Nom affiché du modèle.
+ * @property {string} description - Phrase de présentation (facultative, vide sinon).
  * @property {DescriptionBrique[]} briques - Briques dans l'ordre de construction.
  */
 
@@ -151,7 +152,8 @@ export function validerModele(donnees) {
   if (problemes.length > 0) {
     throw new ErreurModele(`Modèle « ${donnees.nom} » invalide — ${problemes.join(' ')}`);
   }
-  return { nom: donnees.nom, briques };
+  const description = typeof donnees.description === 'string' ? donnees.description : '';
+  return { nom: donnees.nom, description, briques };
 }
 
 /**

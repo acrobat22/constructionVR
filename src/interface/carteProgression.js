@@ -22,6 +22,13 @@ const TEXTE_AIDE = 'Pincez le bloc et posez-le dans le cadre.';
 /** Message affiché une fois le modèle terminé (positif, sans pression). */
 const TEXTE_FELICITATIONS = 'Votre modèle est complet. Admirez-le !';
 
+/** Explication affichée pendant la présentation du modèle (une phrase par ligne). */
+const LIGNES_PRESENTATION = Object.freeze([
+  'Prenez une pièce en pinçant le pouce et l’index,',
+  'puis posez-la dans le cadre. Prenez tout votre temps.',
+  'Quand vous le souhaitez, appuyez sur « Commencer ».',
+]);
+
 /** Pixels du canevas par mètre de panneau (netteté du texte). */
 const PIXELS_PAR_METRE = 1800;
 
@@ -60,23 +67,10 @@ export class CarteProgression {
    * @param {number} totalBriques - Nombre total de briques.
    */
   afficher(nomModele, briquesPosees, totalBriques) {
-    const contexte = this.canevas.getContext('2d');
+    const contexte = this.#dessinerFond();
     const { width: largeur, height: hauteur } = this.canevas;
-    const marge = 16;
-
-    contexte.clearRect(0, 0, largeur, hauteur);
-    contexte.fillStyle = COULEURS.fond;
-    contexte.strokeStyle = COULEURS.bordure;
-    contexte.lineWidth = 8;
-    contexte.beginPath();
-    contexte.roundRect(marge, marge, largeur - 2 * marge, hauteur - 2 * marge, 40);
-    contexte.fill();
-    contexte.stroke();
-
     const police = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
     const gauche = 60;
-    contexte.textBaseline = 'middle';
-    contexte.textAlign = 'left';
 
     contexte.fillStyle = COULEURS.titre;
     contexte.font = `bold 84px ${police}`;
@@ -97,6 +91,53 @@ export class CarteProgression {
 
     this.#dessinerPastilles(contexte, gauche, hauteur * 0.8, largeur - 2 * gauche, briquesPosees, totalBriques);
     this.texture.needsUpdate = true;
+  }
+
+  /**
+   * Affiche la présentation du modèle à construire, avec l'explication du jeu.
+   *
+   * @param {string} nomModele - Nom du modèle (« Le voilier »).
+   */
+  afficherPresentation(nomModele) {
+    const contexte = this.#dessinerFond();
+    const { width: largeur, height: hauteur } = this.canevas;
+    const police = 'system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
+    const gauche = 60;
+    // « Le voilier » → « Voici le voilier ! »
+    const nomDansLaPhrase = nomModele.charAt(0).toLowerCase() + nomModele.slice(1);
+
+    contexte.fillStyle = COULEURS.titre;
+    contexte.font = `bold 80px ${police}`;
+    contexte.fillText(`Voici ${nomDansLaPhrase} !`, gauche, hauteur * 0.2, largeur - 2 * gauche);
+
+    contexte.fillStyle = COULEURS.texte;
+    contexte.font = `43px ${police}`;
+    LIGNES_PRESENTATION.forEach((ligne, indice) => {
+      contexte.fillText(ligne, gauche, hauteur * (0.44 + indice * 0.19), largeur - 2 * gauche);
+    });
+    this.texture.needsUpdate = true;
+  }
+
+  /**
+   * Efface la carte et dessine son fond (panneau sombre bordé).
+   *
+   * @returns {CanvasRenderingContext2D}
+   */
+  #dessinerFond() {
+    const contexte = this.canevas.getContext('2d');
+    const { width: largeur, height: hauteur } = this.canevas;
+    const marge = 16;
+    contexte.clearRect(0, 0, largeur, hauteur);
+    contexte.fillStyle = COULEURS.fond;
+    contexte.strokeStyle = COULEURS.bordure;
+    contexte.lineWidth = 8;
+    contexte.beginPath();
+    contexte.roundRect(marge, marge, largeur - 2 * marge, hauteur - 2 * marge, 40);
+    contexte.fill();
+    contexte.stroke();
+    contexte.textBaseline = 'middle';
+    contexte.textAlign = 'left';
+    return contexte;
   }
 
   /**

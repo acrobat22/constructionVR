@@ -35,7 +35,8 @@ vendor/webxr-input-profiles/  Modèles 3D des mains (licence MIT)
 ressources/environnements/ Pièce photographiée « Lebombo » (photo + HDR, Poly Haven, CC0)
 ressources/textures/chene/ Bois du plateau (Poly Haven, CC0)
 ressources/textures/pin/   Bois des blocs et de la planchette (Poly Haven, CC0)
-modeles/voilier.json       Le voilier (14 pièces), modèle chargé au démarrage
+modeles/catalogue.json     Modèles proposés sur l'accueil, dans l'ordre
+modeles/voilier.json       Le voilier (14 pièces), choisi par défaut
 modeles/baleine.json, girafe.json, lion.json, dragon.json   Animaux en formes arrondies (7 à 10 pièces)
 modeles/essai.json         Modèle d'essai de 3 briques
 src/
@@ -58,7 +59,8 @@ src/
   construction/maquetteFantome.js  Emplacement visé : volume translucide + contour net
   construction/accrochage.js       Logique pure : accrochage magnétique et glissement doux
   construction/historique.js       Pile d'actions pour « Annuler »
-  construction/partie.js   Déroulé du mode guidé (une brique à la fois)
+  construction/partie.js   Déroulé du mode guidé : présentation, puis une pièce à la fois
+  construction/atelier.js  Installe le modèle choisi sur la table (et en change)
   construction/supports.js         Logique pure : où se pose une brique lâchée (chute douce)
   construction/ombreContact.js     Ombre douce au pied des objets posés
   construction/miniature.js        Modèle terminé en miniature (bouton « œil »)
@@ -66,8 +68,11 @@ src/
   interface/icones.js      Icônes dessinées (flèche retour, œil)
   interface/carteProgression.js    Nom du modèle et avancement, sans chrono
   interface/modeSansCasque.js      Bascule accueil ↔ mode souris (Échap pour revenir)
+  interface/menuModeles.js         Choix du modèle sur l'accueil (cartes à boutons radio)
+  interface/vignettes.js           Vignettes des modèles, générées par le jeu
   interface/sons.js        Sons doux (Web Audio, sans fichier) : saisie, accrochage, réussite
   modeles/chargeurModele.js        Lecture, validation et conversion des modèles JSON
+  modeles/catalogue.js     Lecture et validation du catalogue des modèles
 tests/                     Tests des fonctions pures (node --test)
 ```
 
@@ -114,7 +119,9 @@ un quart de rond, une pointe ou un cylindre couché), et deux pièces ne doivent
 jamais occuper le même espace.
 
 Un fichier mal écrit est refusé avec un message qui indique la brique fautive.
-Le modèle chargé au démarrage se choisit dans `src/config.js` (`modele.url`).
+Pour proposer un modèle sur la page d'accueil, ajouter son nom de fichier
+dans `modeles/catalogue.json` (l'ordre du fichier est l'ordre d'affichage, le
+premier est choisi par défaut). Sa vignette est générée automatiquement.
 
 ## Tests
 

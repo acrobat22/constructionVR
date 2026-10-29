@@ -17,13 +17,15 @@ export class ModeSansCasque {
    * @param {HTMLButtonElement} elements.boutonEssayer - Bouton « Essayer sans casque ».
    * @param {HTMLButtonElement} elements.boutonRetour - Bouton « Revenir à l'accueil ».
    * @param {{ activer(): void, desactiver(): void }} souris - Entrée souris à piloter.
+   * @param {() => void} [surRetourAccueil] - Appelé quand le joueur revient à l'accueil.
    */
-  constructor({ panneauAccueil, barreAide, boutonEssayer, boutonRetour }, souris) {
+  constructor({ panneauAccueil, barreAide, boutonEssayer, boutonRetour }, souris, surRetourAccueil = () => {}) {
     this.panneauAccueil = panneauAccueil;
     this.barreAide = barreAide;
     this.boutonEssayer = boutonEssayer;
     this.boutonRetour = boutonRetour;
     this.souris = souris;
+    this.surRetourAccueil = surRetourAccueil;
     this.estActif = false;
 
     this.boutonEssayer.addEventListener('click', () => this.activer());
@@ -58,5 +60,6 @@ export class ModeSansCasque {
     this.barreAide.hidden = true;
     this.panneauAccueil.hidden = false;
     this.boutonEssayer.focus();
+    this.surRetourAccueil();
   }
 }

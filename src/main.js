@@ -5,7 +5,7 @@
  * dépendances) : chaque module reçoit ici ce dont il a besoin.
  */
 
-import { Box3, Group, Vector3 } from 'three';
+import { Group, Vector3 } from 'three';
 
 import { CONFIG } from './config.js';
 import { creerEnvironnement, creerRendu } from './coeur/scene.js';
@@ -16,19 +16,22 @@ import { SessionXR } from './coeur/sessionXR.js';
 import { Mains } from './entrees/mains.js';
 import { DetecteurPincement } from './entrees/detecteurPincement.js';
 import { Souris } from './entrees/souris.js';
-import { Brique, creerPlaqueDeBase } from './construction/brique.js';
 import { GestionnaireSaisie } from './construction/saisie.js';
 import { Historique } from './construction/historique.js';
 import { MaquetteFantome } from './construction/maquetteFantome.js';
 import { Partie } from './construction/partie.js';
+import { Atelier } from './construction/atelier.js';
 import { creerMiniature } from './construction/miniature.js';
 import { chargerBoisPeint } from './construction/boisPeint.js';
 import { Bouton3D } from './interface/bouton3D.js';
-import { dessinerFlecheRetour, dessinerOeil } from './interface/icones.js';
+import { dessinerFlecheRetour, dessinerLecture, dessinerOeil } from './interface/icones.js';
 import { CarteProgression } from './interface/carteProgression.js';
+import { MenuModeles } from './interface/menuModeles.js';
+import { genererVignettes } from './interface/vignettes.js';
 import { ModeSansCasque } from './interface/modeSansCasque.js';
 import { Sons } from './interface/sons.js';
 import { chargerModele, calculerEmprise, calculerPositionsEnMetres } from './modeles/chargeurModele.js';
+import { chargerCatalogue } from './modeles/catalogue.js';
 
 const zoneMessage = document.getElementById('message-statut');
 
@@ -97,13 +100,11 @@ scene.add(boutonAnnuler.objet3D);
 /** Libellés du bouton « œil » selon que la miniature est affichée ou non. */
 const LIBELLES_MODELE = Object.freeze({ voir: 'Voir le modèle', cacher: 'Cacher le modèle' });
 
-/** @type {Group | null} Miniature du modèle terminé (créée au chargement du modèle). */
-let miniature = null;
-
 const boutonModele = new Bouton3D(CONFIG.bouton, {
   libelle: CONFIG.miniature.visibleAuDemarrage ? LIBELLES_MODELE.cacher : LIBELLES_MODELE.voir,
   dessinerIcone: dessinerOeil,
   surAppui: () => {
+    const miniature = atelier.miniature;
     if (!miniature) {
       return;
     }
@@ -114,7 +115,17 @@ const boutonModele = new Bouton3D(CONFIG.bouton, {
 boutonModele.objet3D.position.copy(surLaTable(CONFIG.disposition.boutonModele, CONFIG.bouton.hauteur));
 scene.add(boutonModele.objet3D);
 
-const boutons = [boutonAnnuler, boutonModele];
+// « Commencer » n'est visible que pendant la présentation du modèle.
+const boutonCommencer = new Bouton3D(CONFIG.bouton, {
+  libelle: 'Commencer',
+  dessinerIcone: dessinerLecture,
+  surAppui: () => partie.commencer(),
+});
+boutonCommencer.objet3D.position.copy(surLaTable(CONFIG.disposition.boutonCommencer, CONFIG.bouton.hauteur));
+boutonCommencer.objet3D.visible = false;
+scene.add(boutonCommencer.objet3D);
+
+const boutons = [boutonAnnuler, boutonModele, boutonCommencer];
 
 const carte = new CarteProgression(CONFIG.carte);
 scene.add(carte.objet3D);
@@ -125,8 +136,8 @@ scene.add(carte.objet3D);
  */
 const ecouteursPincement = {
   surDebutPincement: (cote, point, options) => {
-    // Un pincement sur un bouton l'active ; ailleurs, il saisit une brique.
-    const boutonVise = boutons.find((bouton) => bouton.estVise(point));
+    // Un pincement sur un bouton visible l'active ; ailleurs, il saisit une brique.
+    const boutonVise = boutons.find((bouton) => bouton.objet3D.visible && bouton.estVise(point));
     if (boutonVise) {
       boutonVise.appuyer(tempsCourant);
       sons.jouerSaisie();
@@ -160,13 +171,6 @@ const souris = new Souris({
   reglages: CONFIG.souris,
 });
 
-const modeSansCasque = new ModeSansCasque({
-  panneauAccueil: document.querySelector('.panneau'),
-  barreAide: document.getElementById('barre-aide'),
-  boutonEssayer: document.getElementById('bouton-souris'),
-  boutonRetour: document.getElementById('bouton-retour'),
-}, souris);
-
 // Conteneur du modèle : origine au centre de la plaque, dessus de la plaque à y = 0.
 const conteneurModele = new Group();
 conteneurModele.name = 'modele';
@@ -180,9 +184,6 @@ const zoneTable = {
   minZ: -CONFIG.table.distanceJoueur - CONFIG.table.profondeur / 2,
   maxZ: -CONFIG.table.distanceJoueur + CONFIG.table.profondeur / 2,
 };
-
-/** Nom du modèle en cours, affiché sur la carte. */
-let nomModele = '';
 
 const partie = new Partie({
   conteneurModele,
@@ -199,57 +200,90 @@ const partie = new Partie({
   surModeleTermine: () => sons.jouerReussite(),
   surChangement: () => {
     boutonAnnuler.definirActif(partie.peutAnnuler);
-    carte.afficher(nomModele, partie.nombreBriquesPosees, partie.nombreBriques);
+    boutonCommencer.objet3D.visible = partie.estEnPresentation;
+    const nom = atelier.modele?.nom ?? '';
+    if (partie.estEnPresentation) {
+      carte.afficherPresentation(nom);
+    } else {
+      carte.afficher(nom, partie.nombreBriquesPosees, partie.nombreBriques);
+    }
   },
 });
 
+// Le bois se charge une seule fois ; sans lui, les pièces restent unies.
+const texturesBois = await chargerBoisPeint(CONFIG.boisPeint).catch((erreur) => {
+  console.error('[main] Textures du bois non chargées, pièces unies :', erreur);
+  return null;
+});
+
+const atelier = new Atelier({
+  scene,
+  conteneurModele,
+  partie,
+  config: CONFIG,
+  positionMiniature: surLaTable(CONFIG.disposition.miniature, 0),
+  supportTable: { ...zoneTable, dessus: CONFIG.table.hauteur },
+  texturesBois,
+});
+
+/**
+ * Installe le modèle choisi sur la table (présentation, puis « Commencer »).
+ * Appelé à chaque choix sur l'accueil et à chaque retour à l'accueil, pour
+ * que la partie suivante reparte toujours de zéro.
+ *
+ * @param {string | null} url - Adresse du modèle choisi.
+ */
+function preparerModeleChoisi(url) {
+  if (!url) {
+    return;
+  }
+  atelier.preparer(url)
+    .then(() => boutonModele.definirLibelle(LIBELLES_MODELE.voir))
+    .catch((erreur) => {
+      console.error('[main] Chargement du modèle impossible :', erreur);
+      zoneMessage.textContent = 'Ce modèle n’a pas pu être chargé. Choisissez-en un autre ou rechargez la page.';
+    });
+}
+
+const menu = new MenuModeles(document.getElementById('liste-modeles'), preparerModeleChoisi);
+
+const modeSansCasque = new ModeSansCasque({
+  panneauAccueil: document.querySelector('.panneau'),
+  barreAide: document.getElementById('barre-aide'),
+  boutonEssayer: document.getElementById('bouton-souris'),
+  boutonRetour: document.getElementById('bouton-retour'),
+}, souris, () => preparerModeleChoisi(menu.urlChoisie));
+
 try {
-  // Le bois se charge en même temps que le modèle ; sans lui, les blocs restent unis.
-  const [modele, texturesBois] = await Promise.all([
-    chargerModele(CONFIG.modele.url),
-    chargerBoisPeint(CONFIG.boisPeint).catch((erreur) => {
-      console.error('[main] Textures du bois non chargées, blocs unis :', erreur);
-      return null;
-    }),
-  ]);
-  nomModele = modele.nom;
-  const emprise = calculerEmprise(modele);
-  const places = calculerPositionsEnMetres(modele, CONFIG.grille);
+  const adresses = await chargerCatalogue(CONFIG.modele.catalogue);
+  const modeles = await Promise.all(adresses.map(async (url) => ({ url, modele: await chargerModele(url) })));
+  menu.afficher(modeles.map(({ url, modele }) => ({
+    url,
+    nom: modele.nom,
+    nombrePieces: modele.briques.length,
+    description: modele.description,
+  })));
+  preparerModeleChoisi(menu.urlChoisie);
 
-  const plaque = creerPlaqueDeBase(
-    CONFIG.grille,
-    CONFIG.plaqueDeBase,
-    emprise.maxX - emprise.minX,
-    emprise.maxZ - emprise.minZ,
-    CONFIG.ombreContact,
-    texturesBois,
-    CONFIG.boisPeint,
-  );
-  conteneurModele.add(plaque);
-  conteneurModele.updateMatrixWorld(true);
-  const boitePlaque = new Box3().setFromObject(plaque);
-  const supportPlaque = {
-    minX: boitePlaque.min.x,
-    maxX: boitePlaque.max.x,
-    minZ: boitePlaque.min.z,
-    maxZ: boitePlaque.max.z,
-    dessus: conteneurModele.position.y,
-  };
-
-  miniature = creerMiniature({ modele, places, emprise, config: CONFIG, texturesBois });
-  miniature.position.copy(surLaTable(CONFIG.disposition.miniature, 0));
-  scene.add(miniature);
-
-  partie.demarrer(
-    modele.briques.map((description) => new Brique(
-      CONFIG.grille, CONFIG.brique, description, CONFIG.ombreContact, texturesBois, CONFIG.boisPeint,
-    )),
-    places,
-    [{ ...zoneTable, dessus: CONFIG.table.hauteur }, supportPlaque],
-  );
+  // Vignettes du menu : chaque modèle terminé, photographié par le jeu.
+  const vignettes = genererVignettes(modeles.map(({ url, modele }) => {
+    const objet3D = creerMiniature({
+      modele,
+      places: calculerPositionsEnMetres(modele, CONFIG.grille),
+      emprise: calculerEmprise(modele),
+      config: CONFIG,
+      texturesBois,
+    });
+    objet3D.scale.setScalar(1);
+    objet3D.visible = true;
+    return { url, objet3D };
+  }));
+  for (const [url, image] of vignettes) {
+    menu.definirVignette(url, image);
+  }
 } catch (erreur) {
-  console.error('[main] Chargement du modèle impossible :', erreur);
-  zoneMessage.textContent = 'Le modèle à construire n’a pas pu être chargé. Rechargez la page pour réessayer.';
+  console.error('[main] Chargement des modèles impossible :', erreur);
+  zoneMessage.textContent = 'Les modèles n’ont pas pu être chargés. Rechargez la page pour réessayer.';
 }
 
 const sessionXR = new SessionXR({
@@ -271,6 +305,8 @@ renderer.xr.addEventListener('sessionstart', () => {
   // En VR, ce sont les mains qui comptent : la souris est mise de côté.
   modeSansCasque.desactiver();
 });
+// Retour à l'accueil après la VR : la prochaine partie repart de zéro.
+renderer.xr.addEventListener('sessionend', () => preparerModeleChoisi(menu.urlChoisie));
 
 // Boucle de rendu : `setAnimationLoop` est obligatoire en WebXR
 // (elle suit la fréquence d'affichage du casque).

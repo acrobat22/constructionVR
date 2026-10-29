@@ -214,6 +214,8 @@ export const CONFIG = Object.freeze({
     reserve: Object.freeze({ x: 0.12, z: 0.2 }),
     boutonAnnuler: Object.freeze({ x: -0.38, z: 0.18 }),
     boutonModele: Object.freeze({ x: 0.4, z: 0.18 }),
+    /** Bouton « Commencer », à la place de la réserve (vide pendant la présentation). */
+    boutonCommencer: Object.freeze({ x: 0.06, z: 0.2 }),
     miniature: Object.freeze({ x: 0.4, z: -0.2 }),
   }),
 
@@ -241,8 +243,8 @@ export const CONFIG = Object.freeze({
 
   /** Carte de progression (nom du modèle, avancement), sans chrono. */
   carte: Object.freeze({
-    largeur: 0.62,
-    hauteur: 0.28,
+    largeur: 0.72,
+    hauteur: 0.3,
     /** Position : derrière la table, face au joueur, à environ 1 m. */
     position: Object.freeze({ x: 0, y: 1.12, z: -1.05 }),
   }),
@@ -256,8 +258,8 @@ export const CONFIG = Object.freeze({
     ecartMaximalMs: 120,
   }),
 
-  /** Modèle chargé au démarrage. */
+  /** Liste des modèles proposés sur la page d'accueil (le premier est choisi par défaut). */
   modele: Object.freeze({
-    url: './modeles/voilier.json',
+    catalogue: './modeles/catalogue.json',
   }),
 });

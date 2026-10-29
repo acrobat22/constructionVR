@@ -8,6 +8,14 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-10-29 — Choix du modèle sur la page d'accueil : grandes cartes (vignette
+  générée par le jeu, nom, nombre de pièces), boutons radio accessibles, coche
+  et bordure épaisse pour la sélection. Catalogue `modeles/catalogue.json`.
+- Présentation du modèle à l'arrivée : le modèle terminé est montré sur la
+  planchette avec l'explication du jeu ; la construction démarre avec le
+  bouton 3D « Commencer ». Rubrique « Comment jouer » sur l'accueil.
+- Changer de modèle remet la partie à zéro (au choix, au retour à l'accueil,
+  à la fin d'une session VR). 5 nouveaux tests (catalogue).
 - 2026-10-29 — Formes arrondies : pente, quart de rond, cylindre (debout ou
   couché), pointe, hauteurs de pièce variables, et décors peints (œil souriant,
   œil rond, profil, visage, taches, écailles) dessinés par le jeu.

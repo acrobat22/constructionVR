@@ -1,6 +1,9 @@
 /**
  * @file Déroulé du mode guidé : une brique à la fois.
  *
+ * Avant de commencer, une présentation montre le modèle terminé à sa place
+ * sur la planchette ; le joueur démarre quand il le souhaite (« Commencer »).
+ *
  * À chaque étape :
  *   1. la brique suivante attend dans la réserve, sur la table ;
  *   2. la maquette fantôme montre sa place sur la plaque de base ;
@@ -76,6 +79,8 @@ export class Partie {
     this.indiceEtape = 0;
     /** @type {Glissement | null} */
     this.glissement = null;
+    /** `true` pendant la présentation du modèle terminé, avant « Commencer ». */
+    this.estEnPresentation = false;
 
     this.conteneurModele.add(this.maquette.objet3D);
   }
@@ -97,7 +102,7 @@ export class Partie {
    * @returns {number | null}
    */
   get hauteurPlaceCourante() {
-    if (this.estTerminee || this.glissement) {
+    if (this.estTerminee || this.glissement || this.estEnPresentation) {
       return null;
     }
     return this.#placeDansLaScene(this.indiceEtape).y;
@@ -119,14 +124,52 @@ export class Partie {
    * @param {import('./brique.js').Brique[]} briques - Briques dans l'ordre de construction.
    * @param {{ x: number, y: number, z: number }[]} places - Centre de chaque brique, repère du conteneur.
    * @param {import('./supports.js').Support[]} supportsFixes - Surfaces fixes (table, plaque), repère de la scène.
+   * @param {{ presentation?: boolean }} [options] - `presentation` : montrer d'abord le
+   *   modèle terminé, la construction ne démarrant qu'avec {@link Partie#commencer}.
    */
-  demarrer(briques, places, supportsFixes) {
+  demarrer(briques, places, supportsFixes, { presentation = false } = {}) {
+    this.vider();
     this.briques = briques;
     this.places = places.map((place) => new Vector3(place.x, place.y, place.z));
     this.supportsFixes = supportsFixes;
-    this.indiceEtape = 0;
-    this.historique.vider();
+    if (presentation) {
+      this.#presenter();
+    } else {
+      this.#preparerEtape();
+    }
+  }
+
+  /**
+   * Fin de la présentation : le modèle terminé disparaît et la première pièce
+   * arrive dans la réserve.
+   */
+  commencer() {
+    if (!this.estEnPresentation) {
+      return;
+    }
+    this.estEnPresentation = false;
+    for (const brique of this.briques) {
+      brique.objet3D.removeFromParent();
+    }
     this.#preparerEtape();
+  }
+
+  /**
+   * Retire toutes les pièces du modèle en cours (avant d'en charger un autre).
+   */
+  vider() {
+    for (const brique of this.briques) {
+      this.saisie.retirerObjet(brique);
+      brique.objet3D.removeFromParent();
+    }
+    this.briques = [];
+    this.places = [];
+    this.supportsFixes = [];
+    this.indiceEtape = 0;
+    this.glissement = null;
+    this.estEnPresentation = false;
+    this.historique.vider();
+    this.maquette.masquer();
   }
 
   /**
@@ -241,6 +284,17 @@ export class Partie {
         });
       },
     };
+  }
+
+  /** Montre toutes les pièces à leur place : le modèle terminé, à construire. */
+  #presenter() {
+    this.estEnPresentation = true;
+    this.briques.forEach((brique, indice) => {
+      this.conteneurModele.add(brique.objet3D);
+      brique.objet3D.position.copy(this.places[indice]);
+    });
+    this.maquette.masquer();
+    this.surChangement();
   }
 
   /** Met en place l'étape courante : brique dans la réserve et emplacement visible. */

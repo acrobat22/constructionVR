@@ -67,3 +67,26 @@ export function dessinerOeil(contexte, centreX, centreY, couleur) {
   contexte.arc(centreX, centreY, 17, 0, Math.PI * 2);
   contexte.fill();
 }
+
+/**
+ * Triangle « lecture » (commencer).
+ *
+ * @param {CanvasRenderingContext2D} contexte - Contexte de dessin.
+ * @param {number} centreX - Centre horizontal de l'icône.
+ * @param {number} centreY - Centre vertical de l'icône.
+ * @param {string} couleur - Couleur de remplissage.
+ */
+export function dessinerLecture(contexte, centreX, centreY, couleur) {
+  const demiHauteur = 42;
+  contexte.fillStyle = couleur;
+  contexte.lineJoin = 'round';
+  contexte.lineWidth = 10;
+  contexte.strokeStyle = couleur;
+  contexte.beginPath();
+  contexte.moveTo(centreX - demiHauteur * 0.7, centreY - demiHauteur);
+  contexte.lineTo(centreX + demiHauteur * 0.9, centreY);
+  contexte.lineTo(centreX - demiHauteur * 0.7, centreY + demiHauteur);
+  contexte.closePath();
+  contexte.fill();
+  contexte.stroke();
+}

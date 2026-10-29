@@ -1,0 +1,9 @@
+{
+  "modeles": [
+    "voilier.json",
+    "baleine.json",
+    "girafe.json",
+    "lion.json",
+    "dragon.json"
+  ]
+}

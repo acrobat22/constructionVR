@@ -83,6 +83,102 @@ h1 {
   cursor: not-allowed;
 }
 
+/* Choix du modèle : grandes cartes à boutons radio. */
+.choix-modele {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  border: none;
+}
+
+.choix-modele legend {
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.liste-modeles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.75rem;
+}
+
+.carte-modele {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border: 3px solid var(--couleur-desactive);
+  border-radius: 0.9rem;
+  cursor: pointer;
+}
+
+.carte-modele img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.carte-modele-nom {
+  font-weight: 800;
+}
+
+.carte-modele-pieces {
+  font-size: 1.125rem;
+}
+
+/* Choisie : bordure épaisse jaune pâle ET coche (jamais la couleur seule). */
+.carte-modele:has(input:checked) {
+  border: 6px solid var(--couleur-accent);
+  padding: calc(0.5rem - 3px);
+}
+
+.carte-modele:has(input:checked)::after {
+  content: "✔";
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--couleur-fond);
+  background: var(--couleur-accent);
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+/* Focus clavier bien visible sur la carte entière. */
+.carte-modele:has(input:focus-visible) {
+  outline: 4px solid var(--couleur-texte);
+  outline-offset: 4px;
+}
+
+/* Caché à l'écran mais lu par les lecteurs d'écran et utilisable au clavier. */
+.visuellement-cache {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+
+.comment-jouer {
+  margin: 0 0 1.5rem;
+  padding-left: 1.75rem;
+}
+
+.comment-jouer li {
+  margin-bottom: 0.35rem;
+}
+
 /* L'attribut `hidden` l'emporte toujours sur les règles d'affichage ci-dessous. */
 [hidden] {
   display: none !important;
