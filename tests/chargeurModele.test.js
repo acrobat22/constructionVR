@@ -72,6 +72,56 @@ test('les tailles, positions et couleurs invalides sont refusées', () => {
   }
 });
 
+test('une brique qui flotte (rien en dessous) est refusée', () => {
+  const modele = {
+    nom: 'Flottant',
+    briques: [
+      { position: [0, 0, 0], taille: [2, 2], couleur: '#ff0000' },
+      { position: [4, 1, 0], taille: [2, 2], couleur: '#00ff00' },
+    ],
+  };
+  assert.throws(() => validerModele(modele), /brique 2 .*repose sur rien/);
+});
+
+test('une brique listée avant son support est refusée (ordre de construction)', () => {
+  const modele = {
+    nom: 'Ordre',
+    briques: [
+      { position: [0, 1, 0], taille: [2, 2], couleur: '#ff0000' },
+      { position: [0, 0, 0], taille: [2, 2], couleur: '#00ff00' },
+    ],
+  };
+  assert.throws(() => validerModele(modele), /brique 1 .*repose sur rien/);
+});
+
+test('deux briques qui se chevauchent sur une même couche sont refusées', () => {
+  const modele = {
+    nom: 'Chevauchement',
+    briques: [
+      { position: [0, 0, 0], taille: [2, 2], couleur: '#ff0000' },
+      { position: [1, 0, 1], taille: [2, 2], couleur: '#00ff00' },
+    ],
+  };
+  assert.throws(() => validerModele(modele), /brique 2 .*chevauche la brique 1/);
+});
+
+test('deux briques côte à côte (sans chevauchement) sont acceptées', () => {
+  const modele = {
+    nom: 'Côte à côte',
+    briques: [
+      { position: [0, 0, 0], taille: [2, 2], couleur: '#ff0000' },
+      { position: [2, 0, 0], taille: [2, 2], couleur: '#00ff00' },
+    ],
+  };
+  assert.doesNotThrow(() => validerModele(modele));
+});
+
+test('le voilier fourni avec le jeu est valide et compte 12 à 15 briques', async () => {
+  const texte = await readFile(new URL('../modeles/voilier.json', import.meta.url), 'utf8');
+  const modele = validerModele(JSON.parse(texte));
+  assert.ok(modele.briques.length >= 12 && modele.briques.length <= 15, `${modele.briques.length} briques`);
+});
+
 test('l’emprise couvre toutes les briques', () => {
   const modele = validerModele(MODELE_VALIDE);
   assert.deepEqual(calculerEmprise(modele), { minX: 0, maxX: 4, minZ: 0, maxZ: 2 });

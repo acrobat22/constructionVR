@@ -20,7 +20,7 @@ Le contexte complet et les décisions de conception se trouvent dans
 | 3 | Accrochage, maquette fantôme, annulation | ✅ |
 | 3 bis | Rendu réaliste, carte de progression, bouton « œil », chute douce | en test |
 | 4 | Téléportation par pastilles | à faire |
-| 5 | Premier modèle : voilier | à faire |
+| 5 | Premier modèle : voilier (14 briques), texte d'aide | en test |
 | 6 | Déploiement GitHub Pages | à faire |
 
 ## Structure
@@ -32,6 +32,7 @@ vendor/three/              Three.js 0.186.1 (copie locale, licence MIT)
 vendor/webxr-input-profiles/  Modèles 3D des mains (licence MIT)
 ressources/environnements/ Pièce photographiée « Lebombo » (photo + HDR, Poly Haven, CC0)
 ressources/textures/chene/ Bois du plateau (Poly Haven, CC0)
+modeles/voilier.json       Le voilier (14 briques), modèle chargé au démarrage
 modeles/essai.json         Modèle d'essai de 3 briques
 src/
   main.js                  Crée les modules et les relie (seul point d'assemblage)
@@ -84,7 +85,12 @@ L'ordre des briques est l'ordre de construction.
 - `taille` : `[largeur, profondeur]` en tenons, entiers ≥ 1.
 - `couleur` : format `#rrggbb`.
 
+Le modèle doit être **constructible dans l'ordre donné** : chaque brique
+au-dessus de la plaque doit reposer sur une brique listée avant elle, et deux
+briques d'une même couche ne doivent pas se chevaucher.
+
 Un fichier mal écrit est refusé avec un message qui indique la brique fautive.
+Le modèle chargé au démarrage se choisit dans `src/config.js` (`modele.url`).
 
 ## Tests
 

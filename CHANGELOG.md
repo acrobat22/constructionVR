@@ -8,6 +8,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-10-29 — Étape 5 : le voilier (`modeles/voilier.json`, 14 briques : coque,
+  mât, voile, fanion), chargé au démarrage. Ligne d'aide permanente sur la carte
+  de progression et message de félicitations à la fin.
+- Validation « constructible » des modèles : une brique doit reposer sur une
+  brique posée avant elle, sans chevauchement (5 nouveaux tests).
 - 2026-10-29 — Mode « Essayer sans casque » : la souris remplace la main
   (cliquer-glisser-relâcher, clic sur les boutons 3D), barre d'aide, `Échap`
   pour revenir à l'accueil. Désactivé automatiquement à l'entrée en VR.

@@ -16,6 +16,12 @@ const COULEURS = Object.freeze({
   texte: '#ffe98a',
 });
 
+/** Aide affichée pendant la construction (le geste, en une phrase). */
+const TEXTE_AIDE = 'Pincez la brique et posez-la dans le cadre blanc.';
+
+/** Message affiché une fois le modèle terminé (positif, sans pression). */
+const TEXTE_FELICITATIONS = 'Votre modèle est complet. Admirez-le !';
+
 /** Pixels du canevas par mètre de panneau (netteté du texte). */
 const PIXELS_PAR_METRE = 1800;
 
@@ -74,7 +80,7 @@ export class CarteProgression {
 
     contexte.fillStyle = COULEURS.titre;
     contexte.font = `bold 84px ${police}`;
-    contexte.fillText(nomModele, gauche, hauteur * 0.3);
+    contexte.fillText(nomModele, gauche, hauteur * 0.2);
 
     const estTermine = briquesPosees >= totalBriques;
     const texte = estTermine
@@ -82,7 +88,12 @@ export class CarteProgression {
       : `Brique ${briquesPosees + 1} sur ${totalBriques}`;
     contexte.fillStyle = COULEURS.texte;
     contexte.font = `bold 64px ${police}`;
-    contexte.fillText(texte, gauche, hauteur * 0.56);
+    contexte.fillText(texte, gauche, hauteur * 0.4);
+
+    // Aide permanente : le geste à faire, ou la suite une fois terminé.
+    contexte.fillStyle = COULEURS.titre;
+    contexte.font = `52px ${police}`;
+    contexte.fillText(estTermine ? TEXTE_FELICITATIONS : TEXTE_AIDE, gauche, hauteur * 0.6, largeur - 2 * gauche);
 
     this.#dessinerPastilles(contexte, gauche, hauteur * 0.8, largeur - 2 * gauche, briquesPosees, totalBriques);
     this.texture.needsUpdate = true;

@@ -106,10 +106,54 @@ export function validerModele(donnees) {
     };
   });
 
+  if (problemes.length === 0) {
+    problemes.push(...listerProblemesConstruction(briques));
+  }
   if (problemes.length > 0) {
     throw new ErreurModele(`Modèle « ${donnees.nom} » invalide — ${problemes.join(' ')}`);
   }
   return { nom: donnees.nom, briques };
+}
+
+/**
+ * Indique si deux briques se recouvrent vue de dessus (un bord commun ne compte pas).
+ *
+ * @param {DescriptionBrique} a - Première brique.
+ * @param {DescriptionBrique} b - Seconde brique.
+ * @returns {boolean}
+ */
+function seRecouvrentDeDessus(a, b) {
+  return a.position.x < b.position.x + b.largeur && b.position.x < a.position.x + a.largeur
+    && a.position.z < b.position.z + b.profondeur && b.position.z < a.position.z + a.profondeur;
+}
+
+/**
+ * Vérifie que le modèle peut réellement être construit dans l'ordre donné :
+ * chaque brique au-dessus du sol repose sur une brique posée avant elle, et
+ * deux briques d'une même couche ne se chevauchent pas.
+ *
+ * @param {DescriptionBrique[]} briques - Briques dans l'ordre de construction.
+ * @returns {string[]} Problèmes trouvés (liste vide si le modèle est constructible).
+ */
+function listerProblemesConstruction(briques) {
+  const problemes = [];
+  briques.forEach((brique, indice) => {
+    const precedentes = briques.slice(0, indice);
+
+    const briqueChevauchee = precedentes.findIndex((autre) => autre.position.couche === brique.position.couche
+      && seRecouvrentDeDessus(brique, autre));
+    if (briqueChevauchee !== -1) {
+      problemes.push(`brique ${indice + 1} : elle chevauche la brique ${briqueChevauchee + 1}.`);
+    }
+
+    const estSurLaPlaque = brique.position.couche === 0;
+    const aUnSupport = precedentes.some((autre) => autre.position.couche === brique.position.couche - 1
+      && seRecouvrentDeDessus(brique, autre));
+    if (!estSurLaPlaque && !aUnSupport) {
+      problemes.push(`brique ${indice + 1} : elle repose sur rien (aucune brique posée avant elle juste en dessous).`);
+    }
+  });
+  return problemes;
 }
 
 /**

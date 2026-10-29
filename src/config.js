@@ -212,8 +212,8 @@ export const CONFIG = Object.freeze({
 
   /** Carte de progression (nom du modèle, avancement), sans chrono. */
   carte: Object.freeze({
-    largeur: 0.56,
-    hauteur: 0.2,
+    largeur: 0.62,
+    hauteur: 0.28,
     /** Position : derrière la table, face au joueur, à environ 1 m. */
     position: Object.freeze({ x: 0, y: 1.12, z: -1.05 }),
   }),
@@ -229,6 +229,6 @@ export const CONFIG = Object.freeze({
 
   /** Modèle chargé au démarrage. */
   modele: Object.freeze({
-    url: './modeles/essai.json',
+    url: './modeles/voilier.json',
   }),
 });
