@@ -11,6 +11,7 @@ import { CONFIG } from './config.js';
 import { creerEnvironnement, creerRendu } from './coeur/scene.js';
 import { ajouterSolOmbres, chargerAmbiance } from './coeur/ambiance.js';
 import { Lampe } from './coeur/lampe.js';
+import { creerTapis } from './coeur/tapis.js';
 import { SurveillantFluidite } from './coeur/qualiteAdaptative.js';
 import { SessionXR } from './coeur/sessionXR.js';
 import { Mains } from './entrees/mains.js';
@@ -38,6 +39,10 @@ const zoneMessage = document.getElementById('message-statut');
 const { scene, camera } = creerEnvironnement(CONFIG);
 const renderer = creerRendu(document.getElementById('scene'), camera);
 ajouterSolOmbres(scene, CONFIG.ambiance);
+scene.add(creerTapis(CONFIG.tapis, CONFIG.table));
+
+/** Hauteur du plan de jeu : dessus du tapis posé sur la table. */
+const HAUTEUR_PLAN_DE_JEU = CONFIG.table.hauteur + CONFIG.tapis.epaisseur;
 
 // Sons doux : le contexte audio est réveillé au premier clic sur la page
 // (exigence des navigateurs), et la case « Sons doux » les active ou les coupe.
@@ -63,13 +68,13 @@ document.addEventListener('click', () => sons.reveiller());
  * Convertit une position relative au centre du plateau en coordonnées de la scène.
  *
  * @param {{ x: number, z: number }} emplacement - Décalage depuis le centre du plateau.
- * @param {number} hauteurAuDessus - Hauteur au-dessus du plateau.
+ * @param {number} hauteurAuDessus - Hauteur au-dessus du plan de jeu (le tapis).
  * @returns {Vector3}
  */
 function surLaTable(emplacement, hauteurAuDessus) {
   return new Vector3(
     emplacement.x,
-    CONFIG.table.hauteur + hauteurAuDessus,
+    HAUTEUR_PLAN_DE_JEU + hauteurAuDessus,
     -CONFIG.table.distanceJoueur + emplacement.z,
   );
 }
@@ -222,7 +227,7 @@ const atelier = new Atelier({
   partie,
   config: CONFIG,
   positionMiniature: surLaTable(CONFIG.disposition.miniature, 0),
-  supportTable: { ...zoneTable, dessus: CONFIG.table.hauteur },
+  supportTable: { ...zoneTable, dessus: HAUTEUR_PLAN_DE_JEU },
   texturesBois,
   bordAvantPlanchette: -CONFIG.table.distanceJoueur + CONFIG.disposition.bordAvantPlanchette,
 });

@@ -13,13 +13,15 @@ import * as THREE from 'three';
 import { etirerNiveaux } from './niveauxGrain.js';
 
 /**
- * Crée la texture de grain (niveaux de gris contrastés) à partir de l'image du bois.
+ * Crée une texture de nuances (niveaux de gris contrastés) à partir d'une
+ * image : grain du bois, fibres de la feutrine… Elle multiplie ensuite la
+ * couleur d'un matériau.
  *
- * @param {HTMLImageElement | ImageBitmap} image - Image du bois.
- * @param {number} plancher - Valeur la plus sombre des nervures (0 à 1).
+ * @param {HTMLImageElement | ImageBitmap} image - Image source.
+ * @param {number} plancher - Valeur la plus sombre des nuances (0 à 1).
  * @returns {THREE.CanvasTexture}
  */
-function creerTextureGrain(image, plancher) {
+export function creerTextureGrain(image, plancher) {
   const canevas = document.createElement('canvas');
   canevas.width = image.width;
   canevas.height = image.height;

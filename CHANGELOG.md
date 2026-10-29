@@ -101,6 +101,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - Nouvelle fonctionnalité X
 
 ### Corrigé
+- 2026-10-29 — Contraste des pièces : elles ressortaient mal (1,03:1 pour la
+  girafe jaune sur la planchette claire). Tapis de jeu en feutrine vert sapin
+  (texture « Caban », Poly Haven, CC0), planchette en noyer foncé au quadrillage
+  clair, contour de l'emplacement repassé en clair. Contraste mesuré : 3,25 à
+  9,14 sur le tapis, 4,03 à 11,32 sur la planchette (objectif WCAG : 3:1).
 - 2026-10-29 — Mode sans casque : la carte d'explication sortait du haut de
   l'écran et la tête de la girafe était tout en haut. Nouvelle vue (caméra en
   retrait, visée entre planchette et carte, réglable dans `config.js`), et

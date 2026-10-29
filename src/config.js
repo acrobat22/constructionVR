@@ -91,6 +91,24 @@ export const CONFIG = Object.freeze({
     rayonPieds: 0.025,
   }),
 
+  /**
+   * Tapis de jeu en feutrine vert sapin sous la zone de jeu : contraste
+   * d'au moins 3:1 avec toutes les couleurs des pièces (mesuré).
+   */
+  tapis: Object.freeze({
+    couleur: 0x2f4a3f,
+    largeur: 1.1,
+    profondeur: 0.62,
+    epaisseur: 0.003,
+    textureCouleur: './ressources/textures/feutrine/caban_diff_1k.jpg',
+    textureRelief: './ressources/textures/feutrine/caban_nor_gl_1k.jpg',
+    textureRugosite: './ressources/textures/feutrine/caban_rough_1k.jpg',
+    /** Nuances des fibres : discrètes (plus haut = plus uni). */
+    plancherNuances: 0.75,
+    /** Taille réelle couverte par une répétition de la texture. */
+    tailleMotif: 0.3,
+  }),
+
   session: Object.freeze({
     mode: 'immersive-vr',
     /** Référentiel dont l'origine est au niveau du sol réel. */
@@ -179,25 +197,25 @@ export const CONFIG = Object.freeze({
     opacite: 0.7,
   }),
 
-  /** Planchette de base : bois naturel clair, quadrillage gravé. */
+  /** Planchette de base : noyer foncé (contraste avec les pièces), quadrillage gravé clair. */
   plaqueDeBase: Object.freeze({
-    /** Teinte du bois naturel (bouleau), multipliée par le grain. */
-    couleur: 0xe8d2a8,
+    /** Teinte du noyer, multipliée par le grain. */
+    couleur: 0x4a3122,
     epaisseur: 0.016,
     /** Cases de marge autour du modèle. */
     marge: 2,
-    /** Traits gravés entre les cases (couleur CSS avec transparence). */
-    couleurGravure: 'rgba(90, 60, 30, 0.45)',
+    /** Traits gravés entre les cases (couleur CSS avec transparence), clairs sur le noyer. */
+    couleurGravure: 'rgba(240, 220, 190, 0.35)',
   }),
 
   fantome: Object.freeze({
     /** Transparence de l'emplacement visé (0 = invisible, 1 = opaque). */
     opacite: 0.35,
     /**
-     * Contour net et foncé : bien visible sur les pastels et le bois clair ;
-     * l'information ne repose jamais sur la seule couleur.
+     * Contour net et clair : bien visible sur la planchette en noyer et le
+     * tapis vert sapin ; l'information ne repose jamais sur la seule couleur.
      */
-    couleurContour: 0x243040,
+    couleurContour: 0xfff3dc,
     epaisseurContour: 0.0035,
   }),
 

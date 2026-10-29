@@ -35,6 +35,7 @@ vendor/webxr-input-profiles/  Modèles 3D des mains (licence MIT)
 ressources/environnements/ Pièce photographiée « Lebombo » (photo + HDR, Poly Haven, CC0)
 ressources/textures/chene/ Bois du plateau (Poly Haven, CC0)
 ressources/textures/pin/   Bois des blocs et de la planchette (Poly Haven, CC0)
+ressources/textures/feutrine/  Fibres du tapis de jeu (Poly Haven, CC0)
 modeles/catalogue.json     Modèles proposés sur l'accueil, dans l'ordre
 modeles/voilier.json       Le voilier (14 pièces), choisi par défaut
 modeles/baleine.json, girafe.json, lion.json, dragon.json   Animaux en formes arrondies (7 à 10 pièces)
@@ -45,6 +46,7 @@ src/
   coeur/scene.js           Scène, caméra, rendu « appareil photo », table en chêne
   coeur/ambiance.js        Pièce réelle (photo projetée au sol + éclairage HDR)
   coeur/lampe.js           Lampe suspendue : lumière chaude et ombres douces
+  coeur/tapis.js           Tapis de jeu en feutrine vert sapin (contraste des pièces)
   coeur/qualiteAdaptative.js       Logique pure : baisse la qualité si l'affichage ralentit
   coeur/sessionXR.js       Démarrage et fin de la session WebXR
   entrees/mains.js         Suivi et affichage des mains, signalement des pincements
@@ -203,7 +205,7 @@ Le **suivi des mains** doit être activé dans les réglages du Quest.
 - Three.js : MIT, voir [vendor/three/LICENSE](vendor/three/LICENSE).
 - Modèles des mains (`@webxr-input-profiles/assets` 1.0.20) : MIT, voir
   [vendor/webxr-input-profiles/LICENSE.md](vendor/webxr-input-profiles/LICENSE.md).
-- Pièce « Lebombo » (Greg Zaal), textures « Oak Veneer 01 » et « Kitchen Wood » :
+- Pièce « Lebombo » (Greg Zaal), textures « Oak Veneer 01 », « Kitchen Wood » et « Caban » :
   [Poly Haven](https://polyhaven.com/license), CC0 (domaine public). La photo
   a été réduite en 4096 × 2048 pour la mémoire du casque.
 - Ambiance inspirée d'un puzzle CodePen (MIT, Cliff Pyles) : idées reprises,

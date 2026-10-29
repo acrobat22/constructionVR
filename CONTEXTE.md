@@ -32,7 +32,7 @@ Un jeu de construction en blocs de bois (appelé « briques » dans le code et l
 - **Pas de pression** : aucun chrono, aucun score négatif, aucun échec possible. Messages positifs.
 - **Texte** : très gros, à environ 1 m du joueur, police sans empattement épaisse.
 - **Contraste** : ratio visé **d'au moins 7:1** (texte blanc ou jaune pâle sur panneau sombre opaque). Le décor 3D, lui, est une **pièce réelle et lumineuse** (photo panoramique Poly Haven, validée le 2026-10-29), avec une lampe chaude au-dessus d'une table en chêne clair, sur le modèle d'un puzzle 3D fourni en inspiration.
-- **Couleurs** : **blocs de bois peints aux couleurs pastel contrastées**, nervures du bois bien visibles (validé le 2026-10-29, à la place des briques à tenons, pour un visuel propre au jeu). L'information ne repose **jamais sur la couleur seule** (la maquette fantôme a un contour net et foncé).
+- **Couleurs** : **blocs de bois peints aux couleurs pastel contrastées**, nervures du bois bien visibles (validé le 2026-10-29, à la place des briques à tenons, pour un visuel propre au jeu). Les pièces sont posées sur un **tapis de feutrine vert sapin** et une **planchette en noyer** : contraste d'au moins 3:1 avec toutes les couleurs (mesuré, validé le 2026-10-29). L'information ne repose **jamais sur la couleur seule** (la maquette fantôme a un contour net et clair).
 - **Animations** : pas de clignotement, pas d'effets agressifs. Mouvements lents et courts (halo doux au survol, brique qui glisse vers son emplacement).
 - **Confort VR** : téléportation uniquement, pas de mouvement libre.
 
