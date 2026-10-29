@@ -12,6 +12,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
   l'appui d'un bouton, « clic » à l'accrochage, mélodie montante à la fin.
   Fréquences ≤ 1 000 Hz, volume modéré, case « Sons doux » sur l'accueil.
   6 nouveaux tests avec un faux contexte audio.
+- Bouton « Écouter » à côté de la case « Sons doux » : joue la mélodie de
+  réussite pour régler le volume avant de mettre le casque.
 - 2026-10-29 — Étape 5 : le voilier (`modeles/voilier.json`, 14 briques : coque,
   mât, voile, fanion), chargé au démarrage. Ligne d'aide permanente sur la carte
   de progression et message de félicitations à la fin.

@@ -40,9 +40,18 @@ ajouterSolOmbres(scene, CONFIG.ambiance);
 const sons = new Sons(CONFIG.sons);
 const caseSons = document.getElementById('case-sons');
 sons.definirActifs(caseSons.checked);
+const boutonEcouter = document.getElementById('bouton-ecouter');
 caseSons.addEventListener('change', () => {
   sons.definirActifs(caseSons.checked);
+  // « Écouter » n'a de sens que si les sons sont activés.
+  boutonEcouter.disabled = !caseSons.checked;
   sons.reveiller();
+});
+boutonEcouter.disabled = !caseSons.checked;
+// Fait entendre la mélodie de réussite pour régler le volume avant la VR.
+boutonEcouter.addEventListener('click', () => {
+  sons.reveiller();
+  sons.jouerReussite();
 });
 document.addEventListener('click', () => sons.reveiller());
 

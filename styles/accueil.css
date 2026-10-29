@@ -123,6 +123,33 @@ h1 {
   accent-color: var(--couleur-accent);
 }
 
+/* Petit bouton à côté d'une option (« Écouter »). */
+.bouton-petit {
+  min-height: 2.75rem;
+  margin-left: auto;
+  padding: 0.4rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  color: var(--couleur-texte);
+  background: var(--couleur-fond);
+  border: 3px solid var(--couleur-texte);
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+
+.bouton-petit:focus-visible {
+  outline: 4px solid var(--couleur-accent);
+  outline-offset: 4px;
+}
+
+/* Inactif (sons coupés) : signalé par le style ET par l'attribut `disabled`. */
+.bouton-petit:disabled {
+  color: var(--couleur-desactive);
+  border-style: dashed;
+  border-color: var(--couleur-desactive);
+  cursor: not-allowed;
+}
+
 .option input:focus-visible {
   outline: 4px solid var(--couleur-accent);
   outline-offset: 4px;
