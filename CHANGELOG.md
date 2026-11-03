@@ -8,6 +8,14 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-11-03 — 16 nouvelles constructions en grosses pièces : maisonnette,
+  sapin, gâteau d'anniversaire, chapelle, maison, château fort, bateau, petit
+  train, avion, canard, cygne, chien, cheval, bonhomme, clown et marin
+  (les personnages ont une tête ronde, comme le lion). Couleurs pastel liées
+  à ce que représente la construction (tuile, ardoise, pierre, eau…),
+  contrastées sur le tapis et la planchette.
+- Huit nouveaux décors peints : porte, fenêtre, rayures, hélice, fruits,
+  hublots, visage humain, visage de clown. 1 nouveau test (79 au total).
 - 2026-10-29 — Aide à l'emplacement : le cadre fantôme est éteint par défaut ;
   une lampe de bureau sur la table l'allume ou l'éteint (plaque « Aide :
   allumée / éteinte »), et un coup de pouce l'allume en fondu si la pièce n'est

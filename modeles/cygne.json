@@ -1,0 +1,13 @@
+{
+  "nom": "Le cygne",
+  "description": "Un cygne blanc qui glisse sur l'eau.",
+  "briques": [
+    {"position": [-1, 0, 0], "taille": [6, 2], "couleur": "#a9d3f2", "hauteur": 0.5},
+    {"position": [0, 0.5, 0], "taille": [4, 2], "couleur": "#fff3dc"},
+    {"position": [0, 1.5, 0], "taille": [1, 2], "couleur": "#fff3dc", "forme": "pente", "sens": "x-"},
+    {"position": [1, 1.5, 0], "taille": [2, 2], "couleur": "#fff3dc", "hauteur": 0.6, "forme": "quartRond", "sens": "x-"},
+    {"position": [3, 1.5, 0], "taille": [2, 2], "couleur": "#fff3dc", "hauteur": 2},
+    {"position": [3, 3.5, 0], "taille": [1, 2], "couleur": "#fff3dc", "decor": {"face": "z+", "motif": "oeil-rond"}},
+    {"position": [4, 3.5, 0], "taille": [1, 2], "couleur": "#f2b27a", "hauteur": 0.6, "forme": "pente", "sens": "x+"}
+  ]
+}

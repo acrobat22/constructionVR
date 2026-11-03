@@ -1,0 +1,18 @@
+{
+  "nom": "Le petit train",
+  "description": "Une locomotive et son wagon, sur leurs roues.",
+  "briques": [
+    {"position": [1, 0, 0], "taille": [1, 2], "couleur": "#b8c0cc", "hauteur": 0.5},
+    {"position": [5, 0, 0], "taille": [1, 2], "couleur": "#b8c0cc", "hauteur": 0.5},
+    {"position": [1, 0, 2], "taille": [1, 1], "couleur": "#b8c0cc", "hauteur": 0.85, "forme": "cylindre", "axe": "z"},
+    {"position": [5, 0, 2], "taille": [1, 1], "couleur": "#b8c0cc", "hauteur": 0.85, "forme": "cylindre", "axe": "z"},
+    {"position": [1, 0, -1], "taille": [1, 1], "couleur": "#b8c0cc", "hauteur": 0.85, "forme": "cylindre", "axe": "z"},
+    {"position": [5, 0, -1], "taille": [1, 1], "couleur": "#b8c0cc", "hauteur": 0.85, "forme": "cylindre", "axe": "z"},
+    {"position": [0, 0.5, 0], "taille": [7, 2], "couleur": "#7fa6d8", "hauteur": 0.5},
+    {"position": [0, 1, 0], "taille": [2, 2], "couleur": "#7fa6d8"},
+    {"position": [0, 2, 0], "taille": [1, 1], "couleur": "#b8c0cc", "forme": "cylindre"},
+    {"position": [2, 1, 0], "taille": [2, 2], "couleur": "#f6d56f", "hauteur": 1.5, "decor": {"face": "z+", "motif": "fenetre"}},
+    {"position": [2, 2.5, 0], "taille": [2, 2], "couleur": "#7fa6d8", "hauteur": 0.4},
+    {"position": [5, 1, 0], "taille": [2, 2], "couleur": "#f2b27a"}
+  ]
+}

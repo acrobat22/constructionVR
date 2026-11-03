@@ -1,0 +1,14 @@
+{
+  "nom": "L'avion",
+  "description": "Un avion à hélice prêt à décoller.",
+  "briques": [
+    {"position": [1, 0, 0], "taille": [1, 2], "couleur": "#b8c0cc", "hauteur": 0.5},
+    {"position": [5, 0, 0], "taille": [1, 2], "couleur": "#b8c0cc", "hauteur": 0.5},
+    {"position": [0, 0.5, 0], "taille": [5, 2], "couleur": "#a9d3f2"},
+    {"position": [5, 0.5, 0], "taille": [1, 2], "couleur": "#a9d3f2", "forme": "quartRond", "sens": "x+", "decor": {"face": "x+", "motif": "helice"}},
+    {"position": [2, 1.5, -2], "taille": [2, 6], "couleur": "#fff3dc", "hauteur": 0.5},
+    {"position": [0, 1.5, -1], "taille": [1, 4], "couleur": "#fff3dc", "hauteur": 0.5},
+    {"position": [0, 2, 0], "taille": [1, 2], "couleur": "#7fa6d8", "forme": "pente", "sens": "x-"},
+    {"position": [4, 1.5, 0], "taille": [1, 2], "couleur": "#7fa6d8", "hauteur": 0.7, "forme": "pente", "sens": "x+"}
+  ]
+}

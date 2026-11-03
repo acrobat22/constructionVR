@@ -1,0 +1,17 @@
+{
+  "nom": "Le clown",
+  "description": "Un clown joyeux, les bras levés.",
+  "briques": [
+    {"position": [0, 0, 0], "taille": [1, 2], "couleur": "#7fa6d8", "hauteur": 2},
+    {"position": [2, 0, 0], "taille": [1, 2], "couleur": "#7fa6d8", "hauteur": 2},
+    {"position": [0, 2, 0], "taille": [3, 2], "couleur": "#f4a3b5"},
+    {"position": [-1, 3, 0], "taille": [5, 2], "couleur": "#f4a3b5"},
+    {"position": [-1, 4, 0], "taille": [1, 2], "couleur": "#f6d56f"},
+    {"position": [3, 4, 0], "taille": [1, 2], "couleur": "#f6d56f"},
+    {"position": [-1, 5, 0], "taille": [1, 2], "couleur": "#fff3dc", "hauteur": 0.5},
+    {"position": [3, 5, 0], "taille": [1, 2], "couleur": "#fff3dc", "hauteur": 0.5},
+    {"position": [1, 4, 0], "taille": [1, 1], "couleur": "#f2b27a", "hauteur": 3},
+    {"position": [0, 4, 1], "taille": [3, 1], "couleur": "#fbe9c8", "hauteur": 3, "forme": "cylindre", "axe": "z", "decor": {"face": "z+", "motif": "visage-clown"}},
+    {"position": [0, 7, 0], "taille": [3, 2], "couleur": "#c8b6e8", "hauteur": 1.6, "forme": "pointe"}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "nom": "Le cheval",
+  "description": "Un cheval brun à la crinière foncée.",
+  "briques": [
+    {"position": [0, 0, 0], "taille": [1, 2], "couleur": "#c9a07a", "hauteur": 2},
+    {"position": [3, 0, 0], "taille": [1, 2], "couleur": "#c9a07a", "hauteur": 2},
+    {"position": [0, 2, 0], "taille": [4, 2], "couleur": "#c9a07a"},
+    {"position": [0, 3, 0], "taille": [1, 2], "couleur": "#b98d66", "forme": "pente", "sens": "x-"},
+    {"position": [3, 3, 0], "taille": [1, 2], "couleur": "#c9a07a"},
+    {"position": [3, 4, 0], "taille": [2, 2], "couleur": "#c9a07a", "decor": {"face": "z+", "motif": "profil"}},
+    {"position": [3, 5, 0], "taille": [1, 2], "couleur": "#b98d66", "hauteur": 0.5}
+  ]
+}
