@@ -1,28 +1,24 @@
 {
-  "modeles": [
-    "voilier.json",
-    "baleine.json",
-    "girafe.json",
-    "lion.json",
-    "dragon.json",
-    "maisonnette.json",
-    "sapin.json",
-    "gateau.json",
-    "citrouille.json",
-    "arbre.json",
-    "chapelle.json",
-    "maison.json",
-    "chateau.json",
-    "bateau.json",
-    "train.json",
-    "avion.json",
-    "crocodile.json",
-    "canard.json",
-    "cygne.json",
-    "chien.json",
-    "cheval.json",
-    "bonhomme.json",
-    "clown.json",
-    "marin.json"
+  "familles": [
+    {
+      "nom": "Maisons et monuments",
+      "modeles": ["maisonnette.json", "maison.json", "chapelle.json", "chateau.json"]
+    },
+    {
+      "nom": "Nature et fêtes",
+      "modeles": ["sapin.json", "citrouille.json", "gateau.json", "arbre.json"]
+    },
+    {
+      "nom": "Véhicules",
+      "modeles": ["bateau.json", "avion.json", "train.json", "voilier.json"]
+    },
+    {
+      "nom": "Animaux",
+      "modeles": ["chien.json", "canard.json", "cygne.json", "cheval.json", "lion.json", "crocodile.json", "girafe.json", "baleine.json", "dragon.json"]
+    },
+    {
+      "nom": "Personnages",
+      "modeles": ["marin.json", "bonhomme.json", "clown.json"]
+    }
   ]
 }

@@ -34,7 +34,7 @@ import { genererVignettes } from './interface/vignettes.js';
 import { ModeSansCasque } from './interface/modeSansCasque.js';
 import { Sons } from './interface/sons.js';
 import { chargerModele, calculerEmprise, calculerPositionsEnMetres } from './modeles/chargeurModele.js';
-import { chargerCatalogue } from './modeles/catalogue.js';
+import { chargerCatalogue, trierParNombrePieces } from './modeles/catalogue.js';
 
 const zoneMessage = document.getElementById('message-statut');
 
@@ -280,13 +280,18 @@ const modeSansCasque = new ModeSansCasque({
 }, souris, () => preparerModeleChoisi(menu.urlChoisie));
 
 try {
-  const adresses = await chargerCatalogue(CONFIG.modele.catalogue);
+  const familles = await chargerCatalogue(CONFIG.modele.catalogue);
+  const adresses = familles.flatMap((famille) => famille.adresses);
   const modeles = await Promise.all(adresses.map(async (url) => ({ url, modele: await chargerModele(url) })));
-  menu.afficher(modeles.map(({ url, modele }) => ({
-    url,
-    nom: modele.nom,
-    nombrePieces: modele.briques.length,
-    description: modele.description,
+  const modeleParAdresse = new Map(modeles.map(({ url, modele }) => [url, modele]));
+
+  // Chaque famille, du modèle le plus court au plus long à construire.
+  menu.afficher(familles.map((famille) => ({
+    nom: famille.nom,
+    entrees: trierParNombrePieces(famille.adresses.map((url) => {
+      const modele = modeleParAdresse.get(url);
+      return { url, nom: modele.nom, nombrePieces: modele.briques.length, description: modele.description };
+    })),
   })));
   preparerModeleChoisi(menu.urlChoisie);
 
