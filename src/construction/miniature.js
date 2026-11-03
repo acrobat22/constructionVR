@@ -3,7 +3,8 @@
  * savoir ce que l'on construit.
  *
  * Elle réutilise les mêmes briques et la même plaque que la construction,
- * à échelle réduite, posée sur la table. Elle ne bouge pas (pas d'animation).
+ * à échelle réduite, posée sur la table. Elle ne bouge que par quarts de tour
+ * (bouton « Tourner », voir rotationDouce.js).
  */
 
 import { Group } from 'three';

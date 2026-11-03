@@ -119,3 +119,41 @@ export function dessinerMaison(contexte, centreX, centreY, couleur) {
   contexte.strokeRect(centreX - demiLargeur, centreY - 4, demiLargeur * 2, 46);
   contexte.fillRect(centreX - 10, centreY + 14, 20, 28);
 }
+
+/**
+ * Deux flèches courbes formant un cercle (tourner la miniature).
+ *
+ * @param {CanvasRenderingContext2D} contexte - Contexte de dessin.
+ * @param {number} centreX - Centre horizontal de l'icône.
+ * @param {number} centreY - Centre vertical de l'icône.
+ * @param {string} couleur - Couleur du trait et des pointes.
+ */
+export function dessinerTourner(contexte, centreX, centreY, couleur) {
+  const rayon = 38;
+  contexte.strokeStyle = couleur;
+  contexte.fillStyle = couleur;
+  contexte.lineWidth = 12;
+  contexte.lineCap = 'round';
+
+  for (const angleDepart of [Math.PI * 0.1, Math.PI * 1.1]) {
+    const angleFin = angleDepart + Math.PI * 0.72;
+    contexte.beginPath();
+    contexte.arc(centreX, centreY, rayon, angleDepart, angleFin);
+    contexte.stroke();
+
+    // Pointe au bout de l'arc : sommet dans le sens de la rotation (tangente),
+    // base perpendiculaire à l'arc (normale).
+    const boutX = centreX + rayon * Math.cos(angleFin);
+    const boutY = centreY + rayon * Math.sin(angleFin);
+    const tangenteX = -Math.sin(angleFin);
+    const tangenteY = Math.cos(angleFin);
+    const normaleX = Math.cos(angleFin);
+    const normaleY = Math.sin(angleFin);
+    contexte.beginPath();
+    contexte.moveTo(boutX + tangenteX * 22, boutY + tangenteY * 22);
+    contexte.lineTo(boutX + normaleX * 18 - tangenteX * 4, boutY + normaleY * 18 - tangenteY * 4);
+    contexte.lineTo(boutX - normaleX * 18 - tangenteX * 4, boutY - normaleY * 18 - tangenteY * 4);
+    contexte.closePath();
+    contexte.fill();
+  }
+}

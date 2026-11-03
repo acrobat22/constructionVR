@@ -77,6 +77,7 @@ src/
   construction/aideEmplacement.js  Logique pure : quand montrer le cadre (lampe, coup de pouce)
   construction/ombreContact.js     Ombre douce au pied des objets posés
   construction/miniature.js        Modèle terminé en miniature (bouton « œil »)
+  construction/rotationDouce.js    Logique pure : quarts de tour doux de la miniature (« Tourner »)
   interface/bouton3D.js    Bouton 3D générique (« Annuler », « Voir le modèle »)
   interface/icones.js      Icônes dessinées (flèche retour, œil)
   interface/carteProgression.js    Nom du modèle et avancement, sans chrono
@@ -209,7 +210,9 @@ développement ». Il reste utile pour vérifier l'entrée en VR.
    dans la réserve.
 7. Pincer sur « Annuler » (à gauche) : la dernière brique posée revient dans
    la réserve. Pincer sur « Voir le modèle » (à droite) : la miniature du
-   modèle terminé apparaît au fond de la table.
+   modèle terminé apparaît au fond de la table. Pincer sur « Tourner »
+   (au-dessus, visible quand la miniature est affichée) : elle fait un quart
+   de tour, pour voir les pièces cachées.
 8. Poser la dernière brique : le bouton « Menu » apparaît au milieu de la
    table ; le pincer ramène à la page d'accueil.
 
