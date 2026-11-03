@@ -35,3 +35,6 @@ Thumbs.db
 # Variables d'environnement locales
 .env
 .env.*
+
+# Consignes personnelles pour l'assistant de code (gardées privées)
+CLAUDE.md

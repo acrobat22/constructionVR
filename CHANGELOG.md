@@ -126,6 +126,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 
 <!-- Exemple d'entrée versionnée :
 ### Sécurité
+- 2026-11-03 — `CLAUDE.md` n'est plus publié (gardé en local, ignoré par git).
 - 2026-11-03 — `.gitignore` : clés de signature de l'APK, projet et fichiers
   produits par Bubblewrap, dossiers d'outils et d'éditeurs (dépôt devenu public).
 
