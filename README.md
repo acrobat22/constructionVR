@@ -39,6 +39,8 @@ ressources/environnements/ Pièce photographiée « Lebombo » (photo + HDR, Pol
 ressources/textures/chene/ Bois du plateau (Poly Haven, CC0)
 ressources/textures/pin/   Bois des blocs et de la planchette (Poly Haven, CC0)
 ressources/textures/feutrine/  Fibres du tapis de jeu (Poly Haven, CC0)
+manifest.webmanifest       Application web installable (nom, icônes, couleurs)
+ressources/icones/         Icônes du jeu (192 et 512 px, « maskable »), rendues par le jeu
 modeles/catalogue.json     Modèles proposés sur l'accueil, rangés par famille
 modeles/voilier.json       Le voilier (14 pièces)
 modeles/baleine.json, girafe.json, lion.json, dragon.json   Animaux en formes arrondies (7 à 10 pièces)
@@ -217,6 +219,43 @@ D'après la [documentation de Meta](https://developers.meta.com/vr/documentation
 4. Dans le navigateur du casque, ouvrir <http://localhost:8000>.
 
 Le **suivi des mains** doit être activé dans les réglages du Quest.
+
+## Installer sur le casque (application web et APK)
+
+Le jeu est une application web installable (PWA) : `manifest.webmanifest`
+donne son nom, ses icônes (`ressources/icones/`) et ses couleurs. L'APK
+fabriqué avec Bubblewrap est un **lanceur** : il ouvre le jeu publié en ligne
+(HTTPS obligatoire), le jeu lui-même n'est pas dans l'APK. D'après la
+[documentation de Meta](https://developers.meta.com/horizon/documentation/web/pwa-packaging/) :
+
+1. **Publier le jeu** : dépôt public, puis *Settings → Pages* : branche
+   `main`, dossier racine. Le jeu est alors à
+   `https://acrobat22.github.io/constructionVR/`. Le fichier `.nojekyll` fait
+   servir tous les fichiers tels quels.
+2. **Préparer les outils** (une fois) : Node.js 18 ou plus, JDK 17, puis
+   `npm install --global @meta-quest/bubblewrap-cli`.
+3. **Créer le projet APK**, dans un dossier hors de ce dépôt :
+   `bubblewrap init --manifest=https://acrobat22.github.io/constructionVR/manifest.webmanifest --metaquest`.
+   Identifiant proposé : `io.github.acrobat22.constructionvr` (à ne plus
+   changer ensuite). Mode : *immersive*. Pas de paiement intégré (Horizon
+   Billing : non). Bubblewrap crée la clé de signature
+   (`android.keystore`) : **la garder précieusement, hors du dépôt**.
+4. **Vérification du site (Digital Asset Links)** : sans elle, Meta indique
+   qu'une application immersive ne se lance pas. Lire l'empreinte de la clé
+   (`keytool -list -v -keystore android.keystore -alias android`), puis
+   `bubblewrap fingerprint add <empreinte>` : cela produit `assetlinks.json`.
+   Ce fichier doit être servi à la **racine du domaine** :
+   `https://acrobat22.github.io/.well-known/assetlinks.json`. Un site de
+   projet (`/constructionVR/`) ne peut pas le servir à cette adresse : il
+   faut un second dépôt public nommé `acrobat22.github.io`, contenant
+   `.nojekyll` et `.well-known/assetlinks.json`.
+5. **Fabriquer et installer** : `bubblewrap build` (produit
+   `app-release-signed.apk`), casque en mode développeur branché, puis
+   `adb install app-release-signed.apk`. Le jeu apparaît dans la
+   bibliothèque du casque.
+
+Sans APK, on peut aussi ouvrir l'adresse du jeu dans le navigateur du casque
+et l'ajouter aux favoris.
 
 ## Licences
 

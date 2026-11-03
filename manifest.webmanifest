@@ -1,0 +1,18 @@
+{
+  "name": "Construction en blocs",
+  "short_name": "Construction",
+  "description": "Jeu de construction en blocs de bois en réalité virtuelle, pour le casque Meta Quest.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111418",
+  "theme_color": "#111418",
+  "categories": ["games"],
+  "icons": [
+    { "src": "ressources/icones/icone-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "ressources/icones/icone-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "ressources/icones/icone-maskable-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ]
+}

@@ -8,6 +8,11 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-11-03 — Application web installable (PWA) pour le Meta Quest :
+  `manifest.webmanifest` (nom, couleurs, affichage autonome), icônes 192 et
+  512 px dont une « maskable » (la maisonnette, rendue par le jeu),
+  `.nojekyll` pour GitHub Pages. Marche à suivre de l'APK (Bubblewrap,
+  vérification du site) dans le README. 3 nouveaux tests (86 au total).
 - 2026-11-03 — Menu rangé par famille : Maisons et monuments, Nature et fêtes,
   Véhicules, Animaux, Personnages. Un titre par famille (avec le nombre de
   modèles) et une rangée de liens « Aller à » pour éviter de faire défiler.
