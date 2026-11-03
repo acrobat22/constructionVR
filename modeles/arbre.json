@@ -1,0 +1,14 @@
+{
+  "nom": "L'arbre",
+  "description": "Un arbre bien rond dans son pot.",
+  "briques": [
+    {"position": [1, 0, 0], "taille": [3, 2], "couleur": "#d98c74", "hauteur": 1.5},
+    {"position": [2, 1.5, 0], "taille": [1, 1], "couleur": "#b98d66", "hauteur": 1.5, "forme": "cylindre"},
+    {"position": [1, 3, 0], "taille": [3, 2], "couleur": "#86c49a"},
+    {"position": [0, 4, 0], "taille": [5, 2], "couleur": "#f6d56f", "hauteur": 0.5},
+    {"position": [0, 4.5, 0], "taille": [5, 2], "couleur": "#86c49a", "hauteur": 1.5},
+    {"position": [1, 6, 0], "taille": [3, 2], "couleur": "#86c49a"},
+    {"position": [0, 6, 0], "taille": [1, 2], "couleur": "#86c49a", "forme": "quartRond", "sens": "x-"},
+    {"position": [4, 6, 0], "taille": [1, 2], "couleur": "#86c49a", "forme": "quartRond", "sens": "x+"}
+  ]
+}

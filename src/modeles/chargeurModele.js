@@ -56,7 +56,7 @@ export const FACES_DECOR = Object.freeze(['x+', 'x-', 'z+', 'z-', 'y+']);
 export const MOTIFS = Object.freeze([
   'oeil-sourire', 'oeil-rond', 'profil', 'visage', 'taches', 'ecailles',
   'porte', 'fenetre', 'rayures', 'helice', 'fruits', 'hublots',
-  'visage-humain', 'visage-clown',
+  'visage-humain', 'visage-clown', 'citrouille',
 ]);
 
 /** Hauteur maximale d'une pièce, en couches. */

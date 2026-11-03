@@ -42,8 +42,9 @@ ressources/textures/feutrine/  Fibres du tapis de jeu (Poly Haven, CC0)
 modeles/catalogue.json     Modèles proposés sur l'accueil, dans l'ordre
 modeles/voilier.json       Le voilier (14 pièces), choisi par défaut
 modeles/baleine.json, girafe.json, lion.json, dragon.json   Animaux en formes arrondies (7 à 10 pièces)
-modeles/maisonnette.json … marin.json   16 constructions simples (maisons, château,
-                           véhicules, animaux, personnages ; 5 à 12 pièces)
+modeles/maisonnette.json … marin.json   19 constructions simples (maisons, château,
+                           citrouille, arbre, véhicules, animaux, personnages ;
+                           5 à 12 pièces)
 modeles/essai.json         Modèle d'essai de 3 briques
 src/
   main.js                  Crée les modules et les relie (seul point d'assemblage)
@@ -116,7 +117,7 @@ Champs facultatifs :
 | `sens` | `x+`, `x-`, `z+`, `z-` : direction vers laquelle une pente ou un quart de rond **descend** (obligatoire pour ces deux formes) | — |
 | `axe` | `x` ou `z` : cylindre couché (debout sinon) | — |
 | `hauteur` | hauteur en couches, par exemple `0.5`, `2`, `3` | `1` |
-| `decor` | `{ "face": "z+", "motif": "visage" }` ; faces `x+`, `x-`, `z+`, `z-`, `y+` (dessus) ; motifs `oeil-sourire`, `oeil-rond`, `profil`, `visage`, `taches`, `ecailles`, `porte`, `fenetre`, `rayures`, `helice`, `fruits`, `hublots`, `visage-humain`, `visage-clown` | — |
+| `decor` | `{ "face": "z+", "motif": "visage" }` ; faces `x+`, `x-`, `z+`, `z-`, `y+` (dessus) ; motifs `oeil-sourire`, `oeil-rond`, `profil`, `visage`, `taches`, `ecailles`, `porte`, `fenetre`, `rayures`, `helice`, `fruits`, `hublots`, `visage-humain`, `visage-clown`, `citrouille` | — |
 
 La face `z+` est celle tournée vers le joueur. Les motifs d'œil sont dessinés
 pour un animal tourné vers la droite (`x+`).
