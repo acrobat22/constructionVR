@@ -1,0 +1,12 @@
+{
+  "nom": "Le chien",
+  "description": "Un gentil chien brun, l'oreille dressée.",
+  "briques": [
+    {"position": [0, 0, 0], "taille": [1, 2], "couleur": "#c9a07a"},
+    {"position": [3, 0, 0], "taille": [1, 2], "couleur": "#c9a07a"},
+    {"position": [0, 1, 0], "taille": [4, 2], "couleur": "#c9a07a"},
+    {"position": [0, 2, 1], "taille": [1, 1], "couleur": "#b98d66", "hauteur": 0.8, "forme": "pointe"},
+    {"position": [3, 2, 0], "taille": [2, 2], "couleur": "#c9a07a", "decor": {"face": "z+", "motif": "profil"}},
+    {"position": [3, 3, 0], "taille": [1, 2], "couleur": "#b98d66", "hauteur": 0.7, "forme": "pente", "sens": "x-"}
+  ]
+}

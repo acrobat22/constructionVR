@@ -1,0 +1,13 @@
+{
+  "nom": "Le château fort",
+  "description": "Un château fort, ses deux tours et ses créneaux.",
+  "briques": [
+    {"position": [0, 0, 0], "taille": [2, 2], "couleur": "#ddd5c5", "hauteur": 3, "decor": {"face": "z+", "motif": "fenetre"}},
+    {"position": [6, 0, 0], "taille": [2, 2], "couleur": "#ddd5c5", "hauteur": 3, "decor": {"face": "z+", "motif": "fenetre"}},
+    {"position": [2, 0, 0], "taille": [4, 2], "couleur": "#ddd5c5", "hauteur": 2, "decor": {"face": "z+", "motif": "porte"}},
+    {"position": [2, 2, 0], "taille": [1, 2], "couleur": "#ddd5c5", "hauteur": 0.6},
+    {"position": [5, 2, 0], "taille": [1, 2], "couleur": "#ddd5c5", "hauteur": 0.6},
+    {"position": [0, 3, 0], "taille": [2, 2], "couleur": "#8fa0b5", "hauteur": 1.6, "forme": "pointe"},
+    {"position": [6, 3, 0], "taille": [2, 2], "couleur": "#8fa0b5", "hauteur": 1.6, "forme": "pointe"}
+  ]
+}

@@ -11,6 +11,7 @@ import {
   calculerPositionsEnMetres,
   calculerEmprise,
   ErreurModele,
+  MOTIFS,
 } from '../src/modeles/chargeurModele.js';
 
 /** Grille simplifiée pour des calculs faciles à vérifier. */
@@ -237,6 +238,16 @@ test('les quatre animaux fournis avec le jeu sont valides', async () => {
   for (const nom of ['baleine', 'girafe', 'lion', 'dragon']) {
     const texte = await readFile(new URL(`../modeles/${nom}.json`, import.meta.url), 'utf8');
     assert.doesNotThrow(() => validerModele(JSON.parse(texte)), nom);
+  }
+});
+
+test('les motifs des maisons, véhicules et personnages sont acceptés', () => {
+  for (const motif of ['porte', 'fenetre', 'rayures', 'helice', 'fruits', 'hublots']) {
+    assert.ok(MOTIFS.includes(motif), motif);
+    assert.doesNotThrow(() => validerModele({
+      nom: motif,
+      briques: [{ position: [0, 0, 0], taille: [2, 2], couleur: '#fff3dc', decor: { face: 'z+', motif } }],
+    }), motif);
   }
 });
 

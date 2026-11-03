@@ -1,0 +1,13 @@
+{
+  "nom": "Le gâteau d'anniversaire",
+  "description": "Un gâteau à trois étages et ses bougies.",
+  "briques": [
+    {"position": [0, 0, 0], "taille": [6, 4], "couleur": "#f4a3b5"},
+    {"position": [1, 1, 1], "taille": [4, 2], "couleur": "#fbe9c8"},
+    {"position": [2, 2, 1], "taille": [2, 2], "couleur": "#f4a3b5"},
+    {"position": [2, 3, 1], "taille": [1, 1], "couleur": "#c8b6e8", "forme": "cylindre"},
+    {"position": [3, 3, 2], "taille": [1, 1], "couleur": "#a9d3f2", "forme": "cylindre"},
+    {"position": [2, 4, 1], "taille": [1, 1], "couleur": "#f6d56f", "hauteur": 0.6, "forme": "pointe"},
+    {"position": [3, 4, 2], "taille": [1, 1], "couleur": "#f6d56f", "hauteur": 0.6, "forme": "pointe"}
+  ]
+}

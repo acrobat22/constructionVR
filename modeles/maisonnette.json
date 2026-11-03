@@ -1,0 +1,11 @@
+{
+  "nom": "La maisonnette",
+  "description": "Une petite maison au toit pointu et à la porte ouverte.",
+  "briques": [
+    {"position": [0, 0, 0], "taille": [1, 2], "couleur": "#f6d56f", "hauteur": 2},
+    {"position": [3, 0, 0], "taille": [1, 2], "couleur": "#f6d56f", "hauteur": 2},
+    {"position": [0, 2, 0], "taille": [4, 2], "couleur": "#f6d56f", "decor": {"face": "z+", "motif": "fenetre"}},
+    {"position": [0, 3, 0], "taille": [2, 2], "couleur": "#e3a07f", "forme": "pente", "sens": "x-"},
+    {"position": [2, 3, 0], "taille": [2, 2], "couleur": "#e3a07f", "forme": "pente", "sens": "x+"}
+  ]
+}

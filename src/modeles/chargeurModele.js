@@ -53,7 +53,10 @@ const AXES = Object.freeze(['x', 'z']);
 export const FACES_DECOR = Object.freeze(['x+', 'x-', 'z+', 'z-', 'y+']);
 
 /** Motifs de décor disponibles (dessinés par le jeu, sans image externe). */
-export const MOTIFS = Object.freeze(['oeil-sourire', 'oeil-rond', 'profil', 'visage', 'taches', 'ecailles']);
+export const MOTIFS = Object.freeze([
+  'oeil-sourire', 'oeil-rond', 'profil', 'visage', 'taches', 'ecailles',
+  'porte', 'fenetre', 'rayures', 'helice', 'fruits', 'hublots',
+]);
 
 /** Hauteur maximale d'une pièce, en couches. */
 const HAUTEUR_MAXIMALE = 8;
