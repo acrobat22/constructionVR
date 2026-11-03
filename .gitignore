@@ -10,3 +10,28 @@ erreurs.log
 
 # Images d’inspiration (droits d’auteur de tiers : ne jamais publier)
 imagesExemples/
+
+# Clés de signature de l'APK (Bubblewrap) : secrètes, ne JAMAIS publier.
+*.keystore
+*.jks
+*.p12
+*.pem
+keystore.properties
+
+# Projet APK et fichiers produits par Bubblewrap (à garder hors du dépôt).
+*.apk
+*.aab
+*.idsig
+twa-manifest.json
+apk/
+
+# Outils et éditeurs
+node_modules/
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+
+# Variables d'environnement locales
+.env
+.env.*
