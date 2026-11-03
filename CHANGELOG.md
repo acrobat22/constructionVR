@@ -8,6 +8,10 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-11-03 — Bouton « Tourner » (deux flèches en cercle) : la miniature du
+  modèle fait un quart de tour doux à chaque pincement, pour voir les pièces
+  cachées. Visible une fois la partie commencée, miniature affichée ; la
+  miniature repart de face à chaque partie. 5 nouveaux tests (91 au total).
 - 2026-11-03 — Bouton « Menu » (icône maison) sur la table en fin de partie :
   il termine la session VR et ramène au choix des modèles (en mode sans
   casque, il revient à l'accueil). Auparavant, il fallait passer par le menu

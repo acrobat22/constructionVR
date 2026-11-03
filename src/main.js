@@ -24,9 +24,10 @@ import { Partie } from './construction/partie.js';
 import { Atelier } from './construction/atelier.js';
 import { AideEmplacement } from './construction/aideEmplacement.js';
 import { creerMiniature } from './construction/miniature.js';
+import { RotationDouce } from './construction/rotationDouce.js';
 import { chargerBoisPeint } from './construction/boisPeint.js';
 import { Bouton3D } from './interface/bouton3D.js';
-import { dessinerFlecheRetour, dessinerLecture, dessinerMaison, dessinerOeil } from './interface/icones.js';
+import { dessinerFlecheRetour, dessinerLecture, dessinerMaison, dessinerOeil, dessinerTourner } from './interface/icones.js';
 import { CarteProgression } from './interface/carteProgression.js';
 import { LampeAide } from './interface/lampeAide.js';
 import { MenuModeles } from './interface/menuModeles.js';
@@ -117,10 +118,29 @@ const boutonModele = new Bouton3D(CONFIG.bouton, {
     }
     miniature.visible = !miniature.visible;
     boutonModele.definirLibelle(miniature.visible ? LIBELLES_MODELE.cacher : LIBELLES_MODELE.voir);
+    rafraichirBoutonTourner();
   },
 });
 boutonModele.objet3D.position.copy(surLaTable(CONFIG.disposition.boutonModele, CONFIG.bouton.hauteur));
 scene.add(boutonModele.objet3D);
+
+// Rotation de la miniature : vue de trois quarts au départ, puis quarts de tour.
+const rotationMiniature = new RotationDouce(CONFIG.miniature.rotation, CONFIG.miniature.dureeQuartDeTour);
+
+// « Tourner » fait pivoter la miniature pour voir les pièces cachées.
+const boutonTourner = new Bouton3D(CONFIG.bouton, {
+  libelle: 'Tourner',
+  dessinerIcone: dessinerTourner,
+  surAppui: () => rotationMiniature.tourner(tempsCourant),
+});
+boutonTourner.objet3D.position.copy(surLaTable(CONFIG.disposition.boutonTourner, CONFIG.bouton.hauteur));
+boutonTourner.objet3D.visible = false;
+scene.add(boutonTourner.objet3D);
+
+/** « Tourner » n'apparaît qu'une fois la partie commencée, miniature affichée. */
+function rafraichirBoutonTourner() {
+  boutonTourner.objet3D.visible = !partie.estEnPresentation && Boolean(atelier.miniature?.visible);
+}
 
 // « Commencer » n'est visible que pendant la présentation du modèle.
 const boutonCommencer = new Bouton3D(CONFIG.bouton, {
@@ -165,7 +185,7 @@ const lampeAide = new LampeAide({
 lampeAide.objet3D.position.copy(surLaTable(CONFIG.disposition.lampeAide, 0));
 scene.add(lampeAide.objet3D);
 
-const boutons = [boutonAnnuler, boutonModele, boutonCommencer, boutonMenu, lampeAide];
+const boutons = [boutonAnnuler, boutonModele, boutonTourner, boutonCommencer, boutonMenu, lampeAide];
 
 const carte = new CarteProgression(CONFIG.carte);
 scene.add(carte.objet3D);
@@ -255,6 +275,7 @@ const partie = new Partie({
     boutonAnnuler.definirActif(partie.peutAnnuler);
     boutonCommencer.objet3D.visible = partie.estEnPresentation;
     boutonMenu.objet3D.visible = partie.estTerminee;
+    rafraichirBoutonTourner();
     rafraichirCarte();
   },
 });
@@ -288,7 +309,12 @@ function preparerModeleChoisi(url) {
     return;
   }
   atelier.preparer(url)
-    .then(() => boutonModele.definirLibelle(LIBELLES_MODELE.voir))
+    .then(() => {
+      boutonModele.definirLibelle(LIBELLES_MODELE.voir);
+      // Nouvelle miniature : elle repart de face.
+      rotationMiniature.reinitialiser(CONFIG.miniature.rotation);
+      rafraichirBoutonTourner();
+    })
     .catch((erreur) => {
       console.error('[main] Chargement du modèle impossible :', erreur);
       zoneMessage.textContent = 'Ce modèle n’a pas pu être chargé. Choisissez-en un autre ou rechargez la page.';
@@ -408,6 +434,9 @@ renderer.setAnimationLoop((temps) => {
   const pointsDePincement = new Map([...mains.pointsDePincement, ...souris.pointsDePincement]);
   saisie.mettreAJour(pointsDePincement);
   partie.mettreAJour(temps);
+  if (atelier.miniature) {
+    atelier.miniature.rotation.y = rotationMiniature.angle(temps);
+  }
   mettreAJourAide(temps);
   for (const bouton of boutons) {
     bouton.mettreAJour(pointsDePincement, temps);

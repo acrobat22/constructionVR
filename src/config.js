@@ -261,6 +261,8 @@ export const CONFIG = Object.freeze({
     /** Bouton « Menu », au même endroit (la réserve est vide en fin de partie). */
     boutonMenu: Object.freeze({ x: 0.06, z: 0.2 }),
     miniature: Object.freeze({ x: 0.4, z: -0.2 }),
+    /** Bouton « Tourner », au bord droit, juste derrière « Voir le modèle » (libre de la planchette). */
+    boutonTourner: Object.freeze({ x: 0.48, z: 0.03 }),
   }),
 
   /** Boutons 3D posés sur la table (« Annuler », « Voir le modèle »). */
@@ -280,9 +282,11 @@ export const CONFIG = Object.freeze({
   /** Modèle terminé en miniature, affiché par le bouton « œil ». */
   miniature: Object.freeze({
     echelle: 0.5,
-    /** Rotation fixe (vue de trois quarts), en radians. */
+    /** Rotation de départ (vue de trois quarts), en radians ; « Tourner » ajoute des quarts de tour. */
     rotation: -0.6,
     visibleAuDemarrage: false,
+    /** Durée d'un quart de tour de la miniature, en millisecondes. */
+    dureeQuartDeTour: 500,
   }),
 
   /** Carte de progression (nom du modèle, avancement), sans chrono. */
