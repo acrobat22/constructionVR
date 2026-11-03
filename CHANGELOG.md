@@ -146,6 +146,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - Nouvelle fonctionnalité X
 
 ### Corrigé
+- 2026-11-03 — Libellé « Cacher le modèle » qui débordait du bouton : un
+  libellé long passe sur deux lignes quand cela permet un texte plus grand.
 - 2026-10-29 — Contraste des pièces : elles ressortaient mal (1,03:1 pour la
   girafe jaune sur la planchette claire). Tapis de jeu en feutrine vert sapin
   (texture « Caban », Poly Haven, CC0), planchette en noyer foncé au quadrillage

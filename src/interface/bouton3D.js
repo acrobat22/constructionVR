@@ -29,6 +29,9 @@ const HAUTEUR_CANEVAS = 256;
 /** Taille maximale du texte ; réduite automatiquement si le libellé est long. */
 const TAILLE_TEXTE_MAXIMALE = 78;
 
+/** Taille maximale du texte sur deux lignes (deux lignes doivent tenir en hauteur). */
+const TAILLE_TEXTE_DEUX_LIGNES = 64;
+
 /**
  * @typedef {(contexte: CanvasRenderingContext2D, centreX: number, centreY: number, couleur: string) => void} DessinIcone
  */
@@ -196,21 +199,71 @@ export class Bouton3D {
     const couleurTexte = this.estActif ? COULEURS.texteActif : COULEURS.texteInactif;
     this.dessinerIcone(contexte, 110, HAUTEUR_CANEVAS / 2, couleurTexte);
 
-    // Le texte rétrécit si nécessaire pour tenir dans le bouton.
+    // Le texte rétrécit si nécessaire pour tenir dans le bouton ; un libellé
+    // long passe sur deux lignes si cela permet un texte plus grand.
     const debutTexte = 172;
     const largeurDisponible = LARGEUR_CANEVAS - debutTexte - 64;
-    let taille = TAILLE_TEXTE_MAXIMALE;
+    const uneLigne = [this.libelle];
+    const deuxLignes = this.#couperEnDeux(this.libelle);
+    const tailleUneLigne = this.#tailleQuiTient(contexte, uneLigne, largeurDisponible, TAILLE_TEXTE_MAXIMALE);
+    const tailleDeuxLignes = deuxLignes
+      ? this.#tailleQuiTient(contexte, deuxLignes, largeurDisponible, TAILLE_TEXTE_DEUX_LIGNES)
+      : 0;
+    const lignes = tailleDeuxLignes > tailleUneLigne ? deuxLignes : uneLigne;
+    const taille = Math.max(tailleUneLigne, tailleDeuxLignes);
+
     contexte.font = this.#police(taille);
-    while (contexte.measureText(this.libelle).width > largeurDisponible && taille > 40) {
-      taille -= 2;
-      contexte.font = this.#police(taille);
-    }
     contexte.fillStyle = couleurTexte;
     contexte.textBaseline = 'middle';
     contexte.textAlign = 'left';
-    contexte.fillText(this.libelle, debutTexte, HAUTEUR_CANEVAS / 2 + 4);
+    const interligne = taille * 1.1;
+    const premiereLigneY = HAUTEUR_CANEVAS / 2 + 4 - ((lignes.length - 1) * interligne) / 2;
+    lignes.forEach((ligne, indice) => {
+      contexte.fillText(ligne, debutTexte, premiereLigneY + indice * interligne);
+    });
 
     this.texture.needsUpdate = true;
+  }
+
+  /**
+   * Plus grande taille de police (à partir de `tailleMaximale`, par pas de 2 px,
+   * sans descendre sous 40 px) pour laquelle chaque ligne tient dans la largeur.
+   *
+   * @param {CanvasRenderingContext2D} contexte - Contexte de dessin (sa police est modifiée).
+   * @param {string[]} lignes - Lignes du libellé.
+   * @param {number} largeurDisponible - Largeur maximale d'une ligne, en pixels.
+   * @param {number} tailleMaximale - Taille de départ, en pixels.
+   * @returns {number} Taille retenue, en pixels.
+   */
+  #tailleQuiTient(contexte, lignes, largeurDisponible, tailleMaximale) {
+    let taille = tailleMaximale;
+    const tient = () => {
+      contexte.font = this.#police(taille);
+      return lignes.every((ligne) => contexte.measureText(ligne).width <= largeurDisponible);
+    };
+    while (!tient() && taille > 40) {
+      taille -= 2;
+    }
+    return taille;
+  }
+
+  /**
+   * Coupe un libellé en deux lignes, à l'espace la plus proche du milieu.
+   *
+   * @param {string} libelle - Texte du bouton.
+   * @returns {[string, string] | null} Les deux lignes, ou `null` s'il n'y a pas d'espace.
+   */
+  #couperEnDeux(libelle) {
+    const milieu = libelle.length / 2;
+    let meilleurIndice = -1;
+    for (let indice = libelle.indexOf(' '); indice !== -1; indice = libelle.indexOf(' ', indice + 1)) {
+      if (meilleurIndice === -1 || Math.abs(indice - milieu) < Math.abs(meilleurIndice - milieu)) {
+        meilleurIndice = indice;
+      }
+    }
+    return meilleurIndice === -1
+      ? null
+      : [libelle.slice(0, meilleurIndice), libelle.slice(meilleurIndice + 1)];
   }
 
   /**
