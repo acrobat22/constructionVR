@@ -132,24 +132,9 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
   bois peints (réglages `rayonTenon` et `hauteurTenon` retirés).
 - `src/interface/boutonAnnuler.js`, remplacé par `bouton3D.js` + `icones.js`.
 
----
-
-<!-- Exemple d'entrée versionnée :
 ### Corrigé
 - 2026-11-03 — Libellé « Cacher le modèle » qui débordait du bouton : un
   libellé long passe sur deux lignes quand cela permet un texte plus grand.
-
-### Sécurité
-- 2026-11-03 — `CLAUDE.md` n'est plus publié (gardé en local, ignoré par git).
-- 2026-11-03 — `.gitignore` : clés de signature de l'APK, projet et fichiers
-  produits par Bubblewrap, dossiers d'outils et d'éditeurs (dépôt devenu public).
-
-## [1.2.0] — 2026-06-23
-
-### Ajouté
-- Nouvelle fonctionnalité X
-
-### Corrigé
 - 2026-10-29 — Contraste des pièces : elles ressortaient mal (1,03:1 pour la
   girafe jaune sur la planchette claire). Tapis de jeu en feutrine vert sapin
   (texture « Caban », Poly Haven, CC0), planchette en noyer foncé au quadrillage
@@ -163,5 +148,20 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - 2026-10-29 — Mode souris : une pièce placée en hauteur et en surplomb (tête
   du dragon) tombait derrière sa place. Pendant une prise, la pièce glisse
   désormais à la hauteur de son emplacement et se centre sur le curseur.
+
+### Sécurité
+- 2026-11-03 — `CLAUDE.md` n'est plus publié (gardé en local, ignoré par git).
+- 2026-11-03 — `.gitignore` : clés de signature de l'APK, projet et fichiers
+  produits par Bubblewrap, dossiers d'outils et d'éditeurs (dépôt devenu public).
+
+---
+
+<!-- Exemple d'entrée versionnée :
+## [1.2.0] — 2026-06-23
+
+### Ajouté
+- Nouvelle fonctionnalité X
+
+### Corrigé
 - Bug Y résolu
 -->
