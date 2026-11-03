@@ -10,6 +10,8 @@ Jeu de construction en blocs de bois peints en réalité virtuelle, pensé pour 
   table allume un cadre qui montre l'emplacement ; il s'allume aussi de
   lui-même si une pièce n'est pas posée au bout de 30 secondes.
 - Il n'y a ni chrono ni échec possible, et le texte est affiché en grand.
+- Une fois le modèle terminé, un bouton « Menu » sur la table fait sortir de
+  la réalité virtuelle et ramène au choix des modèles.
 - Des sons doux et courts accompagnent les gestes (aucune voix) ; on peut les
   couper avec la case « Sons doux » de la page d'accueil.
 
@@ -206,6 +208,8 @@ développement ». Il reste utile pour vérifier l'entrée en VR.
 7. Pincer sur « Annuler » (à gauche) : la dernière brique posée revient dans
    la réserve. Pincer sur « Voir le modèle » (à droite) : la miniature du
    modèle terminé apparaît au fond de la table.
+8. Poser la dernière brique : le bouton « Menu » apparaît au milieu de la
+   table ; le pincer ramène à la page d'accueil.
 
 ### Tester sur le Meta Quest 3 (câble USB)
 

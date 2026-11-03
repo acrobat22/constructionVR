@@ -254,10 +254,12 @@ export const CONFIG = Object.freeze({
     reserve: Object.freeze({ x: 0.12, z: 0.2 }),
     boutonAnnuler: Object.freeze({ x: -0.38, z: 0.18 }),
     boutonModele: Object.freeze({ x: 0.4, z: 0.18 }),
-    /** Lampe de l'aide à l'emplacement, au fond à gauche de la table. */
-    lampeAide: Object.freeze({ x: -0.43, z: -0.2 }),
+    /** Lampe de l'aide à l'emplacement, à gauche, juste derrière « Annuler » (à portée de main). */
+    lampeAide: Object.freeze({ x: -0.43, z: -0.05 }),
     /** Bouton « Commencer », à la place de la réserve (vide pendant la présentation). */
     boutonCommencer: Object.freeze({ x: 0.06, z: 0.2 }),
+    /** Bouton « Menu », au même endroit (la réserve est vide en fin de partie). */
+    boutonMenu: Object.freeze({ x: 0.06, z: 0.2 }),
     miniature: Object.freeze({ x: 0.4, z: -0.2 }),
   }),
 

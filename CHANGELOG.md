@@ -8,6 +8,10 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-11-03 — Bouton « Menu » (icône maison) sur la table en fin de partie :
+  il termine la session VR et ramène au choix des modèles (en mode sans
+  casque, il revient à l'accueil). Auparavant, il fallait passer par le menu
+  système du Quest. La carte de fin invite à l'utiliser.
 - 2026-11-03 — Menu rangé par famille : Maisons et monuments, Nature et fêtes,
   Véhicules, Animaux, Personnages. Un titre par famille (avec le nombre de
   modèles) et une rangée de liens « Aller à » pour éviter de faire défiler.
@@ -97,6 +101,8 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - `README.md`, `LICENSE` (MIT), `.gitignore`.
 
 ### Modifié
+- 2026-11-03 — Lampe de l'aide rapprochée de 15 cm, juste derrière « Annuler » :
+  elle était difficile à atteindre au fond de la table.
 - 2026-11-03 — Catalogue au format `familles` ; dans chaque famille, le jeu
   range les modèles du plus court au plus long. La maisonnette (5 pièces)
   remplace le voilier comme modèle choisi par défaut.

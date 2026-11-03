@@ -26,7 +26,7 @@ import { AideEmplacement } from './construction/aideEmplacement.js';
 import { creerMiniature } from './construction/miniature.js';
 import { chargerBoisPeint } from './construction/boisPeint.js';
 import { Bouton3D } from './interface/bouton3D.js';
-import { dessinerFlecheRetour, dessinerLecture, dessinerOeil } from './interface/icones.js';
+import { dessinerFlecheRetour, dessinerLecture, dessinerMaison, dessinerOeil } from './interface/icones.js';
 import { CarteProgression } from './interface/carteProgression.js';
 import { LampeAide } from './interface/lampeAide.js';
 import { MenuModeles } from './interface/menuModeles.js';
@@ -132,6 +132,30 @@ boutonCommencer.objet3D.position.copy(surLaTable(CONFIG.disposition.boutonCommen
 boutonCommencer.objet3D.visible = false;
 scene.add(boutonCommencer.objet3D);
 
+/**
+ * Ramène le joueur au menu des modèles : en VR, on termine la session (la page
+ * réaffiche alors l'accueil) ; sans casque, on quitte le mode souris.
+ * https://developer.mozilla.org/fr/docs/Web/API/XRSession/end
+ */
+function revenirAuMenu() {
+  const session = renderer.xr.getSession();
+  if (session) {
+    session.end().catch((erreur) => console.error('[main.revenirAuMenu] Fin de session impossible :', erreur));
+  } else {
+    modeSansCasque.desactiver();
+  }
+}
+
+// « Menu » n'est visible qu'une fois le modèle terminé.
+const boutonMenu = new Bouton3D(CONFIG.bouton, {
+  libelle: 'Menu',
+  dessinerIcone: dessinerMaison,
+  surAppui: revenirAuMenu,
+});
+boutonMenu.objet3D.position.copy(surLaTable(CONFIG.disposition.boutonMenu, CONFIG.bouton.hauteur));
+boutonMenu.objet3D.visible = false;
+scene.add(boutonMenu.objet3D);
+
 // Aide à l'emplacement : éteinte par défaut, la lampe l'allume ou l'éteint.
 const aide = new AideEmplacement(CONFIG.aide);
 const lampeAide = new LampeAide({
@@ -141,7 +165,7 @@ const lampeAide = new LampeAide({
 lampeAide.objet3D.position.copy(surLaTable(CONFIG.disposition.lampeAide, 0));
 scene.add(lampeAide.objet3D);
 
-const boutons = [boutonAnnuler, boutonModele, boutonCommencer, lampeAide];
+const boutons = [boutonAnnuler, boutonModele, boutonCommencer, boutonMenu, lampeAide];
 
 const carte = new CarteProgression(CONFIG.carte);
 scene.add(carte.objet3D);
@@ -230,6 +254,7 @@ const partie = new Partie({
   surChangement: () => {
     boutonAnnuler.definirActif(partie.peutAnnuler);
     boutonCommencer.objet3D.visible = partie.estEnPresentation;
+    boutonMenu.objet3D.visible = partie.estTerminee;
     rafraichirCarte();
   },
 });
