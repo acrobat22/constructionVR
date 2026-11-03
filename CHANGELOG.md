@@ -8,6 +8,9 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-11-03 — Trois constructions de plus : la citrouille (visage peint,
+  nouveau décor « citrouille »), l'arbre dans son pot et le crocodile à la
+  gueule ouverte. 24 modèles au menu.
 - 2026-11-03 — 16 nouvelles constructions en grosses pièces : maisonnette,
   sapin, gâteau d'anniversaire, chapelle, maison, château fort, bateau, petit
   train, avion, canard, cygne, chien, cheval, bonhomme, clown et marin

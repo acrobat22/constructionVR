@@ -92,6 +92,35 @@ const DESSINATEURS = {
     dessinerVisageHumain(contexte, largeur, hauteur, { couleurNez: '#e8837a', rayonNez: 0.09, largeurSourire: 0.24 });
   },
 
+  /** Visage de citrouille : yeux triangulaires et bouche dentelée, souriants. */
+  citrouille: (contexte, largeur, hauteur) => {
+    const taille = Math.min(largeur, hauteur);
+    contexte.fillStyle = '#6e4b32';
+    // Yeux : triangles pointe en haut.
+    for (const cote of [-1, 1]) {
+      const oeilX = largeur / 2 + cote * taille * 0.32;
+      contexte.beginPath();
+      contexte.moveTo(oeilX - taille * 0.12, hauteur * 0.45);
+      contexte.lineTo(oeilX + taille * 0.12, hauteur * 0.45);
+      contexte.lineTo(oeilX, hauteur * 0.45 - taille * 0.2);
+      contexte.closePath();
+      contexte.fill();
+    }
+    // Bouche souriante, en zigzag sur le haut.
+    const gauche = largeur / 2 - taille * 0.5;
+    const droite = largeur / 2 + taille * 0.5;
+    const dents = 5;
+    contexte.beginPath();
+    contexte.moveTo(gauche, hauteur * 0.6);
+    for (let dent = 0; dent < dents; dent++) {
+      const x = gauche + (droite - gauche) * (dent + 0.5) / dents;
+      contexte.lineTo(x, hauteur * 0.6 + taille * 0.07);
+      contexte.lineTo(gauche + (droite - gauche) * (dent + 1) / dents, hauteur * 0.6);
+    }
+    contexte.quadraticCurveTo(largeur / 2, hauteur * 0.6 + taille * 0.45, gauche, hauteur * 0.6);
+    contexte.fill();
+  },
+
   /** Taches de girafe, irrégulières. */
   taches: (contexte, largeur, hauteur) => {
     contexte.fillStyle = 'rgba(190, 110, 50, 0.8)';
