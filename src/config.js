@@ -300,7 +300,10 @@ export const CONFIG = Object.freeze({
     ecartMaximalMs: 120,
   }),
 
-  /** Liste des modèles proposés sur la page d'accueil (le premier est choisi par défaut). */
+  /**
+   * Modèles proposés sur la page d'accueil, par famille. Le plus court de la
+   * première famille est choisi par défaut.
+   */
   modele: Object.freeze({
     catalogue: './modeles/catalogue.json',
   }),

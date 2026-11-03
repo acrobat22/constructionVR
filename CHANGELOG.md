@@ -8,6 +8,12 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- 2026-11-03 — Menu rangé par famille : Maisons et monuments, Nature et fêtes,
+  Véhicules, Animaux, Personnages. Un titre par famille (avec le nombre de
+  modèles) et une rangée de liens « Aller à » pour éviter de faire défiler.
+- Durée indicative sur chaque carte : « Court ●○○ » (6 pièces ou moins),
+  « Moyen ●●○ » (7 à 9), « Long ●●● » (10 et plus), en mots et en points.
+  4 nouveaux tests (83 au total).
 - 2026-11-03 — Trois constructions de plus : la citrouille (visage peint,
   nouveau décor « citrouille »), l'arbre dans son pot et le crocodile à la
   gueule ouverte. 24 modèles au menu.
@@ -91,6 +97,9 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 - `README.md`, `LICENSE` (MIT), `.gitignore`.
 
 ### Modifié
+- 2026-11-03 — Catalogue au format `familles` ; dans chaque famille, le jeu
+  range les modèles du plus court au plus long. La maisonnette (5 pièces)
+  remplace le voilier comme modèle choisi par défaut.
 - 2026-10-28 — Décor clair (au lieu d'un fond sombre) ; le texte reste posé
   sur des panneaux sombres opaques (contraste ≥ 7:1).
 - La brique d'essai unique de l'étape 2 est remplacée par le modèle d'essai.

@@ -5,6 +5,7 @@
  *   - bouton #111418 sur #ffe98a          → 15,2:1
  *   - message #ffe98a sur #111418         → 15,2:1
  *   - désactivé #c8ccd4 sur #111418       → 11,5:1
+ *   - liens « Aller à » #ffe98a sur #111418 (et l'inverse au survol) → 15,2:1
  */
 
 :root {
@@ -96,7 +97,78 @@ h1 {
   font-weight: 800;
 }
 
-.liste-modeles {
+/* Liens « Aller à » : grandes pastilles faciles à viser (au moins 3 rem de haut). */
+.aller-a {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.aller-a-intitule {
+  font-weight: 700;
+}
+
+.aller-a ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aller-a a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.25rem 1rem;
+  color: var(--couleur-accent);
+  border: 2px solid var(--couleur-accent);
+  border-radius: 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.aller-a a:hover {
+  color: var(--couleur-fond);
+  background: var(--couleur-accent);
+}
+
+.aller-a a:focus-visible {
+  outline: 4px solid var(--couleur-texte);
+  outline-offset: 3px;
+}
+
+/* Défilement doux vers une famille, sauf si le joueur préfère moins d'animations. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Une famille : son titre, puis la grille de ses cartes. */
+.famille-modeles {
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 1rem;
+}
+
+.famille-modeles-titre {
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.25rem;
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--couleur-desactive);
+}
+
+.famille-modeles-compte {
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--couleur-desactive);
+}
+
+.grille-modeles {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
   gap: 0.75rem;
@@ -125,6 +197,17 @@ h1 {
 
 .carte-modele-pieces {
   font-size: 1.125rem;
+}
+
+/* Durée indicative : le mot compte, les points ne sont qu'un repère. */
+.carte-modele-duree {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--couleur-accent);
+}
+
+.carte-modele-points {
+  letter-spacing: 0.1em;
 }
 
 /* Choisie : bordure épaisse jaune pâle ET coche (jamais la couleur seule). */

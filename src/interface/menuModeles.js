@@ -6,7 +6,13 @@
  * utilisables au clavier (flèches) et annoncés par les lecteurs d'écran.
  * Le choix est signalé par une bordure épaisse ET une coche, jamais par la
  * couleur seule (voir styles/accueil.css).
+ *
+ * Les cartes sont rangées par famille (un titre par famille, précédé d'une
+ * rangée de liens « Aller à »). Toutes restent dans un seul groupe de boutons
+ * radio : les flèches du clavier passent d'une famille à l'autre.
  */
+
+import { calculerPalierDuree, dessinerPoints } from '../modeles/duree.js';
 
 /**
  * @typedef {object} EntreeMenu
@@ -14,6 +20,12 @@
  * @property {string} nom - Nom affiché (« Le voilier »).
  * @property {number} nombrePieces - Nombre de pièces.
  * @property {string} [description] - Phrase de présentation (bulle d'aide).
+ */
+
+/**
+ * @typedef {object} FamilleMenu
+ * @property {string} nom - Nom de la famille (« Animaux »).
+ * @property {EntreeMenu[]} entrees - Ses modèles, dans l'ordre d'affichage.
  */
 
 /** Nom du groupe de boutons radio. */
@@ -40,12 +52,14 @@ export class MenuModeles {
   }
 
   /**
-   * Affiche les cartes ; la première est choisie par défaut.
+   * Affiche les liens « Aller à », puis une section par famille ; la toute
+   * première carte est choisie par défaut.
    *
-   * @param {EntreeMenu[]} entrees - Modèles proposés, dans l'ordre.
+   * @param {FamilleMenu[]} familles - Familles de modèles, dans l'ordre d'affichage.
    */
-  afficher(entrees) {
-    this.conteneur.replaceChildren(...entrees.map((entree, indice) => this.#creerCarte(entree, indice === 0)));
+  afficher(familles) {
+    const sections = familles.map((famille, indice) => this.#creerSection(famille, `famille-modeles-${indice + 1}`, indice === 0));
+    this.conteneur.replaceChildren(this.#creerLiensAllerA(familles), ...sections);
   }
 
   /**
@@ -60,6 +74,66 @@ export class MenuModeles {
       element.src = image;
       element.hidden = false;
     }
+  }
+
+  /**
+   * Crée la rangée de liens vers chaque famille (évite de faire défiler).
+   *
+   * @param {FamilleMenu[]} familles - Familles affichées.
+   * @returns {HTMLElement}
+   */
+  #creerLiensAllerA(familles) {
+    const navigation = document.createElement('nav');
+    navigation.className = 'aller-a';
+    navigation.setAttribute('aria-label', 'Aller à une famille de modèles');
+
+    const intitule = document.createElement('span');
+    intitule.className = 'aller-a-intitule';
+    intitule.textContent = 'Aller à :';
+
+    const liste = document.createElement('ul');
+    familles.forEach((famille, indice) => {
+      const lien = document.createElement('a');
+      lien.href = `#famille-modeles-${indice + 1}`;
+      lien.textContent = famille.nom;
+      const element = document.createElement('li');
+      element.append(lien);
+      liste.append(element);
+    });
+
+    navigation.append(intitule, liste);
+    return navigation;
+  }
+
+  /**
+   * Crée la section d'une famille : son titre puis la grille de ses cartes.
+   *
+   * @param {FamilleMenu} famille - Famille à présenter.
+   * @param {string} identifiant - Identifiant de la section (cible des liens).
+   * @param {boolean} premiereFamille - La première carte de cette famille est cochée.
+   * @returns {HTMLElement}
+   */
+  #creerSection(famille, identifiant, premiereFamille) {
+    const section = document.createElement('section');
+    section.className = 'famille-modeles';
+    section.id = identifiant;
+    section.setAttribute('aria-labelledby', `${identifiant}-titre`);
+
+    const titre = document.createElement('h3');
+    titre.id = `${identifiant}-titre`;
+    titre.className = 'famille-modeles-titre';
+    const compte = document.createElement('span');
+    compte.className = 'famille-modeles-compte';
+    const nombre = famille.entrees.length;
+    compte.textContent = `${nombre} modèle${nombre > 1 ? 's' : ''}`;
+    titre.append(`${famille.nom} `, compte);
+
+    const grille = document.createElement('div');
+    grille.className = 'grille-modeles';
+    grille.append(...famille.entrees.map((entree, indice) => this.#creerCarte(entree, premiereFamille && indice === 0)));
+
+    section.append(titre, grille);
+    return section;
   }
 
   /**
@@ -104,7 +178,17 @@ export class MenuModeles {
     pieces.className = 'carte-modele-pieces';
     pieces.textContent = `${entree.nombrePieces} pièces`;
 
-    carte.append(choix, image, nom, pieces);
+    // Durée en mots ; les points ne sont qu'un repère visuel (non lus).
+    const palier = calculerPalierDuree(entree.nombrePieces);
+    const duree = document.createElement('span');
+    duree.className = 'carte-modele-duree';
+    const points = document.createElement('span');
+    points.className = 'carte-modele-points';
+    points.setAttribute('aria-hidden', 'true');
+    points.textContent = dessinerPoints(palier);
+    duree.append(points, ` ${palier.libelle}`);
+
+    carte.append(choix, image, nom, pieces, duree);
     return carte;
   }
 }

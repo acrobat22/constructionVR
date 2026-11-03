@@ -39,8 +39,8 @@ ressources/environnements/ Pièce photographiée « Lebombo » (photo + HDR, Pol
 ressources/textures/chene/ Bois du plateau (Poly Haven, CC0)
 ressources/textures/pin/   Bois des blocs et de la planchette (Poly Haven, CC0)
 ressources/textures/feutrine/  Fibres du tapis de jeu (Poly Haven, CC0)
-modeles/catalogue.json     Modèles proposés sur l'accueil, dans l'ordre
-modeles/voilier.json       Le voilier (14 pièces), choisi par défaut
+modeles/catalogue.json     Modèles proposés sur l'accueil, rangés par famille
+modeles/voilier.json       Le voilier (14 pièces)
 modeles/baleine.json, girafe.json, lion.json, dragon.json   Animaux en formes arrondies (7 à 10 pièces)
 modeles/maisonnette.json … marin.json   19 constructions simples (maisons, château,
                            citrouille, arbre, véhicules, animaux, personnages ;
@@ -82,7 +82,8 @@ src/
   interface/vignettes.js           Vignettes des modèles, générées par le jeu
   interface/sons.js        Sons doux (Web Audio, sans fichier) : saisie, accrochage, réussite
   modeles/chargeurModele.js        Lecture, validation et conversion des modèles JSON
-  modeles/catalogue.js     Lecture et validation du catalogue des modèles
+  modeles/catalogue.js     Lecture et validation du catalogue, tri par nombre de pièces
+  modeles/duree.js         Durée indicative d'un modèle (Court, Moyen, Long)
 tests/                     Tests des fonctions pures (node --test)
 ```
 
@@ -130,8 +131,18 @@ jamais occuper le même espace.
 
 Un fichier mal écrit est refusé avec un message qui indique la brique fautive.
 Pour proposer un modèle sur la page d'accueil, ajouter son nom de fichier
-dans `modeles/catalogue.json` (l'ordre du fichier est l'ordre d'affichage, le
-premier est choisi par défaut). Sa vignette est générée automatiquement.
+dans sa famille, dans `modeles/catalogue.json` :
+
+```json
+{ "familles": [{ "nom": "Animaux", "modeles": ["chien.json", "lion.json"] }] }
+```
+
+Les familles s'affichent dans l'ordre du fichier, chacune sous son titre, avec
+une rangée de liens « Aller à » au-dessus. Dans une famille, le jeu range les
+modèles du plus court au plus long (nombre de pièces ; à égalité, l'ordre du
+fichier). Chaque carte indique une durée : « Court » jusqu'à 6 pièces,
+« Moyen » jusqu'à 9, « Long » au-delà. Le premier modèle de la première
+famille est choisi par défaut. Sa vignette est générée automatiquement.
 
 ## Tests
 
