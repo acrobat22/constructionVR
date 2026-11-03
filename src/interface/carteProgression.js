@@ -27,7 +27,7 @@ const TEXTES_AIDE = Object.freeze({
 });
 
 /** Message affiché une fois le modèle terminé (positif, sans pression). */
-const TEXTE_FELICITATIONS = 'Merci d’avoir joué.';
+const TEXTE_FELICITATIONS = 'Appuyez sur « Menu » pour changer de modèle.';
 
 /** Explication affichée pendant la présentation du modèle (une phrase par ligne). */
 const LIGNES_PRESENTATION = Object.freeze([

@@ -90,3 +90,32 @@ export function dessinerLecture(contexte, centreX, centreY, couleur) {
   contexte.fill();
   contexte.stroke();
 }
+
+/**
+ * Maison (revenir au menu des modèles).
+ *
+ * @param {CanvasRenderingContext2D} contexte - Contexte de dessin.
+ * @param {number} centreX - Centre horizontal de l'icône.
+ * @param {number} centreY - Centre vertical de l'icône.
+ * @param {string} couleur - Couleur du trait et du toit.
+ */
+export function dessinerMaison(contexte, centreX, centreY, couleur) {
+  const demiLargeur = 34;
+  contexte.strokeStyle = couleur;
+  contexte.fillStyle = couleur;
+  contexte.lineWidth = 12;
+  contexte.lineJoin = 'round';
+
+  // Toit plein en triangle.
+  contexte.beginPath();
+  contexte.moveTo(centreX - demiLargeur - 16, centreY - 4);
+  contexte.lineTo(centreX, centreY - 46);
+  contexte.lineTo(centreX + demiLargeur + 16, centreY - 4);
+  contexte.closePath();
+  contexte.fill();
+  contexte.stroke();
+
+  // Murs en contour, avec une porte pleine au milieu.
+  contexte.strokeRect(centreX - demiLargeur, centreY - 4, demiLargeur * 2, 46);
+  contexte.fillRect(centreX - 10, centreY + 14, 20, 28);
+}
