@@ -242,7 +242,7 @@ test('les quatre animaux fournis avec le jeu sont valides', async () => {
 });
 
 test('les motifs des maisons, véhicules et personnages sont acceptés', () => {
-  for (const motif of ['porte', 'fenetre', 'rayures', 'helice', 'fruits', 'hublots']) {
+  for (const motif of ['porte', 'fenetre', 'rayures', 'helice', 'fruits', 'hublots', 'visage-humain', 'visage-clown']) {
     assert.ok(MOTIFS.includes(motif), motif);
     assert.doesNotThrow(() => validerModele({
       nom: motif,

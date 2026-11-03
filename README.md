@@ -116,7 +116,7 @@ Champs facultatifs :
 | `sens` | `x+`, `x-`, `z+`, `z-` : direction vers laquelle une pente ou un quart de rond **descend** (obligatoire pour ces deux formes) | — |
 | `axe` | `x` ou `z` : cylindre couché (debout sinon) | — |
 | `hauteur` | hauteur en couches, par exemple `0.5`, `2`, `3` | `1` |
-| `decor` | `{ "face": "z+", "motif": "visage" }` ; faces `x+`, `x-`, `z+`, `z-`, `y+` (dessus) ; motifs `oeil-sourire`, `oeil-rond`, `profil`, `visage`, `taches`, `ecailles`, `porte`, `fenetre`, `rayures`, `helice`, `fruits`, `hublots` | — |
+| `decor` | `{ "face": "z+", "motif": "visage" }` ; faces `x+`, `x-`, `z+`, `z-`, `y+` (dessus) ; motifs `oeil-sourire`, `oeil-rond`, `profil`, `visage`, `taches`, `ecailles`, `porte`, `fenetre`, `rayures`, `helice`, `fruits`, `hublots`, `visage-humain`, `visage-clown` | — |
 
 La face `z+` est celle tournée vers le joueur. Les motifs d'œil sont dessinés
 pour un animal tourné vers la droite (`x+`).

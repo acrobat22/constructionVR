@@ -11,7 +11,7 @@
     {"position": [-1, 5, 0], "taille": [1, 2], "couleur": "#fff3dc", "hauteur": 0.5},
     {"position": [3, 5, 0], "taille": [1, 2], "couleur": "#fff3dc", "hauteur": 0.5},
     {"position": [1, 4, 0], "taille": [1, 1], "couleur": "#f2b27a", "hauteur": 3},
-    {"position": [0, 4, 1], "taille": [3, 1], "couleur": "#fbe9c8", "hauteur": 3, "forme": "cylindre", "axe": "z", "decor": {"face": "z+", "motif": "visage"}},
+    {"position": [0, 4, 1], "taille": [3, 1], "couleur": "#fbe9c8", "hauteur": 3, "forme": "cylindre", "axe": "z", "decor": {"face": "z+", "motif": "visage-clown"}},
     {"position": [0, 7, 0], "taille": [3, 2], "couleur": "#c8b6e8", "hauteur": 1.6, "forme": "pointe"}
   ]
 }

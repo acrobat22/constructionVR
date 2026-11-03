@@ -82,6 +82,16 @@ const DESSINATEURS = {
     }
   },
 
+  /** Visage humain de face : sourcils, yeux, petit nez rond, joues roses, sourire. */
+  'visage-humain': (contexte, largeur, hauteur) => {
+    dessinerVisageHumain(contexte, largeur, hauteur, { couleurNez: '#eab08a', rayonNez: 0.045, largeurSourire: 0.16 });
+  },
+
+  /** Visage de clown : comme le visage humain, avec un gros nez corail et un grand sourire. */
+  'visage-clown': (contexte, largeur, hauteur) => {
+    dessinerVisageHumain(contexte, largeur, hauteur, { couleurNez: '#e8837a', rayonNez: 0.09, largeurSourire: 0.24 });
+  },
+
   /** Taches de girafe, irrégulières. */
   taches: (contexte, largeur, hauteur) => {
     contexte.fillStyle = 'rgba(190, 110, 50, 0.8)';
@@ -243,6 +253,53 @@ function dessinerOeilOuvert(contexte, centreX, centreY, rayon, avecBlanc = true)
   contexte.beginPath();
   contexte.arc(centreX + rayon * 0.28, centreY - rayon * 0.12, rayonPupille * 0.32, 0, Math.PI * 2);
   contexte.fill();
+}
+
+/**
+ * Dessine un visage humain de face, centré sur la face (tête ronde).
+ *
+ * @param {CanvasRenderingContext2D} contexte - Contexte du canevas.
+ * @param {number} largeur - Largeur du canevas, en pixels.
+ * @param {number} hauteur - Hauteur du canevas, en pixels.
+ * @param {{ couleurNez: string, rayonNez: number, largeurSourire: number }} reglages -
+ *   Couleur et rayon du nez, demi-largeur du sourire (fractions de la plus petite dimension).
+ */
+function dessinerVisageHumain(contexte, largeur, hauteur, { couleurNez, rayonNez, largeurSourire }) {
+  const taille = Math.min(largeur, hauteur);
+  const centreX = largeur / 2;
+  const centreY = hauteur / 2;
+
+  // Joues roses, discrètes, sous les yeux.
+  contexte.fillStyle = 'rgba(244, 140, 150, 0.45)';
+  for (const cote of [-1, 1]) {
+    contexte.beginPath();
+    contexte.arc(centreX + cote * taille * 0.24, centreY + taille * 0.1, taille * 0.07, 0, Math.PI * 2);
+    contexte.fill();
+  }
+
+  // Yeux ouverts et sourcils légèrement arqués.
+  contexte.strokeStyle = ENCRE;
+  contexte.lineCap = 'round';
+  for (const cote of [-1, 1]) {
+    const oeilX = centreX + cote * taille * 0.15;
+    dessinerOeilOuvert(contexte, oeilX, centreY - taille * 0.08, taille * 0.065, false);
+    contexte.lineWidth = taille * 0.022;
+    contexte.beginPath();
+    contexte.arc(oeilX, centreY - taille * 0.08, taille * 0.11, 1.2 * Math.PI, 1.8 * Math.PI);
+    contexte.stroke();
+  }
+
+  // Nez rond.
+  contexte.fillStyle = couleurNez;
+  contexte.beginPath();
+  contexte.arc(centreX, centreY + taille * 0.06, taille * rayonNez, 0, Math.PI * 2);
+  contexte.fill();
+
+  // Sourire.
+  contexte.lineWidth = taille * 0.03;
+  contexte.beginPath();
+  contexte.arc(centreX, centreY + taille * 0.08, taille * largeurSourire, 0.2 * Math.PI, 0.8 * Math.PI);
+  contexte.stroke();
 }
 
 /**
